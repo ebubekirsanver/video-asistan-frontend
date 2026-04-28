@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="light" lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduAssistant | Yeni Islem</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; transition: background-color 220ms ease, color 220ms ease; }
+    html.dark body, html.dark main { background-color: #020617 !important; color: #e2e8f0; }
+    html.dark .bg-white { background-color: #0f172a !important; border-color: #334155 !important; }
+    html.dark .bg-white\/80 { background-color: rgba(15, 23, 42, 0.85) !important; }
+    html.dark .bg-slate-50, html.dark .bg-slate-100, html.dark .bg-indigo-50 { background-color: #111827 !important; }
+    html.dark .border-slate-100, html.dark .border-slate-200, html.dark .border-slate-300, html.dark .border-indigo-100 { border-color: #334155 !important; }
+    html.dark .text-slate-900 { color: #f8fafc !important; }
+    html.dark .text-slate-700 { color: #cbd5e1 !important; }
+    html.dark .text-slate-600, html.dark .text-slate-500 { color: #94a3b8 !important; }
+    html.dark input, html.dark select { background-color: #0b1220 !important; border-color: #334155 !important; color: #e2e8f0 !important; }
+    html.dark input::placeholder { color: #64748b; }
+    html.dark .peer-checked\:bg-indigo-50 { background-color: rgba(99, 102, 241, 0.2) !important; }
+    html.dark .hover\:bg-slate-50:hover { background-color: #1e293b !important; }
+    html.dark .hover\:border-indigo-300:hover { border-color: #6366f1 !important; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <aside class="fixed left-0 top-0 h-full w-[280px] border-r border-slate-200 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col py-8 px-4 z-50">
+    <div class="mb-10 px-2 flex items-center gap-3">
+      <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
+        <span class="material-symbols-outlined">school</span>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tighter">EduAssistant</h1>
+        <p class="text-xs text-slate-500 font-medium tracking-tight">Kisisel Egitmen</p>
+      </div>
+    </div>
+    <nav class="flex-1 space-y-2">
+      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium bg-indigo-50 text-indigo-700 border-l-4 border-indigo-600" href="islem.html">
+        <span class="material-symbols-outlined">add_circle</span><span>Yeni Islem</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="code.html">
+        <span class="material-symbols-outlined">history</span><span>Gecmis</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="uyelik.html">
+        <span class="material-symbols-outlined">workspace_premium</span><span>Uyelik</span>
+      </a>
+    </nav>
+    <div class="mt-auto border-t border-slate-100 pt-6">
+      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors" href="giris.html">
+        <span class="material-symbols-outlined">logout</span><span>Cikis Yap</span>
+      </a>
+    </div>
+  </aside>
+
+  <header class="fixed top-0 right-0 left-[280px] z-40 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center h-16 px-8">
+    <h2 class="text-lg font-semibold">Yeni Video Islemi</h2>
+  </header>
+
+  <main class="ml-[280px] pt-16 min-h-screen">
+    <div class="p-8 max-w-6xl mx-auto space-y-6">
+      <section class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <h3 class="text-2xl font-semibold tracking-tight">Yeni Egitim Analizi Baslat</h3>
+        <p class="text-slate-500 mt-2">Video linkini girin ve saniyeler içinde yapay zeka destekli özetinizi alın.</p>
+
+        <div id="analysisForm" class="mt-6 space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2" for="videoUrl">Video URL</label>
+            <input id="videoUrl" type="url" required placeholder="https://www.youtube.com/watch?v=..." class="w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Ozet Uzunlugu</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="summaryLength" value="kisa" class="peer sr-only" checked />
+                        <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Kisa</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="summaryLength" value="orta" class="peer sr-only" />
+                        <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Orta</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="summaryLength" value="detayli" class="peer sr-only" />
+                        <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Detayli</div>
+                    </label>
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Zorluk</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="questionDifficulty" value="kolay" class="peer sr-only" checked />
+                        <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Kolay</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="questionDifficulty" value="orta" class="peer sr-only" />
+                        <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Orta</div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="questionDifficulty" value="zor" class="peer sr-only" />
+                        <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Zor</div>
+                    </label>
+                </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <button id="startAnalyzeBtn" type="button" class="rounded-lg bg-indigo-600 text-white font-semibold px-6 py-3 hover:bg-indigo-700 transition-colors">
+              Analizi Baslat
+            </button>
+          </div>
+        </div>
+
+        <p id="generationStatus" class="hidden mt-4 text-sm rounded-lg px-3 py-2"></p>
+      </section>
+
+      <section id="resultSection" class="hidden grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <article class="xl:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h4 class="text-xl font-semibold">Uretilen Yazili Ozet</h4>
+          <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+            <p class="text-xs text-slate-500">Kaynak Video</p>
+            <a id="sourceVideoLink" href="#" target="_blank" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 break-all">-</a>
+            <div id="summaryOutput" class="text-sm text-slate-700 leading-relaxed space-y-3"></div>
+          </div>
+        </article>
+
+        <aside class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h4 class="text-lg font-semibold">Soru Cozum Alani</h4>
+          <form id="quizForm" class="mt-4 space-y-6"></form>
+          <div class="mt-6 flex gap-2">
+            <button id="checkAnswersBtn" type="button" class="flex-1 rounded-lg bg-indigo-600 text-white font-semibold py-2.5 hover:bg-indigo-700 transition-colors">Kontrol Et</button>
+            <button id="resetQuizBtn" type="button" class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">Sifirla</button>
+          </div>
+          <p id="quizFeedback" class="hidden mt-3 text-sm rounded-lg px-3 py-2"></p>
+        </aside>
+      </section>
+    </div>
+  </main>
+
+    <script>
+    const THEME_KEY = 'edua_theme';
+    const API_BASE = 'http://127.0.0.1:8010';
+    const analysisForm = document.getElementById('analysisForm');
+    const generationStatus = document.getElementById('generationStatus');
+    const resultSection = document.getElementById('resultSection');
+    const summaryOutput = document.getElementById('summaryOutput');
+    const quizForm = document.getElementById('quizForm');
+    const quizFeedback = document.getElementById('quizFeedback');
+    const sourceVideoLink = document.getElementById('sourceVideoLink');
+
+    function applyTheme(theme) {
+      const isDark = theme === 'dark';
+      document.documentElement.classList.toggle('dark', isDark);
+      document.documentElement.classList.toggle('light', !isDark);
+    }
+    applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+
+    let activeQuestions = [];
+
+    function showStatus(message, type) {
+      generationStatus.textContent = message;
+      generationStatus.className = 'mt-4 text-sm rounded-lg px-3 py-2 ';
+      if (type === 'success') generationStatus.classList.add('bg-emerald-50', 'text-emerald-700');
+      else if (type === 'error') generationStatus.classList.add('bg-red-50', 'text-red-700');
+      else generationStatus.classList.add('bg-slate-100', 'text-slate-700');
+      generationStatus.classList.remove('hidden');
+    }
+
+    function renderQuestions(questions) {
+      quizForm.innerHTML = questions.map((item, idx) => `
+        <div class="space-y-3">
+          <p class="text-sm font-semibold text-slate-900">${idx + 1}. ${item.question}</p>
+          <div class="space-y-2">
+            ${item.choices.map((choice, cIdx) => `
+              <label class="flex items-center gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
+                <input type="radio" name="${item.id}" value="${cIdx}" class="text-indigo-600 focus:ring-indigo-500">
+                <span class="text-sm text-slate-700">${choice}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getSelectedValue(name) {
+      const selected = document.querySelector(`input[name="${name}"]:checked`);
+      return selected ? selected.value : null;
+    }
+
+    async function handleAnalyze() {
+      const videoUrlInput = document.getElementById('videoUrl');
+      const videoUrl = videoUrlInput.value.trim();
+      const summaryLength = getSelectedValue('summaryLength');
+      const questionDifficulty = getSelectedValue('questionDifficulty');
+
+      if (!videoUrl) {
+        showStatus('Video URL gerekli.', 'error');
+        return;
+      }
+
+      showStatus('Analiz baslatildi, lutfen bekleyin...', 'info');
+      resultSection.classList.add('hidden');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/analyze`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            youtube_url: videoUrl,
+            summary_length: summaryLength,
+            question_difficulty: questionDifficulty
+          })
+        });
+
+        if (!response.ok) {
+            let err = null;
+            try {
+              err = await response.json();
+            } catch (_) {
+              // json degilse ignore
+            }
+
+            // FastAPI HTTPException: { detail: string | object }
+            const detail = err?.detail ?? err;
+            const msg =
+              (typeof detail === 'string' ? detail : null) ??
+              detail?.message ??
+              `Sunucu hatasi olustu. (HTTP ${response.status})`;
+
+            // 429 ise (rate limit) kullaniciya bekleme suresini goster.
+            const retryAfter = detail?.retry_after_seconds;
+            const extra =
+              response.status === 429 && typeof retryAfter === 'number'
+                ? ` Lutfen ${retryAfter}s sonra tekrar deneyin.`
+                : '';
+
+            throw new Error(`${msg}${extra}`);
+        }
+
+        const data = await response.json();
+        
+        // --- VERI KONTROL ZIRHI ---
+        if (!data.analiz || !data.analiz.sorular) {
+            throw new Error('Yapay zeka veriyi beklenen formatta olusturamadi. Lutfen tekrar deneyin.');
+        }
+
+        if (Array.isArray(data.analiz.summary_sections) && data.analiz.summary_sections.length > 0) {
+          summaryOutput.innerHTML = data.analiz.summary_sections
+            .map((section) => `<h5 class="text-sm font-semibold text-slate-900">${section.subtitle}</h5><p>${section.content}</p>`)
+            .join('');
+        } else if (data.analiz.ozet) {
+          summaryOutput.innerHTML = `<p>${data.analiz.ozet}</p>`;
+        } else {
+          summaryOutput.innerHTML = '<p>Ozet bulunamadi.</p>';
+        }
+        sourceVideoLink.href = videoUrl;
+        sourceVideoLink.textContent = videoUrl;
+
+        const mapping = { "A": 0, "B": 1, "C": 2, "D": 3 };
+        activeQuestions = data.analiz.sorular.map((q, i) => ({
+          id: `q-${i}`,
+          question: q.soru || 'Soru metni eksik',
+          choices: [
+            q.secenekler?.A || 'A eksik',
+            q.secenekler?.B || 'B eksik',
+            q.secenekler?.C || 'C eksik',
+            q.secenekler?.D || 'D eksik'
+          ],
+          answer: mapping[q.dogru_cevap] ?? 0
+        }));
+
+        renderQuestions(activeQuestions);
+        resultSection.classList.remove('hidden');
+        showStatus('Analiz basariyla tamamlandi!', 'success');
+
+      } catch (error) {
+        console.error("Detayli Hata:", error);
+        showStatus(`Hata: ${error.message}`, 'error');
+      }
+    }
+
+    document.getElementById('startAnalyzeBtn').addEventListener('click', () => {
+      handleAnalyze();
+    });
+
+    document.getElementById('videoUrl').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleAnalyze();
+      }
+    });
+
+    document.getElementById('checkAnswersBtn').onclick = () => {
+        let correct = 0;
+        activeQuestions.forEach(q => {
+            const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+            if (selected && parseInt(selected.value) === q.answer) correct++;
+        });
+        quizFeedback.textContent = `Sonuc: ${correct}/${activeQuestions.length} dogru.`;
+        quizFeedback.className = 'mt-3 text-sm rounded-lg px-3 py-2 bg-indigo-50 text-indigo-700';
+        quizFeedback.classList.remove('hidden');
+    };
+
+    document.getElementById('resetQuizBtn').onclick = () => {
+        quizForm.reset();
+        quizFeedback.classList.add('hidden');
+    };
+  </script>
+</body>
+</html>

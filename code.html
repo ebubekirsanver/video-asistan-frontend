@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="light" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#eff1f3",
+                    "on-background": "#191c1e",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#fffbff",
+                    "on-primary-fixed": "#07006c",
+                    "primary": "#4648d4",
+                    "outline": "#767586",
+                    "surface-container-highest": "#e0e3e5",
+                    "tertiary-fixed-dim": "#bec6e0",
+                    "on-tertiary-container": "#fefcff",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed-dim": "#d0bcff",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-low": "#f2f4f6",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "surface-tint": "#494bd6",
+                    "primary-fixed": "#e1e0ff",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "background": "#f7f9fb",
+                    "secondary-fixed": "#e9ddff",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#8455ef",
+                    "on-tertiary-fixed": "#131b2e",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "on-primary-container": "#fffbff",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#c0c1ff",
+                    "secondary": "#6b38d4",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "surface-variant": "#e0e3e5",
+                    "tertiary": "#545c72",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#6c748b",
+                    "surface-container": "#eceef0",
+                    "inverse-surface": "#2d3133",
+                    "primary-container": "#6063ee",
+                    "on-tertiary-fixed-variant": "#3f465c",
+                    "surface-container-high": "#e6e8ea",
+                    "on-surface-variant": "#464554",
+                    "outline-variant": "#c7c4d7",
+                    "tertiary-fixed": "#dae2fd",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-secondary-fixed": "#23005c",
+                    "surface": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "1rem",
+                    "lg": "1.5rem",
+                    "sm": "0.5rem",
+                    "base": "4px",
+                    "xs": "0.25rem",
+                    "xl": "2rem",
+                    "3xl": "4rem",
+                    "margin": "2rem",
+                    "2xl": "3rem",
+                    "gutter": "1.5rem"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "h1": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "h2": ["Inter"],
+                    "h3": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "600"}],
+                    "h1": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "h2": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h3": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+                body {
+                        font-family: 'Inter', sans-serif;
+                        transition: background-color 220ms ease, color 220ms ease;
+                }
+
+                html.dark body,
+                html.dark main {
+                        background-color: #020617 !important;
+                        color: #e2e8f0;
+                }
+
+                html.dark .bg-surface {
+                        background-color: #020617 !important;
+                }
+
+                html.dark .text-on-surface {
+                        color: #e2e8f0 !important;
+                }
+
+                html.dark .history-card,
+                html.dark #historyList > a,
+                html.dark section > .bg-white,
+                html.dark #recommendationList article,
+                html.dark .bg-white {
+                        background-color: #0f172a !important;
+                        border-color: #334155 !important;
+                }
+
+                html.dark .bg-slate-50,
+                html.dark .bg-slate-100,
+                html.dark .bg-slate-50\/30,
+                html.dark .bg-slate-50\/40 {
+                        background-color: #111827 !important;
+                }
+
+                html.dark .border-slate-100,
+                html.dark .border-slate-200,
+                html.dark .border-slate-300 {
+                        border-color: #334155 !important;
+                }
+
+                html.dark .text-slate-900 { color: #f8fafc !important; }
+                html.dark .text-slate-800 { color: #e2e8f0 !important; }
+                html.dark .text-slate-700 { color: #cbd5e1 !important; }
+                html.dark .text-slate-600,
+                html.dark .text-slate-500 { color: #94a3b8 !important; }
+                html.dark .text-slate-400 { color: #64748b !important; }
+
+                html.dark .bg-indigo-50 {
+                        background-color: rgba(99, 102, 241, 0.15) !important;
+                }
+
+                html.dark .border-indigo-100 {
+                        border-color: rgba(129, 140, 248, 0.35) !important;
+                }
+
+                html.dark .hover\:bg-slate-50:hover,
+                html.dark .hover\:bg-slate-100:hover {
+                        background-color: #1e293b !important;
+                }
+
+                html.dark .hover\:bg-slate-200:hover {
+                        background-color: #334155 !important;
+                }
+
+                html.dark input::placeholder {
+                        color: #64748b;
+                }
+    </style>
+</head>
+<body class="bg-surface text-on-surface transition-colors duration-200">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[280px] border-r bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col h-screen py-8 px-4 z-50">
+<div class="mb-10 px-2 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">EduAssistant</h1>
+<p class="text-xs text-slate-500 font-medium tracking-tight">Kişisel Eğitmen</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-200 ease-in-out" href="islem.html"><span class="material-symbols-outlined" data-icon="add_circle">add_circle</span><span>Yeni İşlem</span></a>
+<!-- Active State: History -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium tracking-tight bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-l-4 border-indigo-600 transition-all duration-200" href="code.html"><span class="material-symbols-outlined" data-icon="history">history</span><span>Geçmiş</span></a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-200 ease-in-out" href="uyelik.html"><span class="material-symbols-outlined" data-icon="workspace_premium">workspace_premium</span><span>Üyelik</span></a>
+</nav>
+<div class="mt-auto border-t border-slate-100 pt-6">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 ease-in-out" href="giris.html"><span class="material-symbols-outlined" data-icon="logout">logout</span><span>Çıkış Yap</span></a>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-[280px] z-40 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex justify-between items-center h-16 px-8">
+<div class="flex items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-1.5 w-full max-w-md">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-[20px]" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full text-slate-600 dark:text-slate-200 dark:placeholder:text-slate-500" placeholder="Eğitimlerde ara..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<a class="hidden lg:inline-flex items-center rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1.5 border border-indigo-100 hover:bg-indigo-100 transition-colors" href="uyelik.html" id="currentPlanBadge">Plan: Ucretsiz</a>
+<button class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" id="notificationsButton" type="button">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" id="settingsButton" type="button">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="flex items-center gap-2" id="profileButton" type="button">
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a young professional man with a friendly expression in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB2FVIge6W1MX-Wc8rDgo_GACKlnf0G6Sdt45RLRv9tohq9MgGv5NLSlnaOukx-AXP4xxMemUIW2LHpGWZ-cp7P0uKOldTrCxL6HTh18i0MinGeXQ1EnWFnlxv4grVqAyWi2fQc0KSpj5XZGZSQsWuW2rgMSgO7umcwanNqX6o_91UVJp4557q-sY-kK_xrdwgJdqFOstoQbjmYydXkI0HrISIvoHxVzxV8gCPhVrpIAs_ua4HWCN8omWcyFDDl6AJDozDX43PvPb2"/>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-[18px]">expand_more</span>
+</button>
+</div>
+</header>
+<div class="hidden fixed top-20 right-8 z-[60] w-[calc(100%-2rem)] max-w-sm" id="quickPanel">
+<div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl overflow-hidden">
+<div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+<h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100" id="quickPanelTitle">Hizli Panel</h3>
+<button class="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeQuickPanel" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="p-4 space-y-3" id="quickPanelContent"></div>
+</div>
+</div>
+<!-- Main Content Canvas -->
+<main class="ml-[280px] pt-16 min-h-screen bg-surface dark:bg-slate-950 transition-colors duration-200">
+<div class="p-8 max-w-[1400px] mx-auto">
+<!-- Header Section -->
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<nav class="flex gap-2 text-xs font-label-sm text-slate-400 mb-2">
+<span>EduAssistant</span>
+<span>/</span>
+<span class="text-indigo-600">Arşiv</span>
+</nav>
+<h2 class="text-h2 font-h2 text-slate-900">Geçmiş Eğitimleriniz</h2>
+<p class="text-body-md font-body-md text-slate-500 mt-2">Paylaştığınız video linklerinden alınan transkriptler modele okutulur ve yazılı konu özetleri burada saklanır.</p>
+</div>
+<div class="flex gap-3">
+<div class="bg-slate-100 p-1 rounded-lg flex">
+<button class="px-4 py-1.5 bg-white shadow-sm rounded-md text-sm font-medium text-slate-900 flex items-center gap-2">Kısa</button>
+<button class="px-4 py-1.5 text-sm font-medium text-slate-500 flex items-center gap-2">Orta</button>
+</div>
+</div>
+</div>
+<!-- Bento-style Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter" id="historyList">
+
+<!-- Add New Empty State Card -->
+<a class="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center p-8 bg-slate-50/30 hover:bg-slate-50 transition-colors cursor-pointer group" href="islem.html">
+<div class="w-16 h-16 rounded-full bg-white shadow-sm border border-slate-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-indigo-600 text-[32px]" data-icon="add">add</span>
+</div>
+<h4 class="text-slate-900 font-semibold mb-1">Yeni Eğitim Ekle</h4>
+<p class="text-slate-500 text-xs text-center">Video linkini yapıştırın ve hemen öğrenmeye başlayın.</p>
+</a>
+</div>
+<!-- Pagination/Load More -->
+<div class="mt-12 flex items-center justify-center">
+<button class="px-8 py-3 bg-slate-100 text-slate-900 rounded-full font-semibold text-sm hover:bg-slate-200 transition-colors flex items-center gap-2">
+                    Daha Fazla Yükle
+                    <span class="material-symbols-outlined text-[20px]" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+
+<!-- Recommendation Section -->
+<section class="mt-12">
+<div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+<div>
+<h3 class="text-2xl font-semibold tracking-tight text-slate-900">Kişisel Tavsiye Merkezi</h3>
+<p class="text-sm text-slate-500 mt-1">Geçmiş özetlerinize göre örnek video tavsiyeleri.</p>
+</div>
+<div class="rounded-xl bg-indigo-50 border border-indigo-100 px-4 py-3">
+<p class="text-xs uppercase tracking-wide text-indigo-700 font-semibold">Özetten öğrenilen ilgi alanları</p>
+<p class="text-sm text-indigo-800 font-medium mt-1" id="historyInsight">Analiz hazırlanıyor...</p>
+</div>
+</div>
+
+<div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4" id="recommendationList"></div>
+</div>
+</section>
+</div>
+</main>
+<script>
+        const THEME_KEY = 'edua_theme';
+        const SUBSCRIPTION_PLAN_KEY = 'edua_subscription_plan';
+        const API_BASE = 'http://127.0.0.1:8010';
+    
+    // Panel ve Buton Tanımlamaları
+    const quickPanel = document.getElementById('quickPanel');
+    const quickPanelTitle = document.getElementById('quickPanelTitle');
+    const quickPanelContent = document.getElementById('quickPanelContent');
+    const closeQuickPanel = document.getElementById('closeQuickPanel');
+    const notificationsButton = document.getElementById('notificationsButton');
+    const settingsButton = document.getElementById('settingsButton');
+    const profileButton = document.getElementById('profileButton');
+    let activePanelType = null;
+
+    // --- VERİTABANINDAN GEÇMİŞİ ÇEKME FONKSİYONU ---
+    async function loadRealHistory() {
+        const historyList = document.getElementById('historyList');
+        const insightText = document.getElementById('historyInsight');
+        
+        try {
+            const response = await fetch(`${API_BASE}/api/history`);
+            const data = await response.json();
+
+            if (!data || data.length === 0) {
+                insightText.textContent = "Henüz analiz edilmiş özet bulunmuyor.";
+                return;
+            }
+
+            // Gerçek verileri haritaya dök (Kartları oluştur)
+            const cardsHtml = data.map(item => {
+                const date = new Date(item.created_at).toLocaleDateString('tr-TR');
+                return `
+                    <div class="history-card bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-shadow">
+                        <div class="flex justify-between items-start gap-3 mb-3">
+                            <span class="bg-indigo-100 text-indigo-700 text-[11px] font-semibold px-2 py-1 rounded uppercase">YAPAY ZEKA</span>
+                            <span class="text-slate-400 text-[12px] font-medium">${date}</span>
+                        </div>
+                        <h3 class="text-body-md font-semibold text-slate-900 leading-snug line-clamp-2">Video Analizi</h3>
+                        <p class="text-xs text-slate-500 mt-2">Kaynak: <a class="text-indigo-600 truncate block" href="${item.video_url}" target="_blank">${item.video_url}</a></p>
+                        <div class="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                            <p class="text-sm text-slate-700 line-clamp-4">${item.ozet}</p>
+                        </div>
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                            <span class="text-xs font-medium text-slate-500">${item.sorular ? item.sorular.length : 0} Soru Hazır</span>
+                            <button class="text-indigo-600 text-sm font-semibold">Tam Metni Gör</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Yeni kartları "Yeni Ekle" butonunun önüne yerleştir
+            historyList.insertAdjacentHTML('afterbegin', cardsHtml);
+            
+            // Tavsiye merkezini güncelle
+            insightText.textContent = `${data.length} Analiz Arşivlendi`;
+
+        } catch (error) {
+            console.error("Geçmiş yüklenemedi:", error);
+        }
+    }
+
+    // Tema Uygulama
+    function applyTheme(theme) {
+        const isDark = theme === 'dark';
+        document.documentElement.classList.toggle('dark', isDark);
+        document.documentElement.classList.toggle('light', !isDark);
+    }
+
+    // Panelleri kapatma
+    function closePanel() {
+        quickPanel.classList.add('hidden');
+        activePanelType = null;
+    }
+
+    // Sayfa yüklendiğinde çalışacak ana komutlar
+    document.addEventListener('DOMContentLoaded', () => {
+        applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+        loadRealHistory(); // Gerçek verileri getir
+    });
+
+    // Panel tıklama olayları (Eski fonksiyonların devamı...)
+    notificationsButton.onclick = () => { quickPanel.classList.toggle('hidden'); quickPanelTitle.textContent = 'Bildirimler'; };
+    settingsButton.onclick = () => { quickPanel.classList.toggle('hidden'); quickPanelTitle.textContent = 'Ayarlar'; };
+    closeQuickPanel.onclick = closePanel;
+</script>
+</body></html>
