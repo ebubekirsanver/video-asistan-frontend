@@ -169,46 +169,92 @@ function findAnalysisRecord(analysisId, videoId) {
   return null;
 }
 
+const TURKISH_MAP = {
+  'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c',
+  'İ': 'i', 'Ğ': 'g', 'Ü': 'u', 'Ş': 's', 'Ö': 'o', 'Ç': 'c',
+  'I': 'i'
+};
+
+function normalizeTurkish(text) {
+  return String(text || '').toLowerCase().replace(/[ığüşöçİĞÜŞÖÇI]/g, c => TURKISH_MAP[c] || c);
+}
+
 function getQueryTerms(text) {
-  const turkishMap = { 'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c' };
-  const normalized = String(text || '').toLowerCase().replace(/[ığüşöç]/g, c => turkishMap[c] || c);
+  const normalized = normalizeTurkish(text);
   return normalized
     .split(/\W+/)
     .filter((term) => term.length > 2);
 }
 
-function selectRelevantChunks(fullText, query, maxChunks = 6, chunkSize = 2000) {
-  const chunks = splitText(fullText, chunkSize);
+function getQueryBigrams(terms) {
+  const bigrams = [];
+  for (let i = 0; i < terms.length - 1; i++) {
+    bigrams.push(terms[i] + ' ' + terms[i + 1]);
+  }
+  return bigrams;
+}
+
+function splitTextOverlapping(text, chunkSize = 2000, overlap = 400) {
+  const chunks = [];
+  let i = 0;
+  while (i < text.length) {
+    chunks.push(text.slice(i, i + chunkSize));
+    i += chunkSize - overlap;
+    if (i + overlap >= text.length) break;
+  }
+  return chunks;
+}
+
+function selectRelevantChunks(fullText, query, maxChunks = 10, chunkSize = 2500) {
+  // If text is small enough, return all of it
+  if (fullText.length <= maxChunks * chunkSize) {
+    return splitText(fullText, chunkSize);
+  }
+
+  const chunks = splitTextOverlapping(fullText, chunkSize, 500);
   const terms = getQueryTerms(query);
-  const turkishMap = { 'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c' };
+  const bigrams = getQueryBigrams(terms);
+
   if (terms.length === 0) {
     return chunks.slice(0, Math.min(maxChunks, chunks.length));
   }
 
   const scored = chunks.map((chunk, idx) => {
-    const lower = chunk.toLowerCase().replace(/[ığüşöç]/g, c => turkishMap[c] || c);
+    const lower = normalizeTurkish(chunk);
     let score = 0;
+
     for (const term of terms) {
-      // Count occurrences, not just presence
+      // Count occurrences
       let pos = 0;
       while ((pos = lower.indexOf(term, pos)) !== -1) {
-        score += 1;
+        score += 2;
         pos += term.length;
       }
-      // Partial/stem match bonus
-      const stem = term.slice(0, Math.max(3, Math.floor(term.length * 0.7)));
-      if (stem !== term && lower.includes(stem)) {
-        score += 0.3;
+      // Stem match (70% of word)
+      const stem = term.slice(0, Math.max(3, Math.floor(term.length * 0.6)));
+      if (stem !== term) {
+        let sPos = 0;
+        while ((sPos = lower.indexOf(stem, sPos)) !== -1) {
+          score += 0.5;
+          sPos += stem.length;
+        }
       }
     }
+
+    // Bigram matching for phrase relevance
+    for (const bigram of bigrams) {
+      if (lower.includes(bigram)) {
+        score += 5;
+      }
+    }
+
     return { chunk, score, idx };
   });
 
-  // Always include first chunk for context
   const sorted = scored.sort((a, b) => b.score - a.score);
   const selected = sorted.slice(0, Math.min(maxChunks, sorted.length));
   
-  // Ensure first chunk is included if not already
+  // Ensure first chunk is included for topic context
   if (chunks.length > 0 && !selected.find(s => s.idx === 0)) {
     selected.pop();
     selected.push(scored.find(s => s.idx === 0));
@@ -244,7 +290,20 @@ SADECE GECERLI JSON DON:
    "label": "Kritik veya vurgulu kismin kisa basligi",
    "text": "Bu kismin neden onemli oldugunu 1-2 cumle ile acikla"
   }
- ]
+ ],
+ "process_flow": [
+  {
+   "step": "Adim basligi (kisa, 2-4 kelime)",
+   "detail": "Bu adimin kisa aciklamasi (1-2 cumle)"
+  }
+ ],
+ "key_formulas": [
+  {
+   "label": "Formul veya kural basligi",
+   "formula": "Formul veya onemli kural ifadesi"
+  }
+ ],
+ "fun_facts": ["Biliyor muydunuz? seklinde ilginc bilgi 1", "Biliyor muydunuz? seklinde ilginc bilgi 2"]
 }
 
 Aciklama ekleme.
@@ -252,7 +311,10 @@ Kurallar:
 - "summary_sections" en az 3 bolum icersin.
 - "key_concepts" en az 5 kavram icersin.
 - "examples" metinden cikarilan en az 2 somut ornek icersin (yoksa bos liste donebilirsin).
-- "important_regions" metindeki vurgulanan, kritik veya onemli kisimlar. Tonlama, tekrar eden ifadeler, uyari ifadeleri (dikkat, onemli, unutmayin gibi) veya anahtar kavramlarin yogun gecistigi bolgeleri tespit et. En az 2, en fazla 5 adet olsun.
+- "important_regions" metindeki vurgulanan, kritik veya onemli kisimlar. En az 2, en fazla 5 adet olsun.
+- "process_flow" konunun ana surecini veya asamalarini goster. Bir surec yoksa konunun mantiksal akisini 3-6 adimda ozetle. Her adim kisa ve net olsun.
+- "key_formulas" metindeki onemli formuller, denklemler, kurallar veya tanimlar. Yoksa bos liste donebilirsin. En fazla 4 adet.
+- "fun_facts" metinden cikartilan 2-3 ilginc veya sasirtici bilgi. "Biliyor muydunuz?" formatinda yaz.
 - Metin disina cikma.
 - ${guidance}
 
@@ -439,6 +501,11 @@ function validateSummaryOutput(data) {
   if (data.important_regions && !Array.isArray(data.important_regions)) {
     data.important_regions = [];
   }
+
+  // Infographic fields are optional - sanitize if not arrays
+  if (!Array.isArray(data.process_flow)) data.process_flow = [];
+  if (!Array.isArray(data.key_formulas)) data.key_formulas = [];
+  if (!Array.isArray(data.fun_facts)) data.fun_facts = [];
 
   return true;
 }
@@ -647,7 +714,12 @@ async function generateAdditionalQuestions(fullText, options, existingQuestions,
     response_format: { type: 'json_object' }
   }, 2, { reqId });
 
-  const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
+  let data;
+  try {
+    data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
+  } catch (_) {
+    data = repairAndParseJSON(res.choices?.[0]?.message?.content || '{}');
+  }
   return sanitizeQuestions(data.sorular || []);
 }
 
@@ -670,6 +742,71 @@ async function enforceQuestionCount(questions, fullText, options, reqId) {
   return current.slice(0, desiredCount);
 }
 
+function repairAndParseJSON(raw) {
+  // Try to extract JSON object from the raw string
+  let text = raw.trim();
+  
+  // Remove markdown code fences if present
+  text = text.replace(/^```json\s*/i, '').replace(/```\s*$/i, '');
+  
+  // Find the first { 
+  const start = text.indexOf('{');
+  if (start === -1) return {};
+  text = text.slice(start);
+  
+  // Try parsing as-is first
+  try { return JSON.parse(text); } catch (_) { /* continue */ }
+  
+  // Attempt to close unclosed strings and brackets
+  let repaired = text;
+  
+  // Check if we're inside an unclosed string
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < repaired.length; i++) {
+    const ch = repaired[i];
+    if (escaped) { escaped = false; continue; }
+    if (ch === '\\') { escaped = true; continue; }
+    if (ch === '"') { inString = !inString; }
+  }
+  if (inString) {
+    repaired += '"';
+  }
+  
+  // Count brackets and close them
+  let braces = 0, brackets = 0;
+  inString = false;
+  escaped = false;
+  for (let i = 0; i < repaired.length; i++) {
+    const ch = repaired[i];
+    if (escaped) { escaped = false; continue; }
+    if (ch === '\\') { escaped = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') braces++;
+    else if (ch === '}') braces--;
+    else if (ch === '[') brackets++;
+    else if (ch === ']') brackets--;
+  }
+  
+  // Remove trailing comma before closing
+  repaired = repaired.replace(/,\s*$/, '');
+  
+  while (brackets > 0) { repaired += ']'; brackets--; }
+  while (braces > 0) { repaired += '}'; braces--; }
+  
+  try { return JSON.parse(repaired); } catch (_) { /* continue */ }
+  
+  // Last resort: try to cut at the last valid closing brace
+  for (let i = repaired.length - 1; i > 0; i--) {
+    if (repaired[i] === '}') {
+      try { return JSON.parse(repaired.slice(0, i + 1)); } catch (_) { /* continue */ }
+    }
+  }
+  
+  return {};
+}
+
 async function generateSummaryFromTranscript(fullText, reqId, options) {
   log('generate summary (single pass)', {
     reqId,
@@ -682,10 +819,18 @@ async function generateSummaryFromTranscript(fullText, reqId, options) {
     messages: [{ role: 'user', content: prompt }],
     model: OPENROUTER_MODEL,
     temperature: 0.3,
+    max_tokens: 8192,
     response_format: { type: 'json_object' }
   }, 3, { reqId });
 
-  const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
+  const rawContent = res.choices?.[0]?.message?.content || '{}';
+  let data;
+  try {
+    data = JSON.parse(rawContent);
+  } catch (parseErr) {
+    log('summary json parse failed, attempting repair', { reqId, error: parseErr.message, rawLength: rawContent.length });
+    data = repairAndParseJSON(rawContent);
+  }
   if (!validateSummaryOutput(data)) {
     throw new Error('AI hatali format dondurdu');
   }
@@ -853,6 +998,9 @@ app.post('/api/analyze', async (req, res) => {
       key_concepts: summaryData.key_concepts || [],
       examples: summaryData.examples || [],
       important_regions: summaryData.important_regions || [],
+      process_flow: summaryData.process_flow || [],
+      key_formulas: summaryData.key_formulas || [],
+      fun_facts: summaryData.fun_facts || [],
       ozet: summaryData.ozet || '',
       sorular: questions,
       question_count: questionCount,
@@ -963,6 +1111,9 @@ app.post('/api/questions', async (req, res) => {
   }
 });
 
+// Per-analysis chat history for multi-turn conversations
+const chatHistories = new Map();
+
 app.post('/api/chat', async (req, res) => {
   const reqId = createRequestId();
   const startedAt = Date.now();
@@ -1001,46 +1152,86 @@ app.post('/api/chat', async (req, res) => {
       return res.status(422).json({ detail: 'Altyazi yok' });
     }
 
-    const chunks = selectRelevantChunks(transcript, question, 6, 2000);
-    const contextText = chunks.map((chunk, index) => `Parca ${index + 1}: ${chunk}`).join('\n\n');
-    
-    // Build summary context from the analysis record
-    let summaryContext = '';
-    if (record.ozet) {
-      summaryContext = `\n\nOzet:\n${record.ozet}`;
-    } else if (Array.isArray(record.summary_sections) && record.summary_sections.length > 0) {
-      summaryContext = '\n\nOzet:\n' + record.summary_sections.map(s => `${s.subtitle}: ${s.content}`).join('\n');
+    // If transcript is short enough, send it all; otherwise select best chunks
+    const MAX_FULL_TRANSCRIPT = 30000;
+    let contextText;
+    if (transcript.length <= MAX_FULL_TRANSCRIPT) {
+      contextText = transcript;
+    } else {
+      const chunks = selectRelevantChunks(transcript, question, 10, 2500);
+      contextText = chunks.map((chunk, index) => `[Bolum ${index + 1}]\n${chunk}`).join('\n\n---\n\n');
     }
     
-    const prompt = `
-Sen bu videonun icerigini cok iyi bilen, yardimci ve bilgili bir egitim asistanisin.
-Asagida videonun transkriptinden alinmis parcalar ve olusturulmus ozet var.
+    // Build summary + key concepts context from the analysis record
+    let summaryContext = '';
+    if (Array.isArray(record.summary_sections) && record.summary_sections.length > 0) {
+      summaryContext = '\n\n--- VIDEO OZETI ---\n' + record.summary_sections.map(s => `**${s.subtitle}**: ${s.content}`).join('\n\n');
+    } else if (record.ozet) {
+      summaryContext = `\n\n--- VIDEO OZETI ---\n${record.ozet}`;
+    }
+    
+    let conceptsContext = '';
+    if (Array.isArray(record.key_concepts) && record.key_concepts.length > 0) {
+      conceptsContext = '\n\n--- ANAHTAR KAVRAMLAR ---\n' + record.key_concepts.map(kc => `- **${kc.term}**: ${kc.definition}`).join('\n');
+    }
 
-ONEMLI KURALLAR:
-- Transkript parcalarini dikkatlice oku. Bilgi transkriptte varsa "transkriptte bahsedilmemistir" DEME, dogrudan cevapla.
-- Turkce karakterler transkriptte farkli yazilmis olabilir (ornegin "vitamin" yerine "vitam in" seklinde bolunmus olabilir). Anlam butunlugune bak.
-- Cevabini acik, anlasilir ve egitici bir dilde ver.
-- Madde isaretleri ve basliklar kullanarak duzgun formatla.
-- Sadece transkriptte veya ozette hic gecmeyen konularda "Bu konu videoda ele alinmamistir" de.
+    // Get or create chat history for this analysis
+    const chatKey = record.analysis_id || record.video_id;
+    if (!chatHistories.has(chatKey)) {
+      chatHistories.set(chatKey, []);
+    }
+    const chatHistory = chatHistories.get(chatKey);
 
-Transkript parcalari:
+    const systemPrompt = `Sen bu egitim videosunun icerigini tamamen bilen, uzman bir egitim asistanisin.
+
+CRITIK KURALLAR:
+1. Asagidaki transkript ve ozet bilgilerini DIKKATLICE ve TAMAMEN oku.
+2. Bilgi transkriptte veya ozette VARSA, kesinlikle "bahsedilmemistir" veya "ele alinmamistir" DEME. Dogrudan ve detayli cevap ver.
+3. Transkriptlerde kelimeler yanlis bolunmus, bitisik yazilmis veya Turkce karakterler eksik olabilir. "vitamin" yerine "vitam in", "çözünen" yerine "cozunen" gibi. Bu farkliliklara ragmen ANLAMI yakala.
+4. Eger bilgi transkriptte farkli bir baslik altinda veya farkli bir ifadeyle anlatiliyorsa, yine de bul ve cevapla.
+5. Cevaplarini Turkce, acik, anlasilir ve egitici ver.
+6. Madde isaretleri (*), basliklar (**baslik**) ve numarali listeler kullanarak duzgun formatla.
+7. SADECE transkriptte ve ozette GERCEKTEN HIC bahsedilmeyen, tamamen ilgisiz konularda "Bu konu videoda ele alinmamistir" de.
+8. Onceki sohbet gecmisini de dikkate al, ayni seyleri tekrar sormak yerine devam et.`;
+
+    const userPrompt = `--- TRANSKRIPT ---
 ${contextText}
 ${summaryContext}
+${conceptsContext}
 
-Kullanici sorusu: ${question}
-`;
+--- KULLANICI SORUSU ---
+${question}`;
+
+    // Build messages array with conversation history (last 10 turns max)
+    const messages = [
+      { role: 'system', content: systemPrompt }
+    ];
+    
+    // Add recent chat history (keep last 10 exchanges)
+    const recentHistory = chatHistory.slice(-10);
+    for (const turn of recentHistory) {
+      messages.push({ role: 'user', content: turn.question });
+      messages.push({ role: 'assistant', content: turn.answer });
+    }
+    
+    messages.push({ role: 'user', content: userPrompt });
 
     const response = await callOpenRouterWithRetry({
-      messages: [
-        { role: 'system', content: 'Sen bir egitim asistanisin. Videodaki bilgileri kullanarak ogrencilere yardim ediyorsun. Bilgi transkriptte varsa dogrudan ve detayli cevap ver.' },
-        { role: 'user', content: prompt }
-      ],
+      messages,
       model: OPENROUTER_MODEL,
-      temperature: 0.3
+      temperature: 0.2
     }, 3, { reqId });
 
     const answer = response.choices?.[0]?.message?.content || '';
-    log('chat success', { reqId, analysisId: record.analysis_id, ms: Date.now() - startedAt });
+    
+    // Store in chat history
+    chatHistory.push({ question, answer });
+    // Keep history bounded
+    if (chatHistory.length > 20) {
+      chatHistory.splice(0, chatHistory.length - 20);
+    }
+
+    log('chat success', { reqId, analysisId: record.analysis_id, historyLen: chatHistory.length, ms: Date.now() - startedAt });
     return res.json({ status: 'success', answer });
   } catch (error) {
     if (error instanceof ApiError && error.status === 429) {

@@ -164,16 +164,35 @@
         </div>
 
         <p id="generationStatus" class="hidden mt-4 text-sm rounded-lg px-3 py-2"></p>
+        <!-- Progress Bar -->
+        <div id="progressBarWrap" class="hidden mt-4">
+          <div class="flex items-center justify-between mb-2">
+            <span id="progressLabel" class="text-sm font-semibold text-indigo-700">Analiz hazırlanıyor...</span>
+            <span id="progressPercent" class="text-xs font-bold text-indigo-500">0%</span>
+          </div>
+          <div class="w-full h-2.5 bg-indigo-100 rounded-full overflow-hidden">
+            <div id="progressFill" class="h-full rounded-full transition-all duration-500 ease-out" style="width:0%; background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);"></div>
+          </div>
+        </div>
         <p id="apiDebugInfo" class="hidden mt-2 text-xs text-slate-500"></p>
       </section>
 
       <section id="resultSection" class="hidden">
-        <article class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <h4 class="text-xl font-semibold">Uretilen Yazili Ozet</h4>
+        <article class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+          <!-- Yazili Ozet Header -->
+          <div class="flex flex-wrap items-center justify-between gap-3 px-6 py-4" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #7c3aed 100%);">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-white text-[22px]">description</span>
+              </div>
+              <div>
+                <h4 class="text-lg font-bold text-white">Üretilen Yazılı Özet</h4>
+                <p class="text-[11px] text-indigo-200">AI tarafından transkriptten oluşturuldu</p>
+              </div>
+            </div>
             <div class="relative" id="exportDropdownWrap">
-              <button id="exportBtn" type="button" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
-                <span class="material-symbols-outlined text-[18px]">download</span> Disa Aktar
+              <button id="exportBtn" type="button" class="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">download</span> Dışa Aktar
                 <span class="material-symbols-outlined text-[16px]">expand_more</span>
               </button>
               <div id="exportMenu" class="hidden absolute right-0 mt-2 w-52 rounded-xl border border-slate-200 bg-white shadow-xl z-50 py-1 animate-fade-in">
@@ -184,56 +203,211 @@
               </div>
             </div>
           </div>
-          <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
-            <p class="text-xs text-slate-500">Kaynak Video</p>
-            <a id="sourceVideoLink" href="#" target="_blank" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 break-all">-</a>
-            <p id="summaryTitle" class="text-base font-semibold text-slate-900"></p>
-            <div id="summaryOutput" class="text-sm text-slate-700 leading-relaxed space-y-3"></div>
-          </div>
 
-          <!-- Onemli Bolgeler -->
-          <div id="importanceSection" class="hidden mt-6">
-            <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-3">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-amber-600 text-[20px]">priority_high</span>
-                <p class="text-sm font-semibold text-amber-800">Onemli Bolgeler</p>
+          <div class="p-6 space-y-5">
+            <!-- Kaynak Video -->
+            <div class="flex items-center gap-3 rounded-xl bg-slate-50 border border-slate-200 px-4 py-3">
+              <span class="material-symbols-outlined text-indigo-500 text-[20px]">play_circle</span>
+              <div>
+                <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Kaynak Video</p>
+                <a id="sourceVideoLink" href="#" target="_blank" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 break-all">-</a>
               </div>
-              <div id="importanceList" class="space-y-2"></div>
+            </div>
+
+            <!-- Summary Title -->
+            <p id="summaryTitle" class="text-lg font-bold text-slate-900"></p>
+
+            <!-- Summary Content - styled sections -->
+            <div id="summaryOutput" class="text-sm text-slate-700 leading-relaxed space-y-3"></div>
+
+            <!-- Onemli Bolgeler - inside summary card -->
+            <div id="importanceSection" class="hidden">
+              <div class="rounded-xl border-2 border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 p-4 space-y-3">
+                <div class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white text-[18px]">priority_high</span>
+                  </div>
+                  <p class="text-sm font-bold text-amber-800">Önemli Bölgeler</p>
+                </div>
+                <div id="importanceList" class="space-y-2"></div>
+              </div>
             </div>
           </div>
 
-          <!-- Gorsel Ozet Paneli -->
+          <!-- Gorsel Ozet Paneli - Napkin AI Style Infographic Poster -->
           <div id="visualSummarySection" class="hidden mt-6">
-            <div class="rounded-2xl border-2 border-emerald-300 overflow-hidden" style="background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 50%, #ecfdf5 100%)">
-              <!-- Banner -->
-              <div class="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-white text-[28px]">auto_awesome</span>
-                  <div>
-                    <h4 id="visualTitle" class="text-lg font-bold text-white tracking-tight">Gorsel Ozet</h4>
-                    <p class="text-emerald-100 text-xs">Yapay zeka tarafindan olusturuldu</p>
-                  </div>
+            <style>
+              .infographic-poster {
+                position: relative;
+                border: 3px solid #34d399;
+                border-radius: 20px;
+                overflow: hidden;
+                background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 15%, #ffffff 85%, #f0fdf4 100%);
+              }
+              .infographic-poster::before,
+              .infographic-poster::after {
+                content: '';
+                position: absolute;
+                width: 80px; height: 80px;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 C30 25, 10 40, 25 60 C15 50, 20 30, 50 10Z' fill='%2334d399' opacity='0.3'/%3E%3Cpath d='M60 15 C45 30, 30 50, 45 65 C35 55, 40 35, 60 15Z' fill='%2310b981' opacity='0.25'/%3E%3Cpath d='M70 20 C55 35, 45 55, 55 70 C50 60, 55 40, 70 20Z' fill='%236ee7b7' opacity='0.2'/%3E%3C/svg%3E");
+                background-size: contain;
+                background-repeat: no-repeat;
+                z-index: 1;
+                pointer-events: none;
+              }
+              .infographic-poster::before { top: 0; left: 0; }
+              .infographic-poster::after { bottom: 0; right: 0; transform: rotate(180deg); }
+              .ribbon-header {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 28px 8px 16px;
+                border-radius: 8px;
+                font-weight: 800;
+                font-size: 13px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: white;
+              }
+              .ribbon-header::after {
+                content: '';
+                position: absolute;
+                right: -8px;
+                top: 0;
+                border-style: solid;
+                border-width: 18px 8px 18px 0;
+              }
+              .ribbon-green { background: linear-gradient(135deg, #059669, #10b981); }
+              .ribbon-green::after { border-color: transparent transparent transparent #10b981; }
+              .ribbon-blue { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+              .ribbon-blue::after { border-color: transparent transparent transparent #3b82f6; }
+              .ribbon-purple { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
+              .ribbon-purple::after { border-color: transparent transparent transparent #8b5cf6; }
+              .ribbon-amber { background: linear-gradient(135deg, #d97706, #f59e0b); }
+              .ribbon-amber::after { border-color: transparent transparent transparent #f59e0b; }
+              .ribbon-rose { background: linear-gradient(135deg, #e11d48, #f43f5e); }
+              .ribbon-rose::after { border-color: transparent transparent transparent #f43f5e; }
+              .ribbon-teal { background: linear-gradient(135deg, #0d9488, #14b8a6); }
+              .ribbon-teal::after { border-color: transparent transparent transparent #14b8a6; }
+              .flow-arrow {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #10b981;
+                font-size: 20px;
+                font-weight: 700;
+                flex-shrink: 0;
+              }
+              .flow-step {
+                flex: 1;
+                min-width: 0;
+                text-align: center;
+                padding: 10px 8px;
+                border-radius: 12px;
+                border: 2px solid;
+                background: white;
+                transition: transform 0.15s, box-shadow 0.15s;
+              }
+              .flow-step:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+              .formula-card {
+                background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+                border: 2px solid #a5b4fc;
+                border-radius: 14px;
+                padding: 14px 18px;
+                text-align: center;
+              }
+              .formula-text {
+                font-size: 15px;
+                font-weight: 700;
+                color: #3730a3;
+                letter-spacing: 0.5px;
+              }
+              .poster-divider {
+                height: 3px;
+                border-radius: 2px;
+                background: linear-gradient(90deg, transparent, #34d399 20%, #34d399 80%, transparent);
+                margin: 4px 0;
+              }
+            </style>
+
+            <div class="infographic-poster">
+              <!-- TITLE BANNER -->
+              <div class="text-center py-5 px-6" style="background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0891b2 100%);">
+                <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1 mb-2">
+                  <span class="material-symbols-outlined text-white/80 text-[14px]">auto_awesome</span>
+                  <span class="text-[10px] font-semibold text-white/80 uppercase tracking-widest">Yapay Zeka Infografik</span>
                 </div>
+                <h3 id="visualTitle" class="text-xl md:text-2xl font-extrabold text-white tracking-tight leading-tight">Gorsel Ozet</h3>
               </div>
-              <!-- Sections Grid -->
-              <div class="p-5 space-y-5">
-                <!-- Summary sections rendered here -->
-                <div id="visualSections" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                <!-- Key Concepts -->
-                <div id="visualConcepts" class="hidden">
-                  <div class="flex items-center gap-2 mb-3">
-                    <span class="material-symbols-outlined text-emerald-600 text-[20px]">menu_book</span>
-                    <p class="text-sm font-bold text-emerald-800 uppercase tracking-wide">Temel Kavramlar</p>
-                  </div>
-                  <div id="visualConceptsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+
+              <div class="p-5 md:p-7 space-y-6 relative z-10">
+
+                <!-- PROCESS FLOW -->
+                <div id="visualProcessFlow" class="hidden">
+                  <div class="mb-4"><span class="ribbon-header ribbon-green"><span class="material-symbols-outlined text-[16px]">account_tree</span> SÜREÇ / AKIŞ</span></div>
+                  <div id="visualProcessList" class="flex flex-wrap items-center justify-center gap-1 md:gap-0"></div>
                 </div>
-                <!-- Examples -->
-                <div id="visualExamples" class="hidden">
-                  <div class="flex items-center gap-2 mb-3">
-                    <span class="material-symbols-outlined text-blue-600 text-[20px]">lightbulb</span>
-                    <p class="text-sm font-bold text-blue-800 uppercase tracking-wide">Ornekler</p>
+
+                <div class="poster-divider"></div>
+
+                <!-- KEY FORMULAS -->
+                <div id="visualFormulas" class="hidden">
+                  <div class="mb-4"><span class="ribbon-header ribbon-blue"><span class="material-symbols-outlined text-[16px]">functions</span> TEMEL FORMÜLLER / KURALLAR</span></div>
+                  <div id="visualFormulasList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                </div>
+
+                <!-- KEY CONCEPTS -->
+                <div id="visualConcepts" class="hidden">
+                  <div class="mb-4"><span class="ribbon-header ribbon-purple"><span class="material-symbols-outlined text-[16px]">menu_book</span> ANAHTAR KAVRAMLAR</span></div>
+                  <div id="visualConceptsList" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+                </div>
+
+                <!-- BOTTOM ROW: Fun Facts + Activity -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- BİLİYOR MUYDUNUZ? -->
+                  <div id="visualFunFacts" class="hidden">
+                    <div class="rounded-2xl border-2 border-teal-300 bg-teal-50/50 p-4 h-full">
+                      <div class="flex items-center gap-2 mb-3">
+                        <span class="material-symbols-outlined text-teal-600 text-[22px]">emoji_objects</span>
+                        <h5 class="text-sm font-extrabold text-teal-800 uppercase tracking-wide">Biliyor Muydunuz?</h5>
+                      </div>
+                      <div id="visualFunFactsList" class="space-y-2.5"></div>
+                    </div>
                   </div>
+                  <!-- ETKİNLİK -->
+                  <div id="visualActivity" class="hidden">
+                    <div class="rounded-2xl border-2 border-indigo-300 bg-indigo-50/50 p-4 h-full flex flex-col">
+                      <div class="flex items-center gap-2 mb-3">
+                        <span class="material-symbols-outlined text-indigo-600 text-[22px]">quiz</span>
+                        <h5 class="text-sm font-extrabold text-indigo-800 uppercase tracking-wide">Etkinlik</h5>
+                      </div>
+                      <p class="text-xs text-slate-600 mb-3">Öğrendiklerini test et! Yapay zeka tarafından oluşturulan çoktan seçmeli sorularla bilgini sına.</p>
+                      <button type="button" onclick="document.getElementById('questionPanel')?.scrollIntoView({behavior:'smooth'})" class="mt-auto rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-sm py-2.5 px-4 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">arrow_downward</span> Teste Git
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- EXAMPLES -->
+                <div id="visualExamples" class="hidden">
+                  <div class="mb-4"><span class="ribbon-header ribbon-rose"><span class="material-symbols-outlined text-[16px]">lightbulb</span> ÖRNEKLER</span></div>
                   <div id="visualExamplesList" class="space-y-2"></div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="flex items-center justify-between pt-4 border-t-2 border-emerald-200">
+                  <div class="flex items-center gap-2 text-[11px] text-slate-400">
+                    <span class="material-symbols-outlined text-[14px]">schedule</span>
+                    <span id="visualTimestamp"></span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-md bg-emerald-600 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-white text-[14px]">school</span>
+                    </div>
+                    <span class="text-[11px] font-bold text-emerald-700">EduAssistant AI</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -258,33 +432,47 @@
     </div>
   </main>
 
-  <button id="chatToggleBtn" type="button" class="fixed bottom-6 right-6 rounded-full bg-indigo-600 text-white font-semibold px-5 py-3 shadow-lg hover:bg-indigo-700 transition-all hover:scale-105 flex items-center gap-2 z-50">
-    <span class="material-symbols-outlined text-[20px]">chat</span> Videoya Sor
+  <button id="chatToggleBtn" type="button" class="fixed bottom-6 right-6 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold px-5 py-3 shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 z-50" style="box-shadow: 0 4px 24px rgba(99,102,241,0.35)">
+    <span class="material-symbols-outlined text-[20px]">forum</span> Videoya Sor
   </button>
-  <aside id="chatSidebar" class="hidden fixed right-6 bottom-20 w-[380px] max-h-[75vh] bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50">
-    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-t-2xl">
-      <div>
-        <p class="text-[11px] uppercase tracking-wide text-indigo-200">Video ile Sohbet</p>
-        <p class="text-sm font-semibold text-white">Anlamadigin yeri sor</p>
+  <aside id="chatSidebar" class="hidden fixed right-6 bottom-20 w-[480px] max-h-[85vh] bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50" style="box-shadow: 0 12px 48px rgba(0,0,0,0.15)">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 rounded-t-2xl">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+          <span class="material-symbols-outlined text-white text-[20px]">smart_toy</span>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-white">EduAssistant Chat</p>
+          <p class="text-[11px] text-indigo-200 flex items-center gap-1"><span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Videoya dayali yanit veriyor</p>
+        </div>
       </div>
       <div class="flex items-center gap-1">
-        <button id="chatClearBtn" type="button" class="rounded-md px-2 py-1 text-indigo-200 hover:bg-indigo-500/30" title="Sohbeti temizle">
+        <button id="chatClearBtn" type="button" class="rounded-lg px-2 py-1.5 text-indigo-200 hover:bg-white/10 transition-colors" title="Sohbeti temizle">
           <span class="material-symbols-outlined text-[18px]">delete_sweep</span>
         </button>
-        <button id="chatCloseBtn" type="button" class="rounded-md px-2 py-1 text-indigo-200 hover:bg-indigo-500/30">
+        <button id="chatCloseBtn" type="button" class="rounded-lg px-2 py-1.5 text-indigo-200 hover:bg-white/10 transition-colors">
           <span class="material-symbols-outlined text-[18px]">close</span>
         </button>
       </div>
     </div>
-    <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50" style="min-height:200px">
-      <div class="mr-auto max-w-[85%] rounded-xl bg-white border border-slate-200 px-3 py-2 text-sm text-slate-600">
-        Merhaba! Video hakkinda sormak istedigin bir sey var mi? Transkriptten yararlanarak cevapliyorum.
+    <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50" style="min-height:300px; max-height:60vh">
+      <div class="mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm text-slate-600 shadow-sm">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="material-symbols-outlined text-indigo-500 text-[14px]">smart_toy</span>
+          <span class="text-[11px] font-semibold text-indigo-600">EduAssistant</span>
+        </div>
+        Merhaba! 👋 Video hakkinda sormak istedigin bir sey var mi? Transkriptten yararlanarak detayli cevap veriyorum.
+      </div>
+      <div id="chatSuggestions" class="flex flex-wrap gap-2 mt-2">
+        <button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📌 Videonun ana konusu ne?</button>
+        <button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">🔑 Anahtar kavramlar neler?</button>
+        <button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📝 Bu konuyu ozetle</button>
       </div>
     </div>
     <form id="chatForm" class="p-3 border-t border-slate-100 bg-white">
       <div class="flex items-center gap-2">
-        <input id="chatInput" type="text" placeholder="Videoya bir soru sor..." class="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500" />
-        <button id="chatSendBtn" type="submit" class="rounded-lg bg-indigo-600 text-white px-3 py-2 text-sm font-semibold hover:bg-indigo-700 flex items-center gap-1">
+        <input id="chatInput" type="text" placeholder="Videoya bir soru sor..." class="flex-1 rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        <button id="chatSendBtn" type="submit" class="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">
           <span class="material-symbols-outlined text-[16px]">send</span>
         </button>
       </div>
@@ -325,6 +513,50 @@
     let currentVideoUrl = '';
     let currentQuestionCount = 10;
     let lastAnalysisData = null;
+    let progressInterval = null;
+
+    function startProgress() {
+      const wrap = document.getElementById('progressBarWrap');
+      const fill = document.getElementById('progressFill');
+      const label = document.getElementById('progressLabel');
+      const pct = document.getElementById('progressPercent');
+      wrap.classList.remove('hidden');
+      let value = 0;
+      const steps = [
+        {at: 10, text: 'Altyazılar indiriliyor...'},
+        {at: 30, text: 'Transkript analiz ediliyor...'},
+        {at: 50, text: 'Yapay zeka özet oluşturuyor...'},
+        {at: 70, text: 'Sorular hazırlanıyor...'},
+        {at: 85, text: 'Sonuçlar birleştiriliyor...'},
+        {at: 95, text: 'Neredeyse hazır...'}
+      ];
+      progressInterval = setInterval(() => {
+        if (value < 92) {
+          value += Math.random() * 3 + 0.5;
+          value = Math.min(value, 92);
+        }
+        fill.style.width = value + '%';
+        pct.textContent = Math.round(value) + '%';
+        for (const s of steps) {
+          if (value >= s.at) label.textContent = s.text;
+        }
+      }, 400);
+    }
+
+    function stopProgress(success) {
+      if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
+      const wrap = document.getElementById('progressBarWrap');
+      const fill = document.getElementById('progressFill');
+      const pct = document.getElementById('progressPercent');
+      if (success) {
+        fill.style.width = '100%';
+        pct.textContent = '100%';
+        setTimeout(() => wrap.classList.add('hidden'), 600);
+      } else {
+        wrap.classList.add('hidden');
+      }
+      fill.style.width = '0%';
+    }
 
     function showStatus(message, type) {
       generationStatus.textContent = message;
@@ -333,6 +565,7 @@
       else if (type === 'error') generationStatus.classList.add('bg-red-50', 'text-red-700');
       else generationStatus.classList.add('bg-slate-100', 'text-slate-700');
       generationStatus.classList.remove('hidden');
+      if (type === 'success' || type === 'error') stopProgress(type === 'success');
     }
 
     function renderQuestions(questions) {
@@ -380,6 +613,7 @@
       }
 
       showStatus('Analiz baslatildi, lutfen bekleyin...', 'info');
+      startProgress();
       resultSection.classList.add('hidden');
       questionPanel.classList.add('hidden');
       quizForm.innerHTML = '';
@@ -437,9 +671,25 @@
         currentQuestionCount = Number.isFinite(questionCount) ? questionCount : 10;
 
         if (Array.isArray(data.analiz.summary_sections) && data.analiz.summary_sections.length > 0) {
+          const sColors = [
+            {bg:'bg-indigo-50/60', border:'border-l-indigo-500', text:'text-indigo-700', num:'bg-indigo-500'},
+            {bg:'bg-violet-50/60', border:'border-l-violet-500', text:'text-violet-700', num:'bg-violet-500'},
+            {bg:'bg-sky-50/60', border:'border-l-sky-500', text:'text-sky-700', num:'bg-sky-500'},
+            {bg:'bg-emerald-50/60', border:'border-l-emerald-500', text:'text-emerald-700', num:'bg-emerald-500'},
+            {bg:'bg-amber-50/60', border:'border-l-amber-500', text:'text-amber-700', num:'bg-amber-500'},
+            {bg:'bg-rose-50/60', border:'border-l-rose-500', text:'text-rose-700', num:'bg-rose-500'}
+          ];
           summaryOutput.innerHTML = data.analiz.summary_sections
-            .map((section) => `<h5 class="text-sm font-semibold text-slate-900">${section.subtitle}</h5><p>${section.content}</p>`)
-            .join('');
+            .map((section, i) => {
+              const c = sColors[i % sColors.length];
+              return `<div class="rounded-xl ${c.bg} border border-slate-200 border-l-4 ${c.border} p-4 hover:shadow-sm transition-shadow">
+                <div class="flex items-center gap-2.5 mb-2">
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-md ${c.num} text-white text-[11px] font-black">${i+1}</span>
+                  <h5 class="text-sm font-bold ${c.text}">${section.subtitle}</h5>
+                </div>
+                <p class="text-sm text-slate-600 leading-relaxed">${section.content}</p>
+              </div>`;
+            }).join('');
         } else if (data.analiz.ozet) {
           summaryOutput.innerHTML = `<p>${data.analiz.ozet}</p>`;
         } else {
@@ -513,46 +763,69 @@
     function renderVisualSummary(analiz) {
       var vs = document.getElementById('visualSummarySection');
       var vTitle = document.getElementById('visualTitle');
-      var vSections = document.getElementById('visualSections');
       var vConcepts = document.getElementById('visualConcepts');
       var vConceptsList = document.getElementById('visualConceptsList');
       var vExamples = document.getElementById('visualExamples');
       var vExamplesList = document.getElementById('visualExamplesList');
+      var vTimestamp = document.getElementById('visualTimestamp');
+      var vProcessFlow = document.getElementById('visualProcessFlow');
+      var vProcessList = document.getElementById('visualProcessList');
+      var vFormulas = document.getElementById('visualFormulas');
+      var vFormulasList = document.getElementById('visualFormulasList');
+      var vFunFacts = document.getElementById('visualFunFacts');
+      var vFunFactsList = document.getElementById('visualFunFactsList');
+      var vActivity = document.getElementById('visualActivity');
 
       var title = analiz.user_title || analiz.title || 'Gorsel Ozet';
       vTitle.textContent = title;
 
-      var sectionColors = [
-        {bg:'bg-emerald-50', border:'border-emerald-200', icon:'description', iconColor:'text-emerald-600', numBg:'bg-emerald-600'},
-        {bg:'bg-blue-50', border:'border-blue-200', icon:'auto_stories', iconColor:'text-blue-600', numBg:'bg-blue-600'},
-        {bg:'bg-purple-50', border:'border-purple-200', icon:'psychology', iconColor:'text-purple-600', numBg:'bg-purple-600'},
-        {bg:'bg-amber-50', border:'border-amber-200', icon:'science', iconColor:'text-amber-600', numBg:'bg-amber-600'},
-        {bg:'bg-rose-50', border:'border-rose-200', icon:'hub', iconColor:'text-rose-600', numBg:'bg-rose-600'},
-        {bg:'bg-cyan-50', border:'border-cyan-200', icon:'biotech', iconColor:'text-cyan-600', numBg:'bg-cyan-600'}
-      ];
-
-      if (Array.isArray(analiz.summary_sections) && analiz.summary_sections.length > 0) {
-        vSections.innerHTML = analiz.summary_sections.map(function(s, i) {
-          var c = sectionColors[i % sectionColors.length];
-          return '<div class="rounded-xl border ' + c.border + ' ' + c.bg + ' p-4 space-y-2">' +
-            '<div class="flex items-center gap-2">' +
-            '<span class="inline-flex items-center justify-center w-6 h-6 rounded-full ' + c.numBg + ' text-white text-xs font-bold">' + (i+1) + '</span>' +
-            '<span class="material-symbols-outlined ' + c.iconColor + ' text-[18px]">' + c.icon + '</span>' +
-            '<h5 class="text-sm font-bold text-slate-800">' + s.subtitle + '</h5>' +
-            '</div>' +
-            '<p class="text-xs text-slate-700 leading-relaxed">' + s.content + '</p>' +
+      // --- PROCESS FLOW ---
+      var flowSteps = Array.isArray(analiz.process_flow) ? analiz.process_flow : [];
+      if (flowSteps.length > 0 && vProcessFlow && vProcessList) {
+        var flowColors = ['border-emerald-400 bg-emerald-50', 'border-sky-400 bg-sky-50', 'border-violet-400 bg-violet-50', 'border-amber-400 bg-amber-50', 'border-rose-400 bg-rose-50', 'border-cyan-400 bg-cyan-50'];
+        var flowIconColors = ['text-emerald-600', 'text-sky-600', 'text-violet-600', 'text-amber-600', 'text-rose-600', 'text-cyan-600'];
+        var html = '';
+        flowSteps.forEach(function(fs, i) {
+          var fc = flowColors[i % flowColors.length];
+          var ic = flowIconColors[i % flowIconColors.length];
+          if (i > 0) {
+            html += '<div class="flow-arrow px-1 md:px-2"><span class="material-symbols-outlined">arrow_forward</span></div>';
+          }
+          html += '<div class="flow-step ' + fc + '">' +
+            '<div class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white border-2 border-current ' + ic + ' text-xs font-black mb-1">' + (i+1) + '</div>' +
+            '<p class="text-xs font-bold text-slate-800 leading-tight">' + fs.step + '</p>' +
+            (fs.detail ? '<p class="text-[10px] text-slate-500 mt-1 leading-snug">' + fs.detail + '</p>' : '') +
             '</div>';
-        }).join('');
+        });
+        vProcessList.innerHTML = html;
+        vProcessFlow.classList.remove('hidden');
+      } else if (vProcessFlow) {
+        vProcessFlow.classList.add('hidden');
       }
 
+      // --- KEY FORMULAS ---
+      var formulas = Array.isArray(analiz.key_formulas) ? analiz.key_formulas : [];
+      if (formulas.length > 0 && vFormulas && vFormulasList) {
+        vFormulasList.innerHTML = formulas.map(function(f) {
+          return '<div class="formula-card">' +
+            '<p class="text-[10px] font-bold text-indigo-500 uppercase tracking-wide mb-1">' + (f.label || '') + '</p>' +
+            '<p class="formula-text">' + (f.formula || '') + '</p>' +
+            '</div>';
+        }).join('');
+        vFormulas.classList.remove('hidden');
+      } else if (vFormulas) {
+        vFormulas.classList.add('hidden');
+      }
+
+      // --- KEY CONCEPTS ---
       if (Array.isArray(analiz.key_concepts) && analiz.key_concepts.length > 0) {
-        vConceptsList.innerHTML = analiz.key_concepts.map(function(kc) {
-          return '<div class="rounded-lg border border-emerald-200 bg-white p-3 space-y-1">' +
-            '<div class="flex items-center gap-1.5">' +
-            '<span class="material-symbols-outlined text-emerald-500 text-[14px]">label</span>' +
-            '<p class="text-xs font-bold text-emerald-800">' + kc.term + '</p>' +
-            '</div>' +
-            '<p class="text-[11px] text-slate-600 leading-relaxed">' + kc.definition + '</p>' +
+        var cColors = ['border-violet-300 bg-violet-50/60', 'border-fuchsia-300 bg-fuchsia-50/60', 'border-indigo-300 bg-indigo-50/60', 'border-purple-300 bg-purple-50/60', 'border-pink-300 bg-pink-50/60'];
+        vConceptsList.innerHTML = analiz.key_concepts.map(function(kc, i) {
+          var cc = cColors[i % cColors.length];
+          return '<div class="rounded-xl border-2 ' + cc + ' p-3 hover:shadow-md transition-shadow text-center">' +
+            '<p class="text-[11px] font-extrabold text-violet-900 mb-1">' + kc.term + '</p>' +
+            '<div class="w-8 h-0.5 bg-violet-300 mx-auto mb-1.5 rounded"></div>' +
+            '<p class="text-[10px] text-slate-600 leading-relaxed">' + kc.definition + '</p>' +
             '</div>';
         }).join('');
         vConcepts.classList.remove('hidden');
@@ -560,16 +833,49 @@
         vConcepts.classList.add('hidden');
       }
 
+      // --- FUN FACTS ---
+      var facts = Array.isArray(analiz.fun_facts) ? analiz.fun_facts : [];
+      if (facts.length > 0 && vFunFacts && vFunFactsList) {
+        vFunFactsList.innerHTML = facts.map(function(f) {
+          return '<div class="flex items-start gap-2.5">' +
+            '<span class="material-symbols-outlined text-teal-500 text-[16px] mt-0.5 flex-shrink-0">check_circle</span>' +
+            '<p class="text-xs text-slate-700 leading-relaxed">' + f + '</p>' +
+            '</div>';
+        }).join('');
+        vFunFacts.classList.remove('hidden');
+      } else if (vFunFacts) {
+        vFunFacts.classList.add('hidden');
+      }
+
+      // --- ACTIVITY (show if quiz exists) ---
+      if (vActivity) {
+        var hasQuiz = Array.isArray(analiz.sorular) && analiz.sorular.length > 0;
+        if (hasQuiz) {
+          vActivity.classList.remove('hidden');
+        } else {
+          vActivity.classList.add('hidden');
+        }
+      }
+
+      // --- EXAMPLES ---
       if (Array.isArray(analiz.examples) && analiz.examples.length > 0) {
-        vExamplesList.innerHTML = analiz.examples.map(function(ex, i) {
-          return '<div class="flex items-start gap-2 rounded-lg border border-blue-200 bg-white p-3">' +
-            '<span class="material-symbols-outlined text-blue-500 text-[16px] mt-0.5">tips_and_updates</span>' +
-            '<p class="text-xs text-slate-700">' + ex + '</p>' +
+        vExamplesList.innerHTML = analiz.examples.map(function(ex) {
+          return '<div class="flex items-start gap-3 rounded-xl border-2 border-rose-200 bg-rose-50/40 p-3 hover:shadow-md transition-shadow">' +
+            '<div class="w-6 h-6 rounded-lg bg-rose-500 text-white flex items-center justify-center flex-shrink-0 mt-0.5">' +
+            '<span class="material-symbols-outlined text-[14px]">tips_and_updates</span>' +
+            '</div>' +
+            '<p class="text-xs text-slate-700 leading-relaxed">' + ex + '</p>' +
             '</div>';
         }).join('');
         vExamples.classList.remove('hidden');
       } else {
         vExamples.classList.add('hidden');
+      }
+
+      // Timestamp
+      if (vTimestamp) {
+        var now = new Date();
+        vTimestamp.textContent = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
       }
 
       vs.classList.remove('hidden');
@@ -590,16 +896,37 @@
     }
 
     function appendChatMessage(role, text) {
+      // Remove suggestions after first user message
+      var sug = document.getElementById('chatSuggestions');
+      if (sug) sug.remove();
+
       var wrapper = document.createElement('div');
+      wrapper.classList.add('animate-fade-in');
       if (role === 'user') {
-        wrapper.className = 'ml-auto max-w-[85%] rounded-xl rounded-br-sm bg-indigo-600 text-white px-3 py-2 text-sm';
+        wrapper.className = 'ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-3 text-sm shadow-sm animate-fade-in';
         wrapper.textContent = text;
       } else {
-        wrapper.className = 'mr-auto max-w-[85%] rounded-xl rounded-bl-sm bg-white border border-slate-200 px-3 py-2.5 text-sm text-slate-700 leading-relaxed chat-response';
-        wrapper.innerHTML = formatChatMarkdown(text);
+        wrapper.className = 'mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm text-slate-700 leading-relaxed chat-response shadow-sm animate-fade-in';
+        wrapper.innerHTML = '<div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-indigo-500 text-[14px]">smart_toy</span><span class="text-[11px] font-semibold text-indigo-600">EduAssistant</span></div>' + formatChatMarkdown(text);
       }
       chatMessages.appendChild(wrapper);
       chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      var existing = document.getElementById('typingIndicator');
+      if (existing) existing.remove();
+      var el = document.createElement('div');
+      el.id = 'typingIndicator';
+      el.className = 'mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm shadow-sm animate-fade-in';
+      el.innerHTML = '<div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-indigo-500 text-[14px]">smart_toy</span><span class="text-[11px] font-semibold text-indigo-600">EduAssistant</span></div><div class="flex items-center gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+      chatMessages.appendChild(el);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      var el = document.getElementById('typingIndicator');
+      if (el) el.remove();
     }
 
     function setChatStatus(message) {
@@ -680,15 +1007,20 @@
     });
 
     document.getElementById('chatClearBtn').addEventListener('click', () => {
-      chatMessages.innerHTML = '<div class="mr-auto max-w-[85%] rounded-xl bg-white border border-slate-200 px-3 py-2 text-sm text-slate-600">Sohbet temizlendi. Yeni bir soru sorabilirsin.</div>';
+      chatMessages.innerHTML = '<div class="mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm text-slate-600 shadow-sm"><div class="flex items-center gap-2 mb-1.5"><span class="material-symbols-outlined text-indigo-500 text-[14px]">smart_toy</span><span class="text-[11px] font-semibold text-indigo-600">EduAssistant</span></div>Sohbet temizlendi. Yeni bir soru sorabilirsin. 🔄</div><div id="chatSuggestions" class="flex flex-wrap gap-2 mt-2"><button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📌 Videonun ana konusu ne?</button><button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">🔑 Anahtar kavramlar neler?</button><button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📝 Bu konuyu ozetle</button></div>';
     });
 
-    chatForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const message = chatInput.value.trim();
-      if (!message) {
-        return;
+    // Suggestion buttons (event delegation)
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('chat-suggestion-btn')) {
+        var text = e.target.textContent.replace(/^[\u{1F4CC}\u{1F511}\u{1F4DD}]\s*/u, '').trim();
+        chatInput.value = text;
+        chatForm.dispatchEvent(new Event('submit'));
       }
+    });
+
+    async function sendChatMessage(message) {
+      if (!message) return;
       if (!currentVideoUrl) {
         setChatStatus('Once analiz yapmalisin.');
         return;
@@ -696,7 +1028,8 @@
 
       appendChatMessage('user', message);
       chatInput.value = '';
-      setChatStatus('Yanit hazirlaniyor...');
+      showTypingIndicator();
+      setChatStatus('');
 
       try {
         const response = await fetch(`${API_BASE}/api/chat`, {
@@ -708,6 +1041,8 @@
             question: message
           })
         });
+
+        removeTypingIndicator();
 
         if (!response.ok) {
           let err = null;
@@ -728,8 +1063,15 @@
         appendChatMessage('assistant', data.answer || 'Yanıt alinamadi.');
         setChatStatus('');
       } catch (error) {
+        removeTypingIndicator();
         setChatStatus(`Hata: ${error.message}`);
       }
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = chatInput.value.trim();
+      sendChatMessage(message);
     });
 
     // ---- EXPORT ----
