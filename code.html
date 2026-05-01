@@ -372,20 +372,56 @@
                 }).join('');
         }
 
-        function openDetailModal(item) {
+        async function openDetailModal(item) {
                 const summaryHtml = formatSummary(item);
-                const questionsHtml = renderQuestionList(item.sorular || []);
+                const titleText = item.user_title || item.title || 'Video Analizi';
+
                 detailContent.innerHTML = `
+                        <div class="space-y-3">
+                                <p class="text-xs uppercase tracking-wide text-slate-500">Baslik</p>
+                                <p class="text-base font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(titleText)}</p>
+                        </div>
                         <div class="space-y-3">
                                 <p class="text-xs uppercase tracking-wide text-slate-500">Ozet</p>
                                 <div class="space-y-3">${summaryHtml}</div>
                         </div>
-                        <div class="border-t border-slate-200 dark:border-slate-700 pt-6 space-y-3">
+                        <div class="border-t border-slate-200 dark:border-slate-700 pt-6 space-y-3" id="detailQuestions">
                                 <p class="text-xs uppercase tracking-wide text-slate-500">Sorular ve Dogru Cevaplar</p>
-                                <div class="space-y-4">${questionsHtml}</div>
+                                <div class="space-y-4" id="detailQuestionsContent">
+                                  <p class="text-sm text-slate-500">Sorular yukleniyor...</p>
+                                </div>
                         </div>
                 `;
                 detailModal.classList.remove('hidden');
+
+                if (Array.isArray(item.sorular) && item.sorular.length > 0) {
+                        document.getElementById('detailQuestionsContent').innerHTML = renderQuestionList(item.sorular);
+                        return;
+                }
+
+                try {
+                        const questionCount = Number.parseInt(item.question_count || '10', 10) || 10;
+                        const response = await fetch(`${API_BASE}/api/questions`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                        analysis_id: item.analysis_id,
+                                        youtube_url: item.video_url,
+                                        question_count: questionCount,
+                                        question_difficulty: item.last_question_difficulty || 'orta'
+                                })
+                        });
+
+                        if (!response.ok) {
+                                throw new Error('Soru yuklenemedi');
+                        }
+
+                        const data = await response.json();
+                        item.sorular = data.sorular || [];
+                        document.getElementById('detailQuestionsContent').innerHTML = renderQuestionList(item.sorular);
+                } catch (error) {
+                        document.getElementById('detailQuestionsContent').innerHTML = '<p class="text-sm text-slate-500">Sorular yuklenemedi.</p>';
+                }
         }
 
         function closeDetail() {
@@ -411,13 +447,14 @@
 
                         const cardsHtml = historyData.map((item, index) => {
                                 const date = new Date(item.created_at).toLocaleDateString('tr-TR');
+                                const titleText = item.user_title || item.title || 'Video Analizi';
                                 return `
                                         <div class="history-card bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-shadow">
                                                 <div class="flex justify-between items-start gap-3 mb-3">
                                                         <span class="bg-indigo-100 text-indigo-700 text-[11px] font-semibold px-2 py-1 rounded uppercase">YAPAY ZEKA</span>
                                                         <span class="text-slate-400 text-[12px] font-medium">${date}</span>
                                                 </div>
-                                                <h3 class="text-body-md font-semibold text-slate-900 leading-snug line-clamp-2">Video Analizi</h3>
+                                                <h3 class="text-body-md font-semibold text-slate-900 leading-snug line-clamp-2">${escapeHtml(titleText)}</h3>
                                                 <p class="text-xs text-slate-500 mt-2">Kaynak: <a class="text-indigo-600 truncate block" href="${item.video_url || '#'}" target="_blank">${item.video_url || '-'}</a></p>
                                                 <div class="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
                                                         <p class="text-sm text-slate-700 line-clamp-4">${item.ozet || ''}</p>

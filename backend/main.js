@@ -27,6 +27,8 @@ const CACHE_TTL_MS = Number.parseInt(process.env.CACHE_TTL_MS || '0', 10);
 
 const history = [];
 const cache = new Map();
+const transcriptCache = new Map();
+const analysisIndex = new Map();
 
 const LOG_PREFIX = '[edua]';
 
@@ -157,9 +159,49 @@ function getDifficultyGuidance(questionDifficulty) {
   return 'Soru zorlugu orta olsun, hem tanim hem uygulama sorgulansin.';
 }
 
-function buildFinalPrompt(fullText, options) {
+function findAnalysisRecord(analysisId, videoId) {
+  if (analysisId && analysisIndex.has(analysisId)) {
+    return analysisIndex.get(analysisId);
+  }
+  if (videoId) {
+    return history.find((item) => item.video_id === videoId);
+  }
+  return null;
+}
+
+function getQueryTerms(text) {
+  return String(text || '')
+    .toLowerCase()
+    .split(/\W+/)
+    .filter((term) => term.length > 3);
+}
+
+function selectRelevantChunks(fullText, query, maxChunks = 4, chunkSize = 1500) {
+  const chunks = splitText(fullText, chunkSize);
+  const terms = getQueryTerms(query);
+  if (terms.length === 0) {
+    return chunks.slice(0, Math.min(maxChunks, chunks.length));
+  }
+
+  const scored = chunks.map((chunk) => {
+    const lower = chunk.toLowerCase();
+    let score = 0;
+    for (const term of terms) {
+      if (lower.includes(term)) {
+        score += 1;
+      }
+    }
+    return { chunk, score };
+  });
+
+  return scored
+    .sort((a, b) => b.score - a.score)
+    .slice(0, Math.min(maxChunks, scored.length))
+    .map((item) => item.chunk);
+}
+
+function buildSummaryPrompt(fullText, options) {
   const guidance = getSummaryGuidance(options.summaryLength);
-  const difficulty = getDifficultyGuidance(options.questionDifficulty);
   return `
 SADECE GECERLI JSON DON:
 
@@ -177,7 +219,32 @@ SADECE GECERLI JSON DON:
    "definition": "Kisa aciklama (Turkce, 1-3 cumle)"
   }
  ],
- "examples": ["Metindeki ornek 1", "Metindeki ornek 2"],
+ "examples": ["Metindeki ornek 1", "Metindeki ornek 2"]
+}
+
+Aciklama ekleme.
+Kurallar:
+- "summary_sections" en az 3 bolum icersin.
+- "key_concepts" en az 5 kavram icersin.
+- "examples" metinden cikarilan en az 2 somut ornek icersin (yoksa bos liste donebilirsin).
+- Metin disina cikma.
+- ${guidance}
+
+Metin:
+${fullText}
+`;
+}
+
+function buildQuestionsPrompt(fullText, options, existingQuestions) {
+  const difficulty = getDifficultyGuidance(options.questionDifficulty);
+  const existingList = (existingQuestions || [])
+    .map((q, idx) => `${idx + 1}. ${q.soru}`)
+    .join('\n');
+
+  return `
+SADECE GECERLI JSON DON:
+
+{
  "sorular": [
   {
    "soru": "...",
@@ -192,15 +259,13 @@ SADECE GECERLI JSON DON:
  ]
 }
 
-Aciklama ekleme.
 Kurallar:
-- "summary_sections" en az 3 bolum icersin.
-- "key_concepts" en az 5 kavram icersin.
-- "examples" metinden cikarilan en az 2 somut ornek icersin (yoksa bos liste donebilirsin).
-- Sorular ${options.questionCount} adet olmali ve birbirinin aynisi olmamali.
+- ${options.questionCount} adet soru uret.
+- Sorular birbirinin aynisi olmamali.
 - Sorular sadece metindeki bilgiye dayanmalidir, metin disina cikma.
 - ${difficulty}
-- ${guidance}
+- Daha once sorulanlar (TEKRAR ETME):
+${existingList}
 
 Metin:
 ${fullText}
@@ -316,6 +381,33 @@ function validateOutput(data) {
     }
     if (!['A', 'B', 'C', 'D'].includes(question.dogru_cevap)) return false;
   }
+
+  return true;
+}
+
+function validateSummaryOutput(data) {
+  if (!data || typeof data !== 'object') return false;
+  if (typeof data.title !== 'string' || !data.title.trim()) return false;
+
+  const summarySections = data.summary_sections;
+  if (!Array.isArray(summarySections) || summarySections.length === 0) return false;
+  for (const section of summarySections) {
+    if (!section || typeof section !== 'object') return false;
+    if (typeof section.subtitle !== 'string' || !section.subtitle.trim()) return false;
+    if (typeof section.content !== 'string' || !section.content.trim()) return false;
+  }
+
+  const keyConcepts = data.key_concepts;
+  if (!Array.isArray(keyConcepts)) return false;
+  for (const concept of keyConcepts) {
+    if (!concept || typeof concept !== 'object') return false;
+    if (typeof concept.term !== 'string' || !concept.term.trim()) return false;
+    if (typeof concept.definition !== 'string' || !concept.definition.trim()) return false;
+  }
+
+  const examples = data.examples;
+  if (!Array.isArray(examples)) return false;
+  if (!examples.every((item) => typeof item === 'string' && item.trim())) return false;
 
   return true;
 }
@@ -505,44 +597,17 @@ async function getTranscript(youtubeUrl) {
 }
 
 async function generateAdditionalQuestions(fullText, options, existingQuestions, reqId) {
-  const existingList = existingQuestions
-    .map((q, idx) => `${idx + 1}. ${q.soru}`)
-    .join('\n');
   const missingCount = Math.max(0, options.questionCount - existingQuestions.length);
   if (missingCount === 0) {
     return [];
   }
 
-  const difficulty = getDifficultyGuidance(options.questionDifficulty);
-  const prompt = `
-SADECE GECERLI JSON DON:
-
-{
- "sorular": [
-  {
-   "soru": "...",
-   "secenekler": {
-     "A": "...",
-     "B": "...",
-     "C": "...",
-     "D": "..."
-   },
-   "dogru_cevap": "A"
-  }
- ]
-}
-
-Kurallar:
-- ${missingCount} adet yeni soru uret.
-- Sorular birbirinin aynisi olmamali.
-- Sorular sadece metindeki bilgiye dayanmalidir, metin disina cikma.
-- ${difficulty}
-- Daha once sorulanlar (TEKRAR ETME):
-${existingList}
-
-Metin:
-${fullText}
-`;
+  const extraOptions = {
+    summaryLength: options.summaryLength,
+    questionDifficulty: options.questionDifficulty,
+    questionCount: missingCount
+  };
+  const prompt = buildQuestionsPrompt(fullText, extraOptions, existingQuestions);
 
   const res = await callOpenRouterWithRetry({
     messages: [{ role: 'user', content: prompt }],
@@ -555,63 +620,75 @@ ${fullText}
   return sanitizeQuestions(data.sorular || []);
 }
 
-async function enforceQuestionCount(data, fullText, options, reqId) {
+async function enforceQuestionCount(questions, fullText, options, reqId) {
   const desiredCount = options.questionCount;
-  let questions = dedupeQuestions(data.sorular || []);
+  let current = dedupeQuestions(questions || []);
 
-  if (questions.length < desiredCount) {
-    log('question shortfall', { reqId, have: questions.length, need: desiredCount });
-    const extra = await generateAdditionalQuestions(fullText, options, questions, reqId);
-    questions = dedupeQuestions([...questions, ...extra]);
+  let attempts = 0;
+  while (current.length < desiredCount && attempts < 3) {
+    log('question shortfall', { reqId, have: current.length, need: desiredCount, attempt: attempts + 1 });
+    const extra = await generateAdditionalQuestions(fullText, options, current, reqId);
+    current = dedupeQuestions([...current, ...extra]);
+    attempts += 1;
   }
 
-  data.sorular = questions.slice(0, desiredCount);
+  if (current.length < desiredCount) {
+    log('question still short', { reqId, have: current.length, need: desiredCount });
+  }
+
+  return current.slice(0, desiredCount);
+}
+
+async function generateSummaryFromTranscript(fullText, reqId, options) {
+  log('generate summary (single pass)', {
+    reqId,
+    textLength: fullText.length,
+    summaryLength: options.summaryLength
+  });
+  const prompt = buildSummaryPrompt(fullText, options);
+
+  const res = await callOpenRouterWithRetry({
+    messages: [{ role: 'user', content: prompt }],
+    model: OPENROUTER_MODEL,
+    temperature: 0.3,
+    response_format: { type: 'json_object' }
+  }, 3, { reqId });
+
+  const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
+  if (!validateSummaryOutput(data)) {
+    throw new Error('AI hatali format dondurdu');
+  }
+
+  try {
+    const sectionsText = (data.summary_sections || [])
+      .map((section) => `${section.subtitle}\n${section.content}`.trim())
+      .join('\n\n');
+    const ozetText = `${(data.title || '').trim()}\n\n${sectionsText}`.trim();
+    if (ozetText) {
+      data.ozet = ozetText;
+    }
+  } catch (_) {
+    // no-op
+  }
+
+  log('summary output validated', {
+    reqId,
+    sections: Array.isArray(data.summary_sections) ? data.summary_sections.length : 0,
+    concepts: Array.isArray(data.key_concepts) ? data.key_concepts.length : 0,
+    examples: Array.isArray(data.examples) ? data.examples.length : 0
+  });
+
   return data;
 }
 
-async function generateFinalOutput(summaries, reqId, options) {
-  log('generate final output', { reqId, summaryCount: summaries.length, questionCount: options.questionCount });
-  const summaryText = summaries.join('\n');
-  const prompt = buildFinalPrompt(summaryText, options);
-
-  const res = await callOpenRouterWithRetry({
-    messages: [{ role: 'user', content: prompt }],
-    model: OPENROUTER_MODEL,
-    temperature: 0.3,
-    response_format: { type: 'json_object' }
-  }, 3, { reqId });
-
-  const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
-  if (!validateOutput(data)) {
-    throw new Error('AI hatali format dondurdu');
-  }
-
-  const filled = await enforceQuestionCount(data, summaryText, options, reqId);
-
-  try {
-    const sectionsText = (filled.summary_sections || [])
-      .map((section) => `${section.subtitle}\n${section.content}`.trim())
-      .join('\n\n');
-    const ozetText = `${(filled.title || '').trim()}\n\n${sectionsText}`.trim();
-    if (ozetText) {
-      filled.ozet = ozetText;
-    }
-  } catch (_) {
-    // no-op
-  }
-
-  return filled;
-}
-async function generateFinalOutputFromTranscript(fullText, reqId, options) {
-  log('generate final output (single pass)', {
+async function generateQuestionsFromTranscript(fullText, reqId, options) {
+  log('generate questions', {
     reqId,
-    textLength: fullText.length,
     questionCount: options.questionCount,
-    summaryLength: options.summaryLength,
     questionDifficulty: options.questionDifficulty
   });
-  const prompt = buildFinalPrompt(fullText, options);
 
+  const prompt = buildQuestionsPrompt(fullText, options, []);
   const res = await callOpenRouterWithRetry({
     messages: [{ role: 'user', content: prompt }],
     model: OPENROUTER_MODEL,
@@ -620,33 +697,11 @@ async function generateFinalOutputFromTranscript(fullText, reqId, options) {
   }, 3, { reqId });
 
   const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
-  if (!validateOutput(data)) {
-    throw new Error('AI hatali format dondurdu');
-  }
+  const initialQuestions = dedupeQuestions(data.sorular || []);
+  const finalQuestions = await enforceQuestionCount(initialQuestions, fullText, options, reqId);
 
-  const filled = await enforceQuestionCount(data, fullText, options, reqId);
-
-  try {
-    const sectionsText = (filled.summary_sections || [])
-      .map((section) => `${section.subtitle}\n${section.content}`.trim())
-      .join('\n\n');
-    const ozetText = `${(filled.title || '').trim()}\n\n${sectionsText}`.trim();
-    if (ozetText) {
-      filled.ozet = ozetText;
-    }
-  } catch (_) {
-    // no-op
-  }
-
-  log('final output validated (single pass)', {
-    reqId,
-    sections: Array.isArray(filled.summary_sections) ? filled.summary_sections.length : 0,
-    concepts: Array.isArray(filled.key_concepts) ? filled.key_concepts.length : 0,
-    examples: Array.isArray(filled.examples) ? filled.examples.length : 0,
-    questions: Array.isArray(filled.sorular) ? filled.sorular.length : 0
-  });
-
-  return filled;
+  log('questions ready', { reqId, count: finalQuestions.length });
+  return finalQuestions;
 }
 
 function getCached(videoId) {
@@ -663,17 +718,17 @@ function setCached(videoId, data) {
   cache.set(videoId, { data, createdAt: Date.now() });
 }
 
-function pushHistory(videoId, youtubeUrl, data) {
-  history.unshift({
-    video_id: videoId,
-    video_url: youtubeUrl,
-    created_at: new Date().toISOString(),
-    ozet: data.ozet || '',
-    sorular: data.sorular || []
-  });
+function addHistoryEntry(entry) {
+  history.unshift(entry);
+  if (entry?.analysis_id) {
+    analysisIndex.set(entry.analysis_id, entry);
+  }
 
   if (history.length > HISTORY_LIMIT) {
-    history.length = HISTORY_LIMIT;
+    const removed = history.pop();
+    if (removed?.analysis_id) {
+      analysisIndex.delete(removed.analysis_id);
+    }
   }
 }
 
@@ -691,8 +746,9 @@ app.post('/api/analyze', async (req, res) => {
     }
 
     const youtubeUrl = req.body?.youtube_url || '';
+    const userTitle = String(req.body?.user_title || '').trim();
     const summaryLength = req.body?.summary_length || '';
-    const questionDifficulty = req.body?.question_difficulty || '';
+    const questionDifficulty = req.body?.question_difficulty || 'orta';
     const questionCount = clampQuestionCount(Number.parseInt(req.body?.question_count || '', 10));
     const videoId = extractVideoId(youtubeUrl);
     if (!videoId) {
@@ -700,48 +756,82 @@ app.post('/api/analyze', async (req, res) => {
       return res.status(400).json({ detail: 'Gecersiz URL' });
     }
 
+    const analysisId = createRequestId();
+
     log('analyze start', {
       reqId,
       videoId,
       url: summarizeUrl(youtubeUrl),
       model: OPENROUTER_MODEL,
       summaryLength,
-      questionDifficulty,
-      questionCount
+      questionCount,
+      hasUserTitle: Boolean(userTitle)
     });
 
+    let transcript = transcriptCache.get(videoId);
     const cached = getCached(videoId);
-    if (cached) {
-      log('analyze cache hit', { reqId, videoId });
-      return res.json({ status: 'success', source: 'cache', analiz: cached });
+    if (cached?.transcript) {
+      transcript = cached.transcript;
     }
 
-    const transcript = await getTranscript(youtubeUrl);
     if (!transcript) {
-      log('analyze transcript missing', { reqId, videoId });
-      return res.status(422).json({ detail: 'Altyazi yok' });
+      transcript = await getTranscript(youtubeUrl);
+      if (!transcript) {
+        log('analyze transcript missing', { reqId, videoId });
+        return res.status(422).json({ detail: 'Altyazi yok' });
+      }
     }
 
     log('analyze transcript ok', { reqId, length: transcript.length });
 
     const options = {
       summaryLength,
-      questionDifficulty,
-      questionCount
+      questionCount,
+      questionDifficulty
     };
 
-    log('question count requested', { reqId, questionCount });
+    let summaryData = cached?.summary || null;
+    let source = 'fresh';
+    if (summaryData) {
+      source = 'cache';
+      log('analyze cache hit', { reqId, videoId });
+    } else {
+      summaryData = await generateSummaryFromTranscript(transcript, reqId, options);
+      setCached(videoId, { summary: summaryData, transcript });
+    }
 
-    const finalData = SINGLE_PASS
-      ? await generateFinalOutputFromTranscript(transcript, reqId, options)
-      : await generateFinalOutput(await summarizeChunks(transcript, reqId), reqId, options);
+    let questions = [];
+    try {
+      questions = await generateQuestionsFromTranscript(transcript, reqId, options);
+    } catch (error) {
+      log('analyze questions error', { reqId, message: String(error?.message || error) });
+      questions = [];
+    }
 
-    setCached(videoId, finalData);
-    pushHistory(videoId, youtubeUrl, finalData);
+    transcriptCache.set(videoId, transcript);
 
-    log('analyze success', { reqId, videoId, ms: Date.now() - startedAt });
+    const record = {
+      analysis_id: analysisId,
+      video_id: videoId,
+      video_url: youtubeUrl,
+      created_at: new Date().toISOString(),
+      user_title: userTitle,
+      title: summaryData.title || '',
+      summary_sections: summaryData.summary_sections || [],
+      key_concepts: summaryData.key_concepts || [],
+      examples: summaryData.examples || [],
+      ozet: summaryData.ozet || '',
+      sorular: questions,
+      question_count: questionCount,
+      last_question_count: questions.length,
+      last_question_difficulty: questionDifficulty
+    };
 
-    return res.json({ status: 'success', source: 'fresh', analiz: finalData });
+    addHistoryEntry(record);
+
+    log('analyze success', { reqId, videoId, analysisId, ms: Date.now() - startedAt });
+
+    return res.json({ status: 'success', source, analysis_id: analysisId, analiz: record });
   } catch (error) {
     if (error instanceof ApiError && error.status === 429) {
       const detail = { error: 'rate_limit_exceeded', message: error.message };
@@ -753,6 +843,162 @@ app.post('/api/analyze', async (req, res) => {
     }
 
     log('analyze error', {
+      reqId,
+      message: String(error?.message || error),
+      ms: Date.now() - startedAt
+    });
+    return res.status(500).json({ detail: String(error?.message || error) });
+  }
+});
+
+app.post('/api/questions', async (req, res) => {
+  const reqId = createRequestId();
+  const startedAt = Date.now();
+  try {
+    if (!FAL_KEY) {
+      log('questions missing FAL key', { reqId });
+      return res.status(500).json({ detail: 'FAL key yok' });
+    }
+
+    const analysisId = String(req.body?.analysis_id || '').trim();
+    const youtubeUrl = String(req.body?.youtube_url || '').trim();
+    const questionDifficulty = req.body?.question_difficulty || 'orta';
+    const questionCount = clampQuestionCount(Number.parseInt(req.body?.question_count || '', 10));
+
+    const videoId = youtubeUrl ? extractVideoId(youtubeUrl) : null;
+    const record = findAnalysisRecord(analysisId, videoId);
+    if (!record) {
+      log('questions analysis not found', { reqId, analysisId, videoId });
+      return res.status(404).json({ detail: 'Analiz bulunamadi' });
+    }
+
+    if (
+      Array.isArray(record.sorular) &&
+      record.sorular.length === questionCount &&
+      record.last_question_difficulty === questionDifficulty
+    ) {
+      log('questions cache hit', { reqId, analysisId, count: record.sorular.length });
+      return res.json({ status: 'success', analysis_id: record.analysis_id, sorular: record.sorular });
+    }
+
+    let transcript = transcriptCache.get(record.video_id);
+    const cached = getCached(record.video_id);
+    if (!transcript && cached?.transcript) {
+      transcript = cached.transcript;
+    }
+    if (!transcript && record.video_url) {
+      transcript = await getTranscript(record.video_url);
+      if (transcript) {
+        transcriptCache.set(record.video_id, transcript);
+      }
+    }
+
+    if (!transcript) {
+      log('questions transcript missing', { reqId, analysisId, videoId: record.video_id });
+      return res.status(422).json({ detail: 'Altyazi yok' });
+    }
+
+    const options = {
+      summaryLength: 'orta',
+      questionDifficulty,
+      questionCount
+    };
+
+    const questions = await generateQuestionsFromTranscript(transcript, reqId, options);
+    record.sorular = questions;
+    record.last_question_count = questionCount;
+    record.last_question_difficulty = questionDifficulty;
+
+    log('questions success', { reqId, analysisId, count: questions.length, ms: Date.now() - startedAt });
+    return res.json({ status: 'success', analysis_id: record.analysis_id, sorular: questions });
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 429) {
+      const detail = { error: 'rate_limit_exceeded', message: error.message };
+      if (Number.isFinite(error.retryAfterSeconds)) {
+        detail.retry_after_seconds = error.retryAfterSeconds;
+      }
+      log('questions rate limited', { reqId, retryAfterSeconds: error.retryAfterSeconds });
+      return res.status(429).json({ detail });
+    }
+
+    log('questions error', {
+      reqId,
+      message: String(error?.message || error),
+      ms: Date.now() - startedAt
+    });
+    return res.status(500).json({ detail: String(error?.message || error) });
+  }
+});
+
+app.post('/api/chat', async (req, res) => {
+  const reqId = createRequestId();
+  const startedAt = Date.now();
+  try {
+    if (!FAL_KEY) {
+      log('chat missing FAL key', { reqId });
+      return res.status(500).json({ detail: 'FAL key yok' });
+    }
+
+    const analysisId = String(req.body?.analysis_id || '').trim();
+    const youtubeUrl = String(req.body?.youtube_url || '').trim();
+    const question = String(req.body?.question || '').trim();
+    if (!question) {
+      return res.status(400).json({ detail: 'Soru bos olamaz' });
+    }
+
+    const videoId = youtubeUrl ? extractVideoId(youtubeUrl) : null;
+    const record = findAnalysisRecord(analysisId, videoId);
+    if (!record) {
+      return res.status(404).json({ detail: 'Analiz bulunamadi' });
+    }
+
+    let transcript = transcriptCache.get(record.video_id);
+    const cached = getCached(record.video_id);
+    if (!transcript && cached?.transcript) {
+      transcript = cached.transcript;
+    }
+    if (!transcript && record.video_url) {
+      transcript = await getTranscript(record.video_url);
+      if (transcript) {
+        transcriptCache.set(record.video_id, transcript);
+      }
+    }
+
+    if (!transcript) {
+      return res.status(422).json({ detail: 'Altyazi yok' });
+    }
+
+    const chunks = selectRelevantChunks(transcript, question, 4, 1600);
+    const contextText = chunks.map((chunk, index) => `Parca ${index + 1}: ${chunk}`).join('\n\n');
+    const prompt = `
+Sen video transkriptine dayanan yardimci bir asistanisin. Kullaniciya olumlu ve net cevap ver.
+Oncelikle asagidaki metne dayan. Metinde acikca yoksa genel bilgiden yararlanabilirsin, ancak bunu belirt.
+
+Transkript parcalari:
+${contextText}
+
+Kullanici sorusu: ${question}
+`;
+
+    const response = await callOpenRouterWithRetry({
+      messages: [{ role: 'user', content: prompt }],
+      model: OPENROUTER_MODEL,
+      temperature: 0.4
+    }, 3, { reqId });
+
+    const answer = response.choices?.[0]?.message?.content || '';
+    log('chat success', { reqId, analysisId: record.analysis_id, ms: Date.now() - startedAt });
+    return res.json({ status: 'success', answer });
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 429) {
+      const detail = { error: 'rate_limit_exceeded', message: error.message };
+      if (Number.isFinite(error.retryAfterSeconds)) {
+        detail.retry_after_seconds = error.retryAfterSeconds;
+      }
+      return res.status(429).json({ detail });
+    }
+
+    log('chat error', {
       reqId,
       message: String(error?.message || error),
       ms: Date.now() - startedAt
