@@ -104,6 +104,23 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
+                <label class="block text-sm font-medium text-slate-700 mb-2">Ders Türü</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <label class="cursor-pointer">
+                    <input type="radio" name="subjectType" value="sozel" class="peer sr-only" checked />
+                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 flex items-center justify-center gap-1.5">
+                      <span class="material-symbols-outlined text-[16px]">auto_stories</span> Sözel
+                    </div>
+                  </label>
+                  <label class="cursor-pointer">
+                    <input type="radio" name="subjectType" value="sayisal" class="peer sr-only" />
+                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-emerald-600 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 flex items-center justify-center gap-1.5">
+                      <span class="material-symbols-outlined text-[16px]">calculate</span> Sayısal
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div>
                 <label class="block text-sm font-medium text-slate-700 mb-2">Ozet Uzunlugu</label>
                 <div class="grid grid-cols-3 gap-2">
                     <label class="cursor-pointer">
@@ -598,6 +615,7 @@
       const questionCountRaw = getSelectedValue('questionCount');
       const questionCount = Number.parseInt(questionCountRaw || '10', 10);
       const questionDifficulty = getSelectedValue('questionDifficulty') || 'orta';
+      const subjectType = getSelectedValue('subjectType') || 'sozel';
 
       if (!videoUrl) {
         showStatus('Video URL gerekli.', 'error');
@@ -629,7 +647,8 @@
             user_title: userTitle,
             summary_length: summaryLength,
             question_count: questionCount,
-            question_difficulty: questionDifficulty
+            question_difficulty: questionDifficulty,
+            subject_type: subjectType
           })
         });
 
@@ -1088,22 +1107,44 @@
       const title = d.user_title || d.title || 'Video Analizi';
       let body = '# ' + title + '\n\nKaynak: ' + (d.video_url || currentVideoUrl) + '\n\n';
       if (Array.isArray(d.summary_sections)) {
-        d.summary_sections.forEach(function(s) { body += '## ' + s.subtitle + '\n' + s.content + '\n\n'; });
+        body += '## Konu Özeti\n\n';
+        d.summary_sections.forEach(function(s) { body += '### ' + s.subtitle + '\n' + s.content + '\n\n'; });
       } else if (d.ozet) {
         body += d.ozet + '\n\n';
       }
       var regions = Array.isArray(d.important_regions) ? d.important_regions : [];
       if (regions.length) {
-        body += '## Onemli Bolgeler\n';
+        body += '## ⚠️ Önemli Bölgeler\n\n';
         regions.forEach(function(r) { body += '- **' + (r.label || 'Kritik') + '**: ' + r.text + '\n'; });
         body += '\n';
       }
+      // Infographic data
+      if (Array.isArray(d.process_flow) && d.process_flow.length) {
+        body += '## 🔄 Süreç / Akış\n\n';
+        d.process_flow.forEach(function(f, i) { body += (i+1) + '. **' + f.step + '**' + (f.detail ? ' — ' + f.detail : '') + '\n'; });
+        body += '\n';
+      }
+      if (Array.isArray(d.key_formulas) && d.key_formulas.length) {
+        body += '## 📐 Temel Formüller / Kurallar\n\n';
+        d.key_formulas.forEach(function(f) { body += '- **' + (f.label || '') + '**: `' + (f.formula || '') + '`\n'; });
+        body += '\n';
+      }
+      if (Array.isArray(d.key_concepts) && d.key_concepts.length) {
+        body += '## 📚 Anahtar Kavramlar\n\n';
+        d.key_concepts.forEach(function(c) { body += '- **' + c.term + '**: ' + c.definition + '\n'; });
+        body += '\n';
+      }
+      if (Array.isArray(d.fun_facts) && d.fun_facts.length) {
+        body += '## 💡 Biliyor Muydunuz?\n\n';
+        d.fun_facts.forEach(function(f) { body += '- ' + f + '\n'; });
+        body += '\n';
+      }
       if (Array.isArray(d.sorular) && d.sorular.length) {
-        body += '## Sorular\n';
+        body += '## 📝 Sorular\n\n';
         d.sorular.forEach(function(q, i) {
           body += (i+1) + '. ' + q.soru + '\n';
           ['A','B','C','D'].forEach(function(k) { body += '   ' + k + ') ' + (q.secenekler && q.secenekler[k] || '') + '\n'; });
-          body += '   Dogru: ' + q.dogru_cevap + '\n\n';
+          body += '   ✅ Doğru: ' + q.dogru_cevap + '\n\n';
         });
       }
       return { title: title, body: body };
@@ -1119,12 +1160,162 @@
     }
 
     function exportPdf() {
-      var exp = buildExportText();
+      if (!lastAnalysisData) return;
+      var d = lastAnalysisData;
+      var title = d.user_title || d.title || 'Video Analizi';
+      var date = new Date().toLocaleDateString('tr-TR', {year:'numeric', month:'long', day:'numeric'});
+      var esc = function(t) { return String(t||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+
+      var html = '<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>' + esc(title) + '</title>';
+      html += '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
+      html += '<style>';
+      html += '*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }';
+      html += 'body { font-family: "Inter", sans-serif; color: #1e293b; background: #fff; }';
+      html += '@media print { body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
+      html += '.page { max-width: 800px; margin: 0 auto; padding: 0; }';
+      // Header
+      html += '.header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 40px 48px; border-radius: 0 0 24px 24px; margin-bottom: 32px; }';
+      html += '.header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }';
+      html += '.header-meta { font-size: 12px; opacity: 0.8; display: flex; gap: 16px; align-items: center; }';
+      html += '.header-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }';
+      // Sections
+      html += '.content { padding: 0 48px 40px; }';
+      html += '.section { margin-bottom: 28px; }';
+      html += '.section-title { font-size: 16px; font-weight: 700; color: #4f46e5; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid #e0e7ff; }';
+      html += '.summary-card { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }';
+      html += '.summary-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }';
+      html += '.summary-card p { font-size: 13px; line-height: 1.6; color: #475569; }';
+      html += '.num-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; color: white; font-size: 11px; font-weight: 800; }';
+      // Colors for sections
+      html += '.c-indigo { border-left-color: #6366f1; } .c-indigo .num-badge { background: #6366f1; } .c-indigo h4 { color: #4338ca; }';
+      html += '.c-violet { border-left-color: #8b5cf6; } .c-violet .num-badge { background: #8b5cf6; } .c-violet h4 { color: #6d28d9; }';
+      html += '.c-sky { border-left-color: #0ea5e9; } .c-sky .num-badge { background: #0ea5e9; } .c-sky h4 { color: #0369a1; }';
+      html += '.c-emerald { border-left-color: #10b981; } .c-emerald .num-badge { background: #10b981; } .c-emerald h4 { color: #047857; }';
+      html += '.c-amber { border-left-color: #f59e0b; } .c-amber .num-badge { background: #f59e0b; } .c-amber h4 { color: #b45309; }';
+      html += '.c-rose { border-left-color: #f43f5e; } .c-rose .num-badge { background: #f43f5e; } .c-rose h4 { color: #be123c; }';
+      // Formula cards
+      html += '.formula-box { background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: 1px solid #c7d2fe; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
+      html += '.formula-box .label { font-size: 10px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.05em; }';
+      html += '.formula-box .formula { font-size: 15px; font-weight: 700; color: #312e81; margin-top: 2px; }';
+      // Concepts
+      html += '.concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }';
+      html += '.concept-card { border: 1px solid #ddd6fe; background: #f5f3ff; border-radius: 10px; padding: 12px; text-align: center; }';
+      html += '.concept-card .term { font-size: 12px; font-weight: 700; color: #5b21b6; }';
+      html += '.concept-card .def { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4; }';
+      // Questions
+      html += '.question { margin-bottom: 16px; page-break-inside: avoid; }';
+      html += '.question .q-text { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }';
+      html += '.option { font-size: 12px; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 4px; color: #475569; }';
+      html += '.option.correct { border-color: #10b981; background: #ecfdf5; color: #047857; font-weight: 600; }';
+      // Flow
+      html += '.flow-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }';
+      html += '.flow-step-box { background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 10px 14px; text-align: center; flex: 1; min-width: 100px; }';
+      html += '.flow-step-box .snum { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #10b981; color: white; font-size: 11px; font-weight: 800; margin-bottom: 4px; }';
+      html += '.flow-step-box .stxt { font-size: 11px; font-weight: 600; color: #1e293b; }';
+      html += '.flow-arrow { color: #94a3b8; font-size: 18px; }';
+      // Warning
+      html += '.warning-card { background: #fffbeb; border: 1px solid #fcd34d; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
+      html += '.warning-card .wlabel { font-size: 12px; font-weight: 700; color: #92400e; }';
+      html += '.warning-card .wtext { font-size: 12px; color: #78350f; margin-top: 2px; }';
+      // Fun facts
+      html += '.fact-item { font-size: 12px; color: #475569; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; gap: 8px; }';
+      html += '.fact-icon { color: #14b8a6; font-size: 14px; flex-shrink: 0; }';
+      // Footer
+      html += '.footer { text-align: center; padding: 24px 48px; border-top: 2px solid #e2e8f0; margin-top: 20px; color: #94a3b8; font-size: 11px; }';
+      html += '</style></head><body><div class="page">';
+
+      // HEADER
+      html += '<div class="header">';
+      html += '<div class="header-badge">EduAssistant AI</div>';
+      html += '<h1 style="margin-top:12px">' + esc(title) + '</h1>';
+      html += '<div class="header-meta"><span>📅 ' + date + '</span><span>🔗 ' + esc(d.video_url || currentVideoUrl) + '</span></div>';
+      html += '</div>';
+
+      html += '<div class="content">';
+
+      // SUMMARY SECTIONS
+      var sColors = ['c-indigo','c-violet','c-sky','c-emerald','c-amber','c-rose'];
+      if (Array.isArray(d.summary_sections) && d.summary_sections.length) {
+        html += '<div class="section"><div class="section-title">📝 Konu Özeti</div>';
+        d.summary_sections.forEach(function(s, i) {
+          var c = sColors[i % sColors.length];
+          html += '<div class="summary-card ' + c + '"><h4><span class="num-badge">' + (i+1) + '</span>' + esc(s.subtitle) + '</h4><p>' + esc(s.content) + '</p></div>';
+        });
+        html += '</div>';
+      }
+
+      // IMPORTANT REGIONS
+      if (Array.isArray(d.important_regions) && d.important_regions.length) {
+        html += '<div class="section"><div class="section-title">⚠️ Dikkat Edilmesi Gerekenler</div>';
+        d.important_regions.forEach(function(r) {
+          html += '<div class="warning-card"><div class="wlabel">' + esc(r.label || 'Dikkat') + '</div><div class="wtext">' + esc(r.text) + '</div></div>';
+        });
+        html += '</div>';
+      }
+
+      // PROCESS FLOW
+      if (Array.isArray(d.process_flow) && d.process_flow.length) {
+        html += '<div class="section"><div class="section-title">🔄 Süreç / Akış</div>';
+        html += '<div class="flow-steps">';
+        d.process_flow.forEach(function(f, i) {
+          if (i > 0) html += '<span class="flow-arrow">→</span>';
+          html += '<div class="flow-step-box"><div class="snum">' + (i+1) + '</div><div class="stxt">' + esc(f.step) + '</div></div>';
+        });
+        html += '</div></div>';
+      }
+
+      // KEY FORMULAS
+      if (Array.isArray(d.key_formulas) && d.key_formulas.length) {
+        html += '<div class="section"><div class="section-title">📐 Temel Formüller / Kurallar</div>';
+        d.key_formulas.forEach(function(f) {
+          html += '<div class="formula-box"><div class="label">' + esc(f.label) + '</div><div class="formula">' + esc(f.formula) + '</div></div>';
+        });
+        html += '</div>';
+      }
+
+      // KEY CONCEPTS
+      if (Array.isArray(d.key_concepts) && d.key_concepts.length) {
+        html += '<div class="section"><div class="section-title">📚 Anahtar Kavramlar</div>';
+        html += '<div class="concept-grid">';
+        d.key_concepts.forEach(function(c) {
+          html += '<div class="concept-card"><div class="term">' + esc(c.term) + '</div><div class="def">' + esc(c.definition) + '</div></div>';
+        });
+        html += '</div></div>';
+      }
+
+      // FUN FACTS
+      if (Array.isArray(d.fun_facts) && d.fun_facts.length) {
+        html += '<div class="section"><div class="section-title">💡 Biliyor Muydunuz?</div>';
+        d.fun_facts.forEach(function(f) {
+          html += '<div class="fact-item"><span class="fact-icon">✓</span><span>' + esc(f) + '</span></div>';
+        });
+        html += '</div>';
+      }
+
+      // QUESTIONS
+      if (Array.isArray(d.sorular) && d.sorular.length) {
+        html += '<div class="section"><div class="section-title">📝 Sorular</div>';
+        d.sorular.forEach(function(q, i) {
+          html += '<div class="question"><div class="q-text">' + (i+1) + '. ' + esc(q.soru) + '</div>';
+          ['A','B','C','D'].forEach(function(k) {
+            var isCorrect = k === q.dogru_cevap;
+            html += '<div class="option' + (isCorrect ? ' correct' : '') + '">' + k + ') ' + esc(q.secenekler && q.secenekler[k] || '') + (isCorrect ? ' ✓' : '') + '</div>';
+          });
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      html += '</div>'; // content
+
+      // FOOTER
+      html += '<div class="footer">Bu doküman EduAssistant AI tarafından otomatik oluşturulmuştur. &bull; ' + date + '</div>';
+      html += '</div></body></html>';
+
       var win = window.open('', '_blank');
-      var safe = exp.body.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      win.document.write('<html><head><title>' + exp.title + '</title><style>body{font-family:Inter,sans-serif;padding:40px;max-width:800px;margin:auto;color:#1e293b}h1{font-size:24px}h2{font-size:18px;color:#4f46e5;margin-top:24px}pre{white-space:pre-wrap;font-family:Inter,sans-serif;font-size:14px;line-height:1.7}</style></head><body><pre>' + safe + '</pre></body></html>');
+      win.document.write(html);
       win.document.close();
-      setTimeout(function() { win.print(); }, 500);
+      setTimeout(function() { win.print(); }, 600);
     }
 
     function exportMarkdown() {
@@ -1141,7 +1332,7 @@
     function exportNotion() {
       var exp = buildExportText();
       navigator.clipboard.writeText(exp.body).then(function() {
-        showStatus('Icerik panoya kopyalandi! Notion\'a yapistirabilirsiniz.', 'success');
+        showStatus('İçerik panoya kopyalandı! Notion\'a yapıştırabilirsiniz.', 'success');
       }).catch(function() {
         downloadFile('notion_export.md', exp.body, 'text/markdown');
       });

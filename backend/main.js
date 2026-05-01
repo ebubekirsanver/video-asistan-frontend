@@ -267,6 +267,18 @@ function selectRelevantChunks(fullText, query, maxChunks = 10, chunkSize = 2500)
 
 function buildSummaryPrompt(fullText, options) {
   const guidance = getSummaryGuidance(options.summaryLength);
+  const isSayisal = options.subjectType === 'sayisal';
+
+  const sayisalExtra = isSayisal ? `
+BU SAYISAL/STEM BIR DERSTIR. Asagidaki ek kurallara ozellikle dikkat et:
+- "key_formulas" alanina TUM formulleri, denklemleri ve matematiksel ifadeleri yaz. En az 3 formul olmali.
+- Formulleri acik ve okunakli yaz. Ornegin: "F = m × a", "E = mc²", "∫f(x)dx = F(x) + C".
+- "process_flow" alaninda islem adimlari veya cozum yolu adimlarini goster.
+- "summary_sections" icinde sayisal degerleri, birimleri ve hesaplamalari vurgula.
+- "examples" alanina somut sayisal cozum ornekleri ekle (adim adim islem goster).
+- Matematiksel sembolleri dogru kullan: ×, ÷, ², ³, √, π, Σ, ∫, Δ, ≤, ≥, ≠, ∞.
+` : '';
+
   return `
 SADECE GECERLI JSON DON:
 
@@ -317,7 +329,7 @@ Kurallar:
 - "fun_facts" metinden cikartilan 2-3 ilginc veya sasirtici bilgi. "Biliyor muydunuz?" formatinda yaz.
 - Metin disina cikma.
 - ${guidance}
-
+${sayisalExtra}
 Metin:
 ${fullText}
 `;
@@ -927,6 +939,7 @@ app.post('/api/analyze', async (req, res) => {
     const summaryLength = req.body?.summary_length || '';
     const questionDifficulty = req.body?.question_difficulty || 'orta';
     const questionCount = clampQuestionCount(Number.parseInt(req.body?.question_count || '', 10));
+    const subjectType = req.body?.subject_type || 'sozel';
     const videoId = extractVideoId(youtubeUrl);
     if (!videoId) {
       log('analyze invalid url', { reqId, url: summarizeUrl(youtubeUrl) });
@@ -942,6 +955,7 @@ app.post('/api/analyze', async (req, res) => {
       model: OPENROUTER_MODEL,
       summaryLength,
       questionCount,
+      subjectType,
       hasUserTitle: Boolean(userTitle)
     });
 
@@ -964,7 +978,8 @@ app.post('/api/analyze', async (req, res) => {
     const options = {
       summaryLength,
       questionCount,
-      questionDifficulty
+      questionDifficulty,
+      subjectType
     };
 
     let summaryData = cached?.summary || null;
@@ -1254,6 +1269,80 @@ ${question}`;
 app.get('/api/history', (req, res) => {
   log('history fetch', { count: history.length });
   res.json(history);
+});
+
+app.post('/api/recommendations', async (req, res) => {
+  const reqId = createRequestId();
+  try {
+    if (!FAL_KEY) {
+      return res.status(500).json({ detail: 'FAL key yok' });
+    }
+
+    if (history.length === 0) {
+      return res.json({ interests: [], recommendations: [] });
+    }
+
+    // Build a summary of user's past topics
+    const topicSummary = history.slice(0, 10).map(h => {
+      const title = h.user_title || h.title || '';
+      const concepts = Array.isArray(h.key_concepts) ? h.key_concepts.map(c => c.term).join(', ') : '';
+      return `- ${title}${concepts ? ' (' + concepts + ')' : ''}`;
+    }).join('\n');
+
+    const prompt = `SADECE GECERLI JSON DON. Baska aciklama ekleme.
+
+Asagida bir ogrencinin gecmiste izledigi video konulari var:
+${topicSummary}
+
+Bu ogrencinin ilgi alanlarini analiz et ve YouTube'da izleyebilecegi yeni video onerileri olustur.
+
+{
+  "interests": ["Ilgi alani 1", "Ilgi alani 2", "Ilgi alani 3"],
+  "recommendations": [
+    {
+      "title": "Onerilen video basligi (Turkce)",
+      "reason": "Bu videonun neden onerildigini 1 cumle ile acikla",
+      "search_query": "YouTube arama sorgusu (Turkce)"
+    }
+  ]
+}
+
+Kurallar:
+- En az 3, en fazla 6 oneri olustur.
+- Onerilerin gecmis konularla iliskili ama farkli olsun (tekrar etmesin).
+- "search_query" YouTube'da aranabilir bir sorgu olsun.
+- Tamamen Turkce yaz.`;
+
+    const aiRes = await callOpenRouterWithRetry({
+      messages: [{ role: 'user', content: prompt }],
+      model: OPENROUTER_MODEL,
+      temperature: 0.7,
+      max_tokens: 2048,
+      response_format: { type: 'json_object' }
+    }, 2, { reqId });
+
+    let data;
+    try {
+      data = JSON.parse(aiRes.choices?.[0]?.message?.content || '{}');
+    } catch (_) {
+      data = repairAndParseJSON(aiRes.choices?.[0]?.message?.content || '{}');
+    }
+
+    const interests = Array.isArray(data.interests) ? data.interests : [];
+    const recommendations = Array.isArray(data.recommendations)
+      ? data.recommendations.map(r => ({
+          title: r.title || '',
+          reason: r.reason || '',
+          search_url: 'https://www.youtube.com/results?search_query=' + encodeURIComponent(r.search_query || r.title || '')
+        }))
+      : [];
+
+    log('recommendations generated', { reqId, interests: interests.length, recs: recommendations.length });
+    return res.json({ interests, recommendations });
+  } catch (error) {
+    log('recommendations error', { reqId, message: String(error?.message || error) });
+    return res.status(500).json({ detail: String(error?.message || error) });
+  }
 });
 
 app.get('/health', (req, res) => {

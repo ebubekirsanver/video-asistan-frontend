@@ -334,16 +334,134 @@
         }
 
         function formatSummary(item) {
+                let html = '';
+
+                // Summary Sections
                 if (Array.isArray(item.summary_sections) && item.summary_sections.length > 0) {
-                        return item.summary_sections
-                                .map(section => `<h5 class="text-sm font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(section.subtitle)}</h5><p class="text-sm text-slate-700 dark:text-slate-300">${escapeHtml(section.content)}</p>`)
-                                .join('');
-                }
-                if (item.ozet) {
+                        const sColors = [
+                                {bg:'bg-indigo-50/60', border:'border-l-indigo-500', text:'text-indigo-700', num:'bg-indigo-500'},
+                                {bg:'bg-violet-50/60', border:'border-l-violet-500', text:'text-violet-700', num:'bg-violet-500'},
+                                {bg:'bg-sky-50/60', border:'border-l-sky-500', text:'text-sky-700', num:'bg-sky-500'},
+                                {bg:'bg-emerald-50/60', border:'border-l-emerald-500', text:'text-emerald-700', num:'bg-emerald-500'},
+                                {bg:'bg-amber-50/60', border:'border-l-amber-500', text:'text-amber-700', num:'bg-amber-500'},
+                                {bg:'bg-rose-50/60', border:'border-l-rose-500', text:'text-rose-700', num:'bg-rose-500'}
+                        ];
+                        html += item.summary_sections.map((section, i) => {
+                                const c = sColors[i % sColors.length];
+                                return `<div class="rounded-xl ${c.bg} border border-slate-200 dark:border-slate-700 border-l-4 ${c.border} p-4 hover:shadow-sm transition-shadow mb-3">
+                                        <div class="flex items-center gap-2.5 mb-2">
+                                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-md ${c.num} text-white text-[11px] font-black">${i+1}</span>
+                                                <h5 class="text-sm font-bold ${c.text} dark:text-slate-200">${escapeHtml(section.subtitle)}</h5>
+                                        </div>
+                                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${escapeHtml(section.content)}</p>
+                                </div>`;
+                        }).join('');
+                } else if (item.ozet) {
                         const lines = escapeHtml(item.ozet).split(/\n+/).filter(Boolean);
-                        return lines.map(line => `<p class="text-sm text-slate-700 dark:text-slate-300">${line}</p>`).join('');
+                        html += lines.map(line => `<p class="text-sm text-slate-700 dark:text-slate-300 mb-2">${line}</p>`).join('');
+                } else {
+                        html += '<p class="text-sm text-slate-500">Ozet bulunamadi.</p>';
                 }
-                return '<p class="text-sm text-slate-500">Ozet bulunamadi.</p>';
+
+                // Important Regions
+                const regions = Array.isArray(item.important_regions) ? item.important_regions : [];
+                if (regions.length > 0) {
+                        html += `<div class="mt-6 mb-4">
+                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
+                                        <span class="material-symbols-outlined text-amber-500 text-[18px]">warning</span> Dikkat Edilmesi Gerekenler
+                                </h4>
+                                <div class="grid gap-3">`;
+                        html += regions.map(r => `
+                                <div class="flex items-start gap-2 p-3 rounded-lg bg-amber-100/60 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50">
+                                        <span class="material-symbols-outlined text-amber-600 dark:text-amber-500 text-[16px] mt-0.5">warning</span>
+                                        <div>
+                                                <p class="text-xs font-semibold text-amber-800 dark:text-amber-400 mb-0.5">${escapeHtml(r.label || 'Kritik Bolge')}</p>
+                                                <p class="text-xs text-amber-700 dark:text-amber-300/80">${escapeHtml(r.text)}</p>
+                                        </div>
+                                </div>`).join('');
+                        html += `</div></div>`;
+                }
+
+                // Process Flow
+                const flowSteps = Array.isArray(item.process_flow) ? item.process_flow : [];
+                if (flowSteps.length > 0) {
+                        html += `<div class="mt-6 mb-4">
+                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
+                                        <span class="material-symbols-outlined text-indigo-500 text-[18px]">account_tree</span> Surec / Akis
+                                </h4>
+                                <div class="flex flex-wrap items-start gap-2">`;
+                        const flowColors = ['border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20', 'border-sky-400 bg-sky-50 dark:bg-sky-900/20', 'border-violet-400 bg-violet-50 dark:bg-violet-900/20', 'border-amber-400 bg-amber-50 dark:bg-amber-900/20', 'border-rose-400 bg-rose-50 dark:bg-rose-900/20', 'border-cyan-400 bg-cyan-50 dark:bg-cyan-900/20'];
+                        const flowIconColors = ['text-emerald-600 dark:text-emerald-400', 'text-sky-600 dark:text-sky-400', 'text-violet-600 dark:text-violet-400', 'text-amber-600 dark:text-amber-400', 'text-rose-600 dark:text-rose-400', 'text-cyan-600 dark:text-cyan-400'];
+                        flowSteps.forEach((fs, i) => {
+                                const fc = flowColors[i % flowColors.length];
+                                const ic = flowIconColors[i % flowIconColors.length];
+                                if (i > 0) {
+                                        html += `<div class="flex items-center justify-center px-1 text-slate-400 self-center"><span class="material-symbols-outlined text-[18px]">arrow_forward</span></div>`;
+                                }
+                                html += `<div class="flex-1 min-w-[120px] rounded-xl border-2 ${fc} p-3 text-center shadow-sm">
+                                        <div class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white dark:bg-slate-800 border-2 border-current ${ic} text-xs font-black mb-1.5">${i+1}</div>
+                                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight">${escapeHtml(fs.step)}</p>
+                                        ${fs.detail ? `<p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">${escapeHtml(fs.detail)}</p>` : ''}
+                                </div>`;
+                        });
+                        html += `</div></div>`;
+                }
+
+                // Key Formulas
+                const formulas = Array.isArray(item.key_formulas) ? item.key_formulas : [];
+                if (formulas.length > 0) {
+                        html += `<div class="mt-6 mb-4">
+                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
+                                        <span class="material-symbols-outlined text-rose-500 text-[18px]">functions</span> Temel Formuller
+                                </h4>
+                                <div class="grid gap-3 grid-cols-1 md:grid-cols-2">`;
+                        html += formulas.map(f => `
+                                <div class="rounded-xl border border-rose-200 dark:border-rose-800/50 bg-gradient-to-br from-rose-50 to-white dark:from-rose-900/10 dark:to-slate-800 p-3 shadow-sm text-center">
+                                        <p class="text-[10px] font-bold text-rose-500 uppercase tracking-wide mb-1.5">${escapeHtml(f.label || '')}</p>
+                                        <p class="font-mono text-[13px] md:text-[15px] font-bold text-slate-800 dark:text-slate-200 overflow-x-auto">${escapeHtml(f.formula || '')}</p>
+                                </div>`).join('');
+                        html += `</div></div>`;
+                }
+
+                // Key Concepts
+                const concepts = Array.isArray(item.key_concepts) ? item.key_concepts : [];
+                if (concepts.length > 0) {
+                        html += `<div class="mt-6 mb-4">
+                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
+                                        <span class="material-symbols-outlined text-purple-500 text-[18px]">lightbulb</span> Anahtar Kavramlar
+                                </h4>
+                                <div class="grid gap-3 grid-cols-2 md:grid-cols-3">`;
+                        const cColors = ['border-violet-300 dark:border-violet-700/50 bg-violet-50/60 dark:bg-violet-900/10', 'border-fuchsia-300 dark:border-fuchsia-700/50 bg-fuchsia-50/60 dark:bg-fuchsia-900/10', 'border-indigo-300 dark:border-indigo-700/50 bg-indigo-50/60 dark:bg-indigo-900/10'];
+                        html += concepts.map((kc, i) => {
+                                const cc = cColors[i % cColors.length];
+                                return `<div class="rounded-xl border-2 ${cc} p-3 text-center">
+                                        <p class="text-[11px] font-extrabold text-violet-900 dark:text-violet-300 mb-1">${escapeHtml(kc.term)}</p>
+                                        <div class="w-8 h-0.5 bg-violet-300 dark:bg-violet-700 mx-auto mb-1.5 rounded"></div>
+                                        <p class="text-[10px] text-slate-600 dark:text-slate-400 leading-relaxed">${escapeHtml(kc.definition)}</p>
+                                </div>`;
+                        }).join('');
+                        html += `</div></div>`;
+                }
+
+                // Fun Facts
+                const funFacts = Array.isArray(item.fun_facts) ? item.fun_facts : [];
+                if (funFacts.length > 0) {
+                        html += `<div class="mt-6 mb-4">
+                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
+                                        <span class="material-symbols-outlined text-teal-500 text-[18px]">psychology</span> Biliyor Muydunuz?
+                                </h4>
+                                <div class="space-y-2">`;
+                        html += funFacts.map(ff => `
+                                <div class="flex items-start gap-2.5 bg-teal-50/50 dark:bg-teal-900/10 p-3 rounded-lg border border-teal-100 dark:border-teal-800/30">
+                                        <div class="mt-0.5 w-5 h-5 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center flex-shrink-0">
+                                                <span class="material-symbols-outlined text-[12px] text-teal-600 dark:text-teal-400 font-bold">check</span>
+                                        </div>
+                                        <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">${escapeHtml(ff)}</p>
+                                </div>`).join('');
+                        html += `</div></div>`;
+                }
+
+                return html;
         }
 
         function renderQuestionList(questions) {
@@ -458,22 +576,43 @@
                 var title = item.user_title || item.title || 'Video Analizi';
                 var body = '# ' + title + '\n\nKaynak: ' + (item.video_url || '') + '\n\n';
                 if (Array.isArray(item.summary_sections)) {
-                        item.summary_sections.forEach(function(s) { body += '## ' + s.subtitle + '\n' + s.content + '\n\n'; });
+                        body += '## Konu Özeti\n\n';
+                        item.summary_sections.forEach(function(s) { body += '### ' + s.subtitle + '\n' + s.content + '\n\n'; });
                 } else if (item.ozet) {
                         body += item.ozet + '\n\n';
                 }
                 var regions = Array.isArray(item.important_regions) ? item.important_regions : [];
                 if (regions.length) {
-                        body += '## Onemli Bolgeler\n';
+                        body += '## ⚠️ Önemli Bölgeler\n\n';
                         regions.forEach(function(r) { body += '- **' + (r.label || 'Kritik') + '**: ' + r.text + '\n'; });
                         body += '\n';
                 }
+                if (Array.isArray(item.process_flow) && item.process_flow.length) {
+                        body += '## 🔄 Süreç / Akış\n\n';
+                        item.process_flow.forEach(function(f, i) { body += (i+1) + '. **' + f.step + '**' + (f.detail ? ' — ' + f.detail : '') + '\n'; });
+                        body += '\n';
+                }
+                if (Array.isArray(item.key_formulas) && item.key_formulas.length) {
+                        body += '## 📐 Temel Formüller / Kurallar\n\n';
+                        item.key_formulas.forEach(function(f) { body += '- **' + (f.label || '') + '**: `' + (f.formula || '') + '`\n'; });
+                        body += '\n';
+                }
+                if (Array.isArray(item.key_concepts) && item.key_concepts.length) {
+                        body += '## 📚 Anahtar Kavramlar\n\n';
+                        item.key_concepts.forEach(function(c) { body += '- **' + c.term + '**: ' + c.definition + '\n'; });
+                        body += '\n';
+                }
+                if (Array.isArray(item.fun_facts) && item.fun_facts.length) {
+                        body += '## 💡 Biliyor Muydunuz?\n\n';
+                        item.fun_facts.forEach(function(f) { body += '- ' + f + '\n'; });
+                        body += '\n';
+                }
                 if (Array.isArray(item.sorular) && item.sorular.length) {
-                        body += '## Sorular\n';
+                        body += '## 📝 Sorular\n\n';
                         item.sorular.forEach(function(q, i) {
                                 body += (i+1) + '. ' + q.soru + '\n';
                                 ['A','B','C','D'].forEach(function(k) { body += '   ' + k + ') ' + (q.secenekler && q.secenekler[k] || '') + '\n'; });
-                                body += '   Dogru: ' + q.dogru_cevap + '\n\n';
+                                body += '   ✅ Doğru: ' + q.dogru_cevap + '\n\n';
                         });
                 }
                 return { title: title, body: body };
@@ -482,11 +621,134 @@
         function handleDetailExport(type, item) {
                 var exp = buildExportFromItem(item);
                 if (type === 'pdf') {
+                        var date = new Date().toLocaleDateString('tr-TR', {year:'numeric', month:'long', day:'numeric'});
+                        var esc = function(t) { return String(t||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+                        var html = '<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>' + esc(exp.title) + '</title>';
+                        html += '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
+                        html += '<style>';
+                        html += '*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }';
+                        html += 'body { font-family: "Inter", sans-serif; color: #1e293b; background: #fff; }';
+                        html += '@media print { body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
+                        html += '.page { max-width: 800px; margin: 0 auto; padding: 0; }';
+                        html += '.header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 40px 48px; border-radius: 0 0 24px 24px; margin-bottom: 32px; }';
+                        html += '.header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }';
+                        html += '.header-meta { font-size: 12px; opacity: 0.8; display: flex; gap: 16px; align-items: center; }';
+                        html += '.header-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }';
+                        html += '.content { padding: 0 48px 40px; }';
+                        html += '.section { margin-bottom: 28px; }';
+                        html += '.section-title { font-size: 16px; font-weight: 700; color: #4f46e5; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid #e0e7ff; }';
+                        html += '.summary-card { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }';
+                        html += '.summary-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }';
+                        html += '.summary-card p { font-size: 13px; line-height: 1.6; color: #475569; }';
+                        html += '.num-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; color: white; font-size: 11px; font-weight: 800; }';
+                        html += '.c-indigo { border-left-color: #6366f1; } .c-indigo .num-badge { background: #6366f1; } .c-indigo h4 { color: #4338ca; }';
+                        html += '.c-violet { border-left-color: #8b5cf6; } .c-violet .num-badge { background: #8b5cf6; } .c-violet h4 { color: #6d28d9; }';
+                        html += '.c-sky { border-left-color: #0ea5e9; } .c-sky .num-badge { background: #0ea5e9; } .c-sky h4 { color: #0369a1; }';
+                        html += '.c-emerald { border-left-color: #10b981; } .c-emerald .num-badge { background: #10b981; } .c-emerald h4 { color: #047857; }';
+                        html += '.c-amber { border-left-color: #f59e0b; } .c-amber .num-badge { background: #f59e0b; } .c-amber h4 { color: #b45309; }';
+                        html += '.c-rose { border-left-color: #f43f5e; } .c-rose .num-badge { background: #f43f5e; } .c-rose h4 { color: #be123c; }';
+                        html += '.formula-box { background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: 1px solid #c7d2fe; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
+                        html += '.formula-box .label { font-size: 10px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.05em; }';
+                        html += '.formula-box .formula { font-size: 15px; font-weight: 700; color: #312e81; margin-top: 2px; }';
+                        html += '.concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }';
+                        html += '.concept-card { border: 1px solid #ddd6fe; background: #f5f3ff; border-radius: 10px; padding: 12px; text-align: center; }';
+                        html += '.concept-card .term { font-size: 12px; font-weight: 700; color: #5b21b6; }';
+                        html += '.concept-card .def { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4; }';
+                        html += '.question { margin-bottom: 16px; page-break-inside: avoid; }';
+                        html += '.question .q-text { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }';
+                        html += '.option { font-size: 12px; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 4px; color: #475569; }';
+                        html += '.option.correct { border-color: #10b981; background: #ecfdf5; color: #047857; font-weight: 600; }';
+                        html += '.flow-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }';
+                        html += '.flow-step-box { background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 10px 14px; text-align: center; flex: 1; min-width: 100px; }';
+                        html += '.flow-step-box .snum { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #10b981; color: white; font-size: 11px; font-weight: 800; margin-bottom: 4px; }';
+                        html += '.flow-step-box .stxt { font-size: 11px; font-weight: 600; color: #1e293b; }';
+                        html += '.flow-arrow { color: #94a3b8; font-size: 18px; }';
+                        html += '.warning-card { background: #fffbeb; border: 1px solid #fcd34d; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
+                        html += '.warning-card .wlabel { font-size: 12px; font-weight: 700; color: #92400e; }';
+                        html += '.warning-card .wtext { font-size: 12px; color: #78350f; margin-top: 2px; }';
+                        html += '.fact-item { font-size: 12px; color: #475569; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; gap: 8px; }';
+                        html += '.fact-icon { color: #14b8a6; font-size: 14px; flex-shrink: 0; }';
+                        html += '.footer { text-align: center; padding: 24px 48px; border-top: 2px solid #e2e8f0; margin-top: 20px; color: #94a3b8; font-size: 11px; }';
+                        html += '</style></head><body><div class="page">';
+
+                        html += '<div class="header">';
+                        html += '<div class="header-badge">EduAssistant AI</div>';
+                        html += '<h1 style="margin-top:12px">' + esc(exp.title) + '</h1>';
+                        html += '<div class="header-meta"><span>📅 ' + date + '</span><span>🔗 ' + esc(item.video_url || '') + '</span></div>';
+                        html += '</div>';
+
+                        html += '<div class="content">';
+
+                        var sColors = ['c-indigo','c-violet','c-sky','c-emerald','c-amber','c-rose'];
+                        if (Array.isArray(item.summary_sections) && item.summary_sections.length) {
+                                html += '<div class="section"><div class="section-title">📝 Konu Özeti</div>';
+                                item.summary_sections.forEach(function(s, i) {
+                                        var c = sColors[i % sColors.length];
+                                        html += '<div class="summary-card ' + c + '"><h4><span class="num-badge">' + (i+1) + '</span>' + esc(s.subtitle) + '</h4><p>' + esc(s.content) + '</p></div>';
+                                });
+                                html += '</div>';
+                        }
+
+                        if (Array.isArray(item.important_regions) && item.important_regions.length) {
+                                html += '<div class="section"><div class="section-title">⚠️ Dikkat Edilmesi Gerekenler</div>';
+                                item.important_regions.forEach(function(r) {
+                                        html += '<div class="warning-card"><div class="wlabel">' + esc(r.label || 'Dikkat') + '</div><div class="wtext">' + esc(r.text) + '</div></div>';
+                                });
+                                html += '</div>';
+                        }
+
+                        if (Array.isArray(item.process_flow) && item.process_flow.length) {
+                                html += '<div class="section"><div class="section-title">🔄 Süreç / Akış</div><div class="flow-steps">';
+                                item.process_flow.forEach(function(f, i) {
+                                        if (i > 0) html += '<span class="flow-arrow">→</span>';
+                                        html += '<div class="flow-step-box"><div class="snum">' + (i+1) + '</div><div class="stxt">' + esc(f.step) + '</div></div>';
+                                });
+                                html += '</div></div>';
+                        }
+
+                        if (Array.isArray(item.key_formulas) && item.key_formulas.length) {
+                                html += '<div class="section"><div class="section-title">📐 Temel Formüller / Kurallar</div>';
+                                item.key_formulas.forEach(function(f) {
+                                        html += '<div class="formula-box"><div class="label">' + esc(f.label) + '</div><div class="formula">' + esc(f.formula) + '</div></div>';
+                                });
+                                html += '</div>';
+                        }
+
+                        if (Array.isArray(item.key_concepts) && item.key_concepts.length) {
+                                html += '<div class="section"><div class="section-title">📚 Anahtar Kavramlar</div><div class="concept-grid">';
+                                item.key_concepts.forEach(function(c) {
+                                        html += '<div class="concept-card"><div class="term">' + esc(c.term) + '</div><div class="def">' + esc(c.definition) + '</div></div>';
+                                });
+                                html += '</div></div>';
+                        }
+
+                        if (Array.isArray(item.fun_facts) && item.fun_facts.length) {
+                                html += '<div class="section"><div class="section-title">💡 Biliyor Muydunuz?</div>';
+                                item.fun_facts.forEach(function(f) {
+                                        html += '<div class="fact-item"><span class="fact-icon">✓</span><span>' + esc(f) + '</span></div>';
+                                });
+                                html += '</div>';
+                        }
+
+                        if (Array.isArray(item.sorular) && item.sorular.length) {
+                                html += '<div class="section"><div class="section-title">📝 Sorular</div>';
+                                item.sorular.forEach(function(q, i) {
+                                        html += '<div class="question"><div class="q-text">' + (i+1) + '. ' + esc(q.soru) + '</div>';
+                                        ['A','B','C','D'].forEach(function(k) {
+                                                var isCorrect = k === q.dogru_cevap;
+                                                html += '<div class="option' + (isCorrect ? ' correct' : '') + '">' + k + ') ' + esc(q.secenekler && q.secenekler[k] || '') + (isCorrect ? ' ✓' : '') + '</div>';
+                                        });
+                                        html += '</div>';
+                                });
+                                html += '</div>';
+                        }
+
+                        html += '</div><div class="footer">Bu doküman EduAssistant AI tarafından otomatik oluşturulmuştur. &bull; ' + date + '</div></div></body></html>';
+
                         var win = window.open('', '_blank');
-                        var safe = exp.body.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                        win.document.write('<html><head><title>' + exp.title + '</title><style>body{font-family:Inter,sans-serif;padding:40px;max-width:800px;margin:auto;color:#1e293b}pre{white-space:pre-wrap;font-family:Inter,sans-serif;font-size:14px;line-height:1.7}</style></head><body><pre>' + safe + '</pre></body></html>');
+                        win.document.write(html);
                         win.document.close();
-                        setTimeout(function() { win.print(); }, 500);
+                        setTimeout(function() { win.print(); }, 600);
                 } else if (type === 'markdown') {
                         var blob = new Blob([exp.body], { type: 'text/markdown' });
                         var a = document.createElement('a');
@@ -497,7 +759,7 @@
                         window.open('https://docs.google.com/document/create?title=EduAssistant+Ozet&body=' + encodeURIComponent(exp.body.slice(0, 5000)), '_blank');
                 } else if (type === 'notion') {
                         navigator.clipboard.writeText(exp.body).then(function() {
-                                alert('Icerik panoya kopyalandi! Notion\'a yapistirabilirsiniz.');
+                                alert('İçerik panoya kopyalandı! Notion\'a yapıştırabilirsiniz.');
                         }).catch(function() {
                                 var blob = new Blob([exp.body], { type: 'text/markdown' });
                                 var a = document.createElement('a');
@@ -563,6 +825,37 @@
                                         }
                                 });
                         });
+
+                        // Fetch recommendations
+                        insightText.textContent = "Analiz ediliyor...";
+                        try {
+                                const recRes = await fetch(`${API_BASE}/api/recommendations`, { method: 'POST' });
+                                const recData = await recRes.json();
+                                
+                                if (recData.interests && recData.interests.length > 0) {
+                                        insightText.textContent = recData.interests.join(' • ');
+                                } else {
+                                        insightText.textContent = `${historyData.length} Analiz Arşivlendi`;
+                                }
+
+                                const recList = document.getElementById('recommendationList');
+                                if (recData.recommendations && recData.recommendations.length > 0) {
+                                        recList.innerHTML = recData.recommendations.map(r => `
+                                                <article class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                                        <h4 class="font-semibold text-slate-900 dark:text-slate-100 text-sm mb-1 line-clamp-2">${escapeHtml(r.title)}</h4>
+                                                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2">${escapeHtml(r.reason)}</p>
+                                                        <a href="${escapeHtml(r.search_url)}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
+                                                                <span class="material-symbols-outlined text-[14px]">play_circle</span> YouTube'da Ara
+                                                        </a>
+                                                </article>
+                                        `).join('');
+                                } else {
+                                        recList.innerHTML = '<p class="text-sm text-slate-500 col-span-2">Yeterli veri birikmediği için henüz öneri yok.</p>';
+                                }
+                        } catch (e) {
+                                console.error('Oneri hatasi:', e);
+                                insightText.textContent = `${historyData.length} Analiz Arşivlendi`;
+                        }
 
                 } catch (error) {
                         console.error("Geçmiş yüklenemedi:", error);
