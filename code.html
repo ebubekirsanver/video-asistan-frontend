@@ -377,9 +377,23 @@
                 const titleText = item.user_title || item.title || 'Video Analizi';
 
                 detailContent.innerHTML = `
-                        <div class="space-y-3">
-                                <p class="text-xs uppercase tracking-wide text-slate-500">Baslik</p>
-                                <p class="text-base font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(titleText)}</p>
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                                <div class="space-y-1">
+                                        <p class="text-xs uppercase tracking-wide text-slate-500">Baslik</p>
+                                        <p class="text-base font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(titleText)}</p>
+                                </div>
+                                <div class="relative" id="detailExportWrap">
+                                        <button id="detailExportBtn" type="button" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                                <span class="material-symbols-outlined text-[16px]">download</span> Disa Aktar
+                                                <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                                        </button>
+                                        <div id="detailExportMenu" class="hidden absolute right-0 mt-1 w-48 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl z-50 py-1">
+                                                <button type="button" data-detail-export="pdf" class="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>PDF</button>
+                                                <button type="button" data-detail-export="markdown" class="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">code</span>Markdown</button>
+                                                <button type="button" data-detail-export="gdocs" class="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">docs_add_on</span>Google Docs</button>
+                                                <button type="button" data-detail-export="notion" class="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">widgets</span>Notion</button>
+                                        </div>
+                                </div>
                         </div>
                         <div class="space-y-3">
                                 <p class="text-xs uppercase tracking-wide text-slate-500">Ozet</p>
@@ -393,6 +407,20 @@
                         </div>
                 `;
                 detailModal.classList.remove('hidden');
+                currentDetailItem = item;
+
+                // Export dropdown logic
+                var eBtn = document.getElementById('detailExportBtn');
+                var eMenu = document.getElementById('detailExportMenu');
+                if (eBtn && eMenu) {
+                        eBtn.onclick = function() { eMenu.classList.toggle('hidden'); };
+                        document.querySelectorAll('[data-detail-export]').forEach(function(b) {
+                                b.onclick = function() {
+                                        eMenu.classList.add('hidden');
+                                        handleDetailExport(b.dataset.detailExport, item);
+                                };
+                        });
+                }
 
                 if (Array.isArray(item.sorular) && item.sorular.length > 0) {
                         document.getElementById('detailQuestionsContent').innerHTML = renderQuestionList(item.sorular);
@@ -421,6 +449,62 @@
                         document.getElementById('detailQuestionsContent').innerHTML = renderQuestionList(item.sorular);
                 } catch (error) {
                         document.getElementById('detailQuestionsContent').innerHTML = '<p class="text-sm text-slate-500">Sorular yuklenemedi.</p>';
+                }
+        }
+
+        let currentDetailItem = null;
+
+        function buildExportFromItem(item) {
+                var title = item.user_title || item.title || 'Video Analizi';
+                var body = '# ' + title + '\n\nKaynak: ' + (item.video_url || '') + '\n\n';
+                if (Array.isArray(item.summary_sections)) {
+                        item.summary_sections.forEach(function(s) { body += '## ' + s.subtitle + '\n' + s.content + '\n\n'; });
+                } else if (item.ozet) {
+                        body += item.ozet + '\n\n';
+                }
+                var regions = Array.isArray(item.important_regions) ? item.important_regions : [];
+                if (regions.length) {
+                        body += '## Onemli Bolgeler\n';
+                        regions.forEach(function(r) { body += '- **' + (r.label || 'Kritik') + '**: ' + r.text + '\n'; });
+                        body += '\n';
+                }
+                if (Array.isArray(item.sorular) && item.sorular.length) {
+                        body += '## Sorular\n';
+                        item.sorular.forEach(function(q, i) {
+                                body += (i+1) + '. ' + q.soru + '\n';
+                                ['A','B','C','D'].forEach(function(k) { body += '   ' + k + ') ' + (q.secenekler && q.secenekler[k] || '') + '\n'; });
+                                body += '   Dogru: ' + q.dogru_cevap + '\n\n';
+                        });
+                }
+                return { title: title, body: body };
+        }
+
+        function handleDetailExport(type, item) {
+                var exp = buildExportFromItem(item);
+                if (type === 'pdf') {
+                        var win = window.open('', '_blank');
+                        var safe = exp.body.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        win.document.write('<html><head><title>' + exp.title + '</title><style>body{font-family:Inter,sans-serif;padding:40px;max-width:800px;margin:auto;color:#1e293b}pre{white-space:pre-wrap;font-family:Inter,sans-serif;font-size:14px;line-height:1.7}</style></head><body><pre>' + safe + '</pre></body></html>');
+                        win.document.close();
+                        setTimeout(function() { win.print(); }, 500);
+                } else if (type === 'markdown') {
+                        var blob = new Blob([exp.body], { type: 'text/markdown' });
+                        var a = document.createElement('a');
+                        a.href = URL.createObjectURL(blob);
+                        a.download = exp.title.replace(/[^a-zA-Z0-9]/g, '_') + '.md';
+                        a.click();
+                } else if (type === 'gdocs') {
+                        window.open('https://docs.google.com/document/create?title=EduAssistant+Ozet&body=' + encodeURIComponent(exp.body.slice(0, 5000)), '_blank');
+                } else if (type === 'notion') {
+                        navigator.clipboard.writeText(exp.body).then(function() {
+                                alert('Icerik panoya kopyalandi! Notion\'a yapistirabilirsiniz.');
+                        }).catch(function() {
+                                var blob = new Blob([exp.body], { type: 'text/markdown' });
+                                var a = document.createElement('a');
+                                a.href = URL.createObjectURL(blob);
+                                a.download = 'notion_export.md';
+                                a.click();
+                        });
                 }
         }
 

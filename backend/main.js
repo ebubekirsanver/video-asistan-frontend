@@ -170,34 +170,53 @@ function findAnalysisRecord(analysisId, videoId) {
 }
 
 function getQueryTerms(text) {
-  return String(text || '')
-    .toLowerCase()
+  const turkishMap = { 'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c' };
+  const normalized = String(text || '').toLowerCase().replace(/[ığüşöç]/g, c => turkishMap[c] || c);
+  return normalized
     .split(/\W+/)
-    .filter((term) => term.length > 3);
+    .filter((term) => term.length > 2);
 }
 
-function selectRelevantChunks(fullText, query, maxChunks = 4, chunkSize = 1500) {
+function selectRelevantChunks(fullText, query, maxChunks = 6, chunkSize = 2000) {
   const chunks = splitText(fullText, chunkSize);
   const terms = getQueryTerms(query);
+  const turkishMap = { 'ı': 'i', 'ğ': 'g', 'ü': 'u', 'ş': 's', 'ö': 'o', 'ç': 'c' };
   if (terms.length === 0) {
     return chunks.slice(0, Math.min(maxChunks, chunks.length));
   }
 
-  const scored = chunks.map((chunk) => {
-    const lower = chunk.toLowerCase();
+  const scored = chunks.map((chunk, idx) => {
+    const lower = chunk.toLowerCase().replace(/[ığüşöç]/g, c => turkishMap[c] || c);
     let score = 0;
     for (const term of terms) {
-      if (lower.includes(term)) {
+      // Count occurrences, not just presence
+      let pos = 0;
+      while ((pos = lower.indexOf(term, pos)) !== -1) {
         score += 1;
+        pos += term.length;
+      }
+      // Partial/stem match bonus
+      const stem = term.slice(0, Math.max(3, Math.floor(term.length * 0.7)));
+      if (stem !== term && lower.includes(stem)) {
+        score += 0.3;
       }
     }
-    return { chunk, score };
+    return { chunk, score, idx };
   });
 
-  return scored
-    .sort((a, b) => b.score - a.score)
-    .slice(0, Math.min(maxChunks, scored.length))
-    .map((item) => item.chunk);
+  // Always include first chunk for context
+  const sorted = scored.sort((a, b) => b.score - a.score);
+  const selected = sorted.slice(0, Math.min(maxChunks, sorted.length));
+  
+  // Ensure first chunk is included if not already
+  if (chunks.length > 0 && !selected.find(s => s.idx === 0)) {
+    selected.pop();
+    selected.push(scored.find(s => s.idx === 0));
+  }
+  
+  // Sort by original order for coherent reading
+  selected.sort((a, b) => a.idx - b.idx);
+  return selected.map((item) => item.chunk);
 }
 
 function buildSummaryPrompt(fullText, options) {
@@ -219,7 +238,13 @@ SADECE GECERLI JSON DON:
    "definition": "Kisa aciklama (Turkce, 1-3 cumle)"
   }
  ],
- "examples": ["Metindeki ornek 1", "Metindeki ornek 2"]
+ "examples": ["Metindeki ornek 1", "Metindeki ornek 2"],
+ "important_regions": [
+  {
+   "label": "Kritik veya vurgulu kismin kisa basligi",
+   "text": "Bu kismin neden onemli oldugunu 1-2 cumle ile acikla"
+  }
+ ]
 }
 
 Aciklama ekleme.
@@ -227,6 +252,7 @@ Kurallar:
 - "summary_sections" en az 3 bolum icersin.
 - "key_concepts" en az 5 kavram icersin.
 - "examples" metinden cikarilan en az 2 somut ornek icersin (yoksa bos liste donebilirsin).
+- "important_regions" metindeki vurgulanan, kritik veya onemli kisimlar. Tonlama, tekrar eden ifadeler, uyari ifadeleri (dikkat, onemli, unutmayin gibi) veya anahtar kavramlarin yogun gecistigi bolgeleri tespit et. En az 2, en fazla 5 adet olsun.
 - Metin disina cikma.
 - ${guidance}
 
@@ -408,6 +434,11 @@ function validateSummaryOutput(data) {
   const examples = data.examples;
   if (!Array.isArray(examples)) return false;
   if (!examples.every((item) => typeof item === 'string' && item.trim())) return false;
+
+  // important_regions is optional - sanitize if present
+  if (data.important_regions && !Array.isArray(data.important_regions)) {
+    data.important_regions = [];
+  }
 
   return true;
 }
@@ -735,6 +766,7 @@ function addHistoryEntry(entry) {
 const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json({ limit: '1mb' }));
+app.use(express.static(path.join(__dirname, '..')));
 
 app.post('/api/analyze', async (req, res) => {
   const reqId = createRequestId();
@@ -820,6 +852,7 @@ app.post('/api/analyze', async (req, res) => {
       summary_sections: summaryData.summary_sections || [],
       key_concepts: summaryData.key_concepts || [],
       examples: summaryData.examples || [],
+      important_regions: summaryData.important_regions || [],
       ozet: summaryData.ozet || '',
       sorular: questions,
       question_count: questionCount,
@@ -968,22 +1001,42 @@ app.post('/api/chat', async (req, res) => {
       return res.status(422).json({ detail: 'Altyazi yok' });
     }
 
-    const chunks = selectRelevantChunks(transcript, question, 4, 1600);
+    const chunks = selectRelevantChunks(transcript, question, 6, 2000);
     const contextText = chunks.map((chunk, index) => `Parca ${index + 1}: ${chunk}`).join('\n\n');
+    
+    // Build summary context from the analysis record
+    let summaryContext = '';
+    if (record.ozet) {
+      summaryContext = `\n\nOzet:\n${record.ozet}`;
+    } else if (Array.isArray(record.summary_sections) && record.summary_sections.length > 0) {
+      summaryContext = '\n\nOzet:\n' + record.summary_sections.map(s => `${s.subtitle}: ${s.content}`).join('\n');
+    }
+    
     const prompt = `
-Sen video transkriptine dayanan yardimci bir asistanisin. Kullaniciya olumlu ve net cevap ver.
-Oncelikle asagidaki metne dayan. Metinde acikca yoksa genel bilgiden yararlanabilirsin, ancak bunu belirt.
+Sen bu videonun icerigini cok iyi bilen, yardimci ve bilgili bir egitim asistanisin.
+Asagida videonun transkriptinden alinmis parcalar ve olusturulmus ozet var.
+
+ONEMLI KURALLAR:
+- Transkript parcalarini dikkatlice oku. Bilgi transkriptte varsa "transkriptte bahsedilmemistir" DEME, dogrudan cevapla.
+- Turkce karakterler transkriptte farkli yazilmis olabilir (ornegin "vitamin" yerine "vitam in" seklinde bolunmus olabilir). Anlam butunlugune bak.
+- Cevabini acik, anlasilir ve egitici bir dilde ver.
+- Madde isaretleri ve basliklar kullanarak duzgun formatla.
+- Sadece transkriptte veya ozette hic gecmeyen konularda "Bu konu videoda ele alinmamistir" de.
 
 Transkript parcalari:
 ${contextText}
+${summaryContext}
 
 Kullanici sorusu: ${question}
 `;
 
     const response = await callOpenRouterWithRetry({
-      messages: [{ role: 'user', content: prompt }],
+      messages: [
+        { role: 'system', content: 'Sen bir egitim asistanisin. Videodaki bilgileri kullanarak ogrencilere yardim ediyorsun. Bilgi transkriptte varsa dogrudan ve detayli cevap ver.' },
+        { role: 'user', content: prompt }
+      ],
       model: OPENROUTER_MODEL,
-      temperature: 0.4
+      temperature: 0.3
     }, 3, { reqId });
 
     const answer = response.choices?.[0]?.message?.content || '';
