@@ -16,6 +16,10 @@ const LOG_PAYLOAD = (process.env.LOG_PAYLOAD || 'false').toLowerCase() === 'true
 const LOG_PAYLOAD_TRUNCATE = Number.parseInt(process.env.LOG_PAYLOAD_TRUNCATE || '0', 10);
 const COOKIES_PATH = path.join(__dirname, 'cookies.txt');
 
+const DEFAULT_QUESTION_COUNT = 10;
+const MIN_QUESTION_COUNT = 5;
+const MAX_QUESTION_COUNT = 15;
+
 const PORT = Number.parseInt(process.env.PORT || '8010', 10);
 const EXTRA_PORT = Number.parseInt(process.env.EXTRA_PORT || (PORT === 8010 ? '8000' : '0'), 10);
 const HISTORY_LIMIT = Number.parseInt(process.env.HISTORY_LIMIT || '200', 10);
@@ -87,6 +91,120 @@ function splitText(text, size = 3000) {
     chunks.push(text.slice(i, i + size));
   }
   return chunks;
+}
+
+function clampQuestionCount(value) {
+  if (!Number.isFinite(value)) {
+    return DEFAULT_QUESTION_COUNT;
+  }
+  return Math.min(MAX_QUESTION_COUNT, Math.max(MIN_QUESTION_COUNT, value));
+}
+
+function normalizeQuestionText(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/[^a-z0-9\s?!.]/g, '')
+    .trim();
+}
+
+function sanitizeQuestions(questions) {
+  if (!Array.isArray(questions)) {
+    return [];
+  }
+  return questions.filter((q) => {
+    if (!q || typeof q !== 'object') return false;
+    if (typeof q.soru !== 'string' || !q.soru.trim()) return false;
+    if (!q.secenekler || typeof q.secenekler !== 'object') return false;
+    const keys = Object.keys(q.secenekler).sort().join('');
+    if (keys !== 'ABCD') return false;
+    if (!['A', 'B', 'C', 'D'].includes(q.dogru_cevap)) return false;
+    return true;
+  });
+}
+
+function dedupeQuestions(questions) {
+  const result = [];
+  const seen = new Set();
+  for (const q of sanitizeQuestions(questions)) {
+    const key = normalizeQuestionText(q.soru);
+    if (!key || seen.has(key)) {
+      continue;
+    }
+    seen.add(key);
+    result.push(q);
+  }
+  return result;
+}
+
+function getSummaryGuidance(summaryLength) {
+  if (summaryLength === 'kisa') {
+    return 'Ozet kisa olsun, her bolum 2-4 cumle.';
+  }
+  if (summaryLength === 'detayli') {
+    return 'Ozet detayli olsun, her bolum 6-9 cumle.';
+  }
+  return 'Ozet orta uzunlukta olsun, her bolum 4-6 cumle.';
+}
+
+function getDifficultyGuidance(questionDifficulty) {
+  if (questionDifficulty === 'kolay') {
+    return 'Soru zorlugu kolay olsun, temel bilgileri yoklasin.';
+  }
+  if (questionDifficulty === 'zor') {
+    return 'Soru zorlugu zor olsun, kavramlari ayirt ettirsin.';
+  }
+  return 'Soru zorlugu orta olsun, hem tanim hem uygulama sorgulansin.';
+}
+
+function buildFinalPrompt(fullText, options) {
+  const guidance = getSummaryGuidance(options.summaryLength);
+  const difficulty = getDifficultyGuidance(options.questionDifficulty);
+  return `
+SADECE GECERLI JSON DON:
+
+{
+ "title": "Konu basligi (Turkce, kisa ve net)",
+ "summary_sections": [
+  {
+   "subtitle": "Alt baslik",
+   "content": "Bu bolumun icerigi (Turkce, 4-8 cumle)"
+  }
+ ],
+ "key_concepts": [
+  {
+   "term": "Terim/Kavram",
+   "definition": "Kisa aciklama (Turkce, 1-3 cumle)"
+  }
+ ],
+ "examples": ["Metindeki ornek 1", "Metindeki ornek 2"],
+ "sorular": [
+  {
+   "soru": "...",
+   "secenekler": {
+     "A": "...",
+     "B": "...",
+     "C": "...",
+     "D": "..."
+   },
+   "dogru_cevap": "A"
+  }
+ ]
+}
+
+Aciklama ekleme.
+Kurallar:
+- "summary_sections" en az 3 bolum icersin.
+- "key_concepts" en az 5 kavram icersin.
+- "examples" metinden cikarilan en az 2 somut ornek icersin (yoksa bos liste donebilirsin).
+- Sorular ${options.questionCount} adet olmali ve birbirinin aynisi olmamali.
+- Sorular sadece metindeki bilgiye dayanmalidir, metin disina cikma.
+- ${difficulty}
+- ${guidance}
+
+Metin:
+${fullText}
+`;
 }
 
 function parseRetryAfterSeconds(message) {
@@ -386,48 +504,20 @@ async function getTranscript(youtubeUrl) {
   return null;
 }
 
-async function summarizeChunks(fullText, reqId) {
-  const chunks = splitText(fullText);
-  const summaries = [];
-
-  log('summarize chunks', { reqId, chunkCount: chunks.length, textLength: fullText.length });
-
-  for (const chunk of chunks) {
-    const res = await callOpenRouterWithRetry({
-      messages: [
-        { role: 'system', content: 'Kisa akademik ozet cikar.' },
-        { role: 'user', content: chunk }
-      ],
-      model: OPENROUTER_MODEL,
-      temperature: 0.3
-    }, 3, { reqId });
-
-    summaries.push(res.choices?.[0]?.message?.content || '');
+async function generateAdditionalQuestions(fullText, options, existingQuestions, reqId) {
+  const existingList = existingQuestions
+    .map((q, idx) => `${idx + 1}. ${q.soru}`)
+    .join('\n');
+  const missingCount = Math.max(0, options.questionCount - existingQuestions.length);
+  if (missingCount === 0) {
+    return [];
   }
 
-  return summaries;
-}
-
-async function generateFinalOutput(summaries, reqId) {
-  log('generate final output', { reqId, summaryCount: summaries.length });
+  const difficulty = getDifficultyGuidance(options.questionDifficulty);
   const prompt = `
 SADECE GECERLI JSON DON:
 
 {
- "title": "Konu basligi (Turkce, kisa ve net)",
- "summary_sections": [
-  {
-   "subtitle": "Alt baslik",
-   "content": "Bu bolumun icerigi (Turkce, 4-8 cumle)"
-  }
- ],
- "key_concepts": [
-  {
-   "term": "Terim/Kavram",
-   "definition": "Kisa aciklama (Turkce, 1-3 cumle)"
-  }
- ],
- "examples": ["Metindeki ornek 1", "Metindeki ornek 2"],
  "sorular": [
   {
    "soru": "...",
@@ -442,92 +532,13 @@ SADECE GECERLI JSON DON:
  ]
 }
 
-Aciklama ekleme.
 Kurallar:
-- "summary_sections" en az 3 bolum icersin.
-- "key_concepts" en az 5 kavram icersin.
-- "examples" metinden cikarilan en az 2 somut ornek icersin (yoksa bos liste donebilirsin).
-- Sorular coktan secmeli olsun ve "dogru_cevap" A/B/C/D'den biri olsun.
-
-Metin:
-${summaries.join('\n')}
-`;
-
-  const res = await callOpenRouterWithRetry({
-    messages: [{ role: 'user', content: prompt }],
-    model: OPENROUTER_MODEL,
-    temperature: 0.3,
-    response_format: { type: 'json_object' }
-  }, 3, { reqId });
-
-  const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
-  if (!validateOutput(data)) {
-    throw new Error('AI hatali format dondurdu');
-  }
-
-  log('final output validated', {
-    reqId,
-    sections: Array.isArray(data.summary_sections) ? data.summary_sections.length : 0,
-    concepts: Array.isArray(data.key_concepts) ? data.key_concepts.length : 0,
-    examples: Array.isArray(data.examples) ? data.examples.length : 0,
-    questions: Array.isArray(data.sorular) ? data.sorular.length : 0
-  });
-
-  try {
-    const sectionsText = (data.summary_sections || [])
-      .map((section) => `${section.subtitle}\n${section.content}`.trim())
-      .join('\n\n');
-    const ozetText = `${(data.title || '').trim()}\n\n${sectionsText}`.trim();
-    if (ozetText) {
-      data.ozet = ozetText;
-    }
-  } catch (_) {
-    // no-op
-  }
-
-  return data;
-}
-
-async function generateFinalOutputFromTranscript(fullText, reqId) {
-  log('generate final output (single pass)', { reqId, textLength: fullText.length });
-  const prompt = `
-SADECE GECERLI JSON DON:
-
-{
- "title": "Konu basligi (Turkce, kisa ve net)",
- "summary_sections": [
-  {
-   "subtitle": "Alt baslik",
-   "content": "Bu bolumun icerigi (Turkce, 4-8 cumle)"
-  }
- ],
- "key_concepts": [
-  {
-   "term": "Terim/Kavram",
-   "definition": "Kisa aciklama (Turkce, 1-3 cumle)"
-  }
- ],
- "examples": ["Metindeki ornek 1", "Metindeki ornek 2"],
- "sorular": [
-  {
-   "soru": "...",
-   "secenekler": {
-     "A": "...",
-     "B": "...",
-     "C": "...",
-     "D": "..."
-   },
-   "dogru_cevap": "A"
-  }
- ]
-}
-
-Aciklama ekleme.
-Kurallar:
-- "summary_sections" en az 3 bolum icersin.
-- "key_concepts" en az 5 kavram icersin.
-- "examples" metinden cikarilan en az 2 somut ornek icersin (yoksa bos liste donebilirsin).
-- Sorular coktan secmeli olsun ve "dogru_cevap" A/B/C/D'den biri olsun.
+- ${missingCount} adet yeni soru uret.
+- Sorular birbirinin aynisi olmamali.
+- Sorular sadece metindeki bilgiye dayanmalidir, metin disina cikma.
+- ${difficulty}
+- Daha once sorulanlar (TEKRAR ETME):
+${existingList}
 
 Metin:
 ${fullText}
@@ -538,6 +549,36 @@ ${fullText}
     model: OPENROUTER_MODEL,
     temperature: 0.3,
     response_format: { type: 'json_object' }
+  }, 2, { reqId });
+
+  const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
+  return sanitizeQuestions(data.sorular || []);
+}
+
+async function enforceQuestionCount(data, fullText, options, reqId) {
+  const desiredCount = options.questionCount;
+  let questions = dedupeQuestions(data.sorular || []);
+
+  if (questions.length < desiredCount) {
+    log('question shortfall', { reqId, have: questions.length, need: desiredCount });
+    const extra = await generateAdditionalQuestions(fullText, options, questions, reqId);
+    questions = dedupeQuestions([...questions, ...extra]);
+  }
+
+  data.sorular = questions.slice(0, desiredCount);
+  return data;
+}
+
+async function generateFinalOutput(summaries, reqId, options) {
+  log('generate final output', { reqId, summaryCount: summaries.length, questionCount: options.questionCount });
+  const summaryText = summaries.join('\n');
+  const prompt = buildFinalPrompt(summaryText, options);
+
+  const res = await callOpenRouterWithRetry({
+    messages: [{ role: 'user', content: prompt }],
+    model: OPENROUTER_MODEL,
+    temperature: 0.3,
+    response_format: { type: 'json_object' }
   }, 3, { reqId });
 
   const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
@@ -545,13 +586,53 @@ ${fullText}
     throw new Error('AI hatali format dondurdu');
   }
 
+  const filled = await enforceQuestionCount(data, summaryText, options, reqId);
+
   try {
-    const sectionsText = (data.summary_sections || [])
+    const sectionsText = (filled.summary_sections || [])
       .map((section) => `${section.subtitle}\n${section.content}`.trim())
       .join('\n\n');
-    const ozetText = `${(data.title || '').trim()}\n\n${sectionsText}`.trim();
+    const ozetText = `${(filled.title || '').trim()}\n\n${sectionsText}`.trim();
     if (ozetText) {
-      data.ozet = ozetText;
+      filled.ozet = ozetText;
+    }
+  } catch (_) {
+    // no-op
+  }
+
+  return filled;
+}
+async function generateFinalOutputFromTranscript(fullText, reqId, options) {
+  log('generate final output (single pass)', {
+    reqId,
+    textLength: fullText.length,
+    questionCount: options.questionCount,
+    summaryLength: options.summaryLength,
+    questionDifficulty: options.questionDifficulty
+  });
+  const prompt = buildFinalPrompt(fullText, options);
+
+  const res = await callOpenRouterWithRetry({
+    messages: [{ role: 'user', content: prompt }],
+    model: OPENROUTER_MODEL,
+    temperature: 0.3,
+    response_format: { type: 'json_object' }
+  }, 3, { reqId });
+
+  const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
+  if (!validateOutput(data)) {
+    throw new Error('AI hatali format dondurdu');
+  }
+
+  const filled = await enforceQuestionCount(data, fullText, options, reqId);
+
+  try {
+    const sectionsText = (filled.summary_sections || [])
+      .map((section) => `${section.subtitle}\n${section.content}`.trim())
+      .join('\n\n');
+    const ozetText = `${(filled.title || '').trim()}\n\n${sectionsText}`.trim();
+    if (ozetText) {
+      filled.ozet = ozetText;
     }
   } catch (_) {
     // no-op
@@ -559,13 +640,13 @@ ${fullText}
 
   log('final output validated (single pass)', {
     reqId,
-    sections: Array.isArray(data.summary_sections) ? data.summary_sections.length : 0,
-    concepts: Array.isArray(data.key_concepts) ? data.key_concepts.length : 0,
-    examples: Array.isArray(data.examples) ? data.examples.length : 0,
-    questions: Array.isArray(data.sorular) ? data.sorular.length : 0
+    sections: Array.isArray(filled.summary_sections) ? filled.summary_sections.length : 0,
+    concepts: Array.isArray(filled.key_concepts) ? filled.key_concepts.length : 0,
+    examples: Array.isArray(filled.examples) ? filled.examples.length : 0,
+    questions: Array.isArray(filled.sorular) ? filled.sorular.length : 0
   });
 
-  return data;
+  return filled;
 }
 
 function getCached(videoId) {
@@ -612,6 +693,7 @@ app.post('/api/analyze', async (req, res) => {
     const youtubeUrl = req.body?.youtube_url || '';
     const summaryLength = req.body?.summary_length || '';
     const questionDifficulty = req.body?.question_difficulty || '';
+    const questionCount = clampQuestionCount(Number.parseInt(req.body?.question_count || '', 10));
     const videoId = extractVideoId(youtubeUrl);
     if (!videoId) {
       log('analyze invalid url', { reqId, url: summarizeUrl(youtubeUrl) });
@@ -624,7 +706,8 @@ app.post('/api/analyze', async (req, res) => {
       url: summarizeUrl(youtubeUrl),
       model: OPENROUTER_MODEL,
       summaryLength,
-      questionDifficulty
+      questionDifficulty,
+      questionCount
     });
 
     const cached = getCached(videoId);
@@ -641,9 +724,17 @@ app.post('/api/analyze', async (req, res) => {
 
     log('analyze transcript ok', { reqId, length: transcript.length });
 
+    const options = {
+      summaryLength,
+      questionDifficulty,
+      questionCount
+    };
+
+    log('question count requested', { reqId, questionCount });
+
     const finalData = SINGLE_PASS
-      ? await generateFinalOutputFromTranscript(transcript, reqId)
-      : await generateFinalOutput(await summarizeChunks(transcript, reqId), reqId);
+      ? await generateFinalOutputFromTranscript(transcript, reqId, options)
+      : await generateFinalOutput(await summarizeChunks(transcript, reqId), reqId, options);
 
     setCached(videoId, finalData);
     pushHistory(videoId, youtubeUrl, finalData);

@@ -233,6 +233,20 @@
 <div class="p-4 space-y-3" id="quickPanelContent"></div>
 </div>
 </div>
+<div id="detailModal" class="hidden fixed inset-0 z-[70]">
+<div id="detailOverlay" class="absolute inset-0 bg-slate-900/40"></div>
+<div class="relative mx-auto mt-20 max-w-3xl w-[calc(100%-2rem)]">
+<div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl overflow-hidden">
+<div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+<h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Analiz Detayi</h3>
+<button class="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeDetailModal" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto" id="detailContent"></div>
+</div>
+</div>
+</div>
 <!-- Main Content Canvas -->
 <main class="ml-[280px] pt-16 min-h-screen bg-surface dark:bg-slate-950 transition-colors duration-200">
 <div class="p-8 max-w-[1400px] mx-auto">
@@ -246,12 +260,6 @@
 </nav>
 <h2 class="text-h2 font-h2 text-slate-900">Geçmiş Eğitimleriniz</h2>
 <p class="text-body-md font-body-md text-slate-500 mt-2">Paylaştığınız video linklerinden alınan transkriptler modele okutulur ve yazılı konu özetleri burada saklanır.</p>
-</div>
-<div class="flex gap-3">
-<div class="bg-slate-100 p-1 rounded-lg flex">
-<button class="px-4 py-1.5 bg-white shadow-sm rounded-md text-sm font-medium text-slate-900 flex items-center gap-2">Kısa</button>
-<button class="px-4 py-1.5 text-sm font-medium text-slate-500 flex items-center gap-2">Orta</button>
-</div>
 </div>
 </div>
 <!-- Bento-style Grid -->
@@ -294,89 +302,321 @@
 </div>
 </main>
 <script>
-        const THEME_KEY = 'edua_theme';
-        const SUBSCRIPTION_PLAN_KEY = 'edua_subscription_plan';
-        const API_BASE = 'http://127.0.0.1:8010';
-    
-    // Panel ve Buton Tanımlamaları
-    const quickPanel = document.getElementById('quickPanel');
-    const quickPanelTitle = document.getElementById('quickPanelTitle');
-    const quickPanelContent = document.getElementById('quickPanelContent');
-    const closeQuickPanel = document.getElementById('closeQuickPanel');
-    const notificationsButton = document.getElementById('notificationsButton');
-    const settingsButton = document.getElementById('settingsButton');
-    const profileButton = document.getElementById('profileButton');
-    let activePanelType = null;
+                const THEME_KEY = 'edua_theme';
+                const SUBSCRIPTION_PLAN_KEY = 'edua_subscription_plan';
+                const SUBSCRIPTION_CYCLE_KEY = 'edua_subscription_cycle';
+                const SUBSCRIPTION_UPDATED_AT_KEY = 'edua_subscription_updated_at';
+                const API_BASE = 'http://127.0.0.1:8010';
 
-    // --- VERİTABANINDAN GEÇMİŞİ ÇEKME FONKSİYONU ---
-    async function loadRealHistory() {
-        const historyList = document.getElementById('historyList');
-        const insightText = document.getElementById('historyInsight');
-        
-        try {
-            const response = await fetch(`${API_BASE}/api/history`);
-            const data = await response.json();
+        // Panel ve Buton Tanımlamaları
+        const quickPanel = document.getElementById('quickPanel');
+        const quickPanelTitle = document.getElementById('quickPanelTitle');
+        const quickPanelContent = document.getElementById('quickPanelContent');
+        const closeQuickPanel = document.getElementById('closeQuickPanel');
+        const notificationsButton = document.getElementById('notificationsButton');
+        const settingsButton = document.getElementById('settingsButton');
+        const profileButton = document.getElementById('profileButton');
+        const currentPlanBadge = document.getElementById('currentPlanBadge');
+        const detailModal = document.getElementById('detailModal');
+        const detailOverlay = document.getElementById('detailOverlay');
+        const detailContent = document.getElementById('detailContent');
+        const closeDetailModal = document.getElementById('closeDetailModal');
+        let activePanelType = null;
+        let historyData = [];
 
-            if (!data || data.length === 0) {
-                insightText.textContent = "Henüz analiz edilmiş özet bulunmuyor.";
-                return;
-            }
-
-            // Gerçek verileri haritaya dök (Kartları oluştur)
-            const cardsHtml = data.map(item => {
-                const date = new Date(item.created_at).toLocaleDateString('tr-TR');
-                return `
-                    <div class="history-card bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-shadow">
-                        <div class="flex justify-between items-start gap-3 mb-3">
-                            <span class="bg-indigo-100 text-indigo-700 text-[11px] font-semibold px-2 py-1 rounded uppercase">YAPAY ZEKA</span>
-                            <span class="text-slate-400 text-[12px] font-medium">${date}</span>
-                        </div>
-                        <h3 class="text-body-md font-semibold text-slate-900 leading-snug line-clamp-2">Video Analizi</h3>
-                        <p class="text-xs text-slate-500 mt-2">Kaynak: <a class="text-indigo-600 truncate block" href="${item.video_url}" target="_blank">${item.video_url}</a></p>
-                        <div class="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
-                            <p class="text-sm text-slate-700 line-clamp-4">${item.ozet}</p>
-                        </div>
-                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-                            <span class="text-xs font-medium text-slate-500">${item.sorular ? item.sorular.length : 0} Soru Hazır</span>
-                            <button class="text-indigo-600 text-sm font-semibold">Tam Metni Gör</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            // Yeni kartları "Yeni Ekle" butonunun önüne yerleştir
-            historyList.insertAdjacentHTML('afterbegin', cardsHtml);
-            
-            // Tavsiye merkezini güncelle
-            insightText.textContent = `${data.length} Analiz Arşivlendi`;
-
-        } catch (error) {
-            console.error("Geçmiş yüklenemedi:", error);
+        function escapeHtml(value) {
+                return String(value || '')
+                        .replaceAll('&', '&amp;')
+                        .replaceAll('<', '&lt;')
+                        .replaceAll('>', '&gt;')
+                        .replaceAll('"', '&quot;')
+                        .replaceAll("'", '&#39;');
         }
-    }
 
-    // Tema Uygulama
-    function applyTheme(theme) {
-        const isDark = theme === 'dark';
-        document.documentElement.classList.toggle('dark', isDark);
-        document.documentElement.classList.toggle('light', !isDark);
-    }
+        function formatSummary(item) {
+                if (Array.isArray(item.summary_sections) && item.summary_sections.length > 0) {
+                        return item.summary_sections
+                                .map(section => `<h5 class="text-sm font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(section.subtitle)}</h5><p class="text-sm text-slate-700 dark:text-slate-300">${escapeHtml(section.content)}</p>`)
+                                .join('');
+                }
+                if (item.ozet) {
+                        const lines = escapeHtml(item.ozet).split(/\n+/).filter(Boolean);
+                        return lines.map(line => `<p class="text-sm text-slate-700 dark:text-slate-300">${line}</p>`).join('');
+                }
+                return '<p class="text-sm text-slate-500">Ozet bulunamadi.</p>';
+        }
 
-    // Panelleri kapatma
-    function closePanel() {
-        quickPanel.classList.add('hidden');
-        activePanelType = null;
-    }
+        function renderQuestionList(questions) {
+                if (!Array.isArray(questions) || questions.length === 0) {
+                        return '<p class="text-sm text-slate-500">Soru bulunamadi.</p>';
+                }
 
-    // Sayfa yüklendiğinde çalışacak ana komutlar
-    document.addEventListener('DOMContentLoaded', () => {
-        applyTheme(localStorage.getItem(THEME_KEY) || 'light');
-        loadRealHistory(); // Gerçek verileri getir
-    });
+                return questions.map((q, idx) => {
+                        const answers = q.secenekler || {};
+                        const correctKey = q.dogru_cevap;
+                        const options = ['A', 'B', 'C', 'D'].map(key => {
+                                const isCorrect = key === correctKey;
+                                const baseClass = 'flex items-center gap-2 rounded-lg border p-3 text-sm';
+                                const stateClass = isCorrect
+                                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                                        : 'border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300';
+                                return `<div class="${baseClass} ${stateClass}"><span class="font-semibold">${key}.</span><span>${escapeHtml(answers[key] || '')}</span></div>`;
+                        }).join('');
 
-    // Panel tıklama olayları (Eski fonksiyonların devamı...)
-    notificationsButton.onclick = () => { quickPanel.classList.toggle('hidden'); quickPanelTitle.textContent = 'Bildirimler'; };
-    settingsButton.onclick = () => { quickPanel.classList.toggle('hidden'); quickPanelTitle.textContent = 'Ayarlar'; };
-    closeQuickPanel.onclick = closePanel;
+                        return `
+                                <div class="space-y-3">
+                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${idx + 1}. ${escapeHtml(q.soru || '')}</p>
+                                        <div class="space-y-2">${options}</div>
+                                </div>
+                        `;
+                }).join('');
+        }
+
+        function openDetailModal(item) {
+                const summaryHtml = formatSummary(item);
+                const questionsHtml = renderQuestionList(item.sorular || []);
+                detailContent.innerHTML = `
+                        <div class="space-y-3">
+                                <p class="text-xs uppercase tracking-wide text-slate-500">Ozet</p>
+                                <div class="space-y-3">${summaryHtml}</div>
+                        </div>
+                        <div class="border-t border-slate-200 dark:border-slate-700 pt-6 space-y-3">
+                                <p class="text-xs uppercase tracking-wide text-slate-500">Sorular ve Dogru Cevaplar</p>
+                                <div class="space-y-4">${questionsHtml}</div>
+                        </div>
+                `;
+                detailModal.classList.remove('hidden');
+        }
+
+        function closeDetail() {
+                detailModal.classList.add('hidden');
+                detailContent.innerHTML = '';
+        }
+
+        async function loadRealHistory() {
+                const historyList = document.getElementById('historyList');
+                const insightText = document.getElementById('historyInsight');
+
+                try {
+                        const response = await fetch(`${API_BASE}/api/history`);
+                        const data = await response.json();
+                        historyData = Array.isArray(data) ? data : [];
+
+                        if (!historyData || historyData.length === 0) {
+                                insightText.textContent = "Henüz analiz edilmiş özet bulunmuyor.";
+                                return;
+                        }
+
+                        historyList.querySelectorAll('.history-card').forEach(card => card.remove());
+
+                        const cardsHtml = historyData.map((item, index) => {
+                                const date = new Date(item.created_at).toLocaleDateString('tr-TR');
+                                return `
+                                        <div class="history-card bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-shadow">
+                                                <div class="flex justify-between items-start gap-3 mb-3">
+                                                        <span class="bg-indigo-100 text-indigo-700 text-[11px] font-semibold px-2 py-1 rounded uppercase">YAPAY ZEKA</span>
+                                                        <span class="text-slate-400 text-[12px] font-medium">${date}</span>
+                                                </div>
+                                                <h3 class="text-body-md font-semibold text-slate-900 leading-snug line-clamp-2">Video Analizi</h3>
+                                                <p class="text-xs text-slate-500 mt-2">Kaynak: <a class="text-indigo-600 truncate block" href="${item.video_url || '#'}" target="_blank">${item.video_url || '-'}</a></p>
+                                                <div class="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                                        <p class="text-sm text-slate-700 line-clamp-4">${item.ozet || ''}</p>
+                                                </div>
+                                                <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                                                        <span class="text-xs font-medium text-slate-500">${item.sorular ? item.sorular.length : 0} Soru Hazır</span>
+                                                        <button class="text-indigo-600 text-sm font-semibold" data-action="detail" data-index="${index}">Tam Metni Gör</button>
+                                                </div>
+                                        </div>
+                                `;
+                        }).join('');
+
+                        historyList.insertAdjacentHTML('afterbegin', cardsHtml);
+                        insightText.textContent = `${historyData.length} Analiz Arşivlendi`;
+
+                        historyList.querySelectorAll('button[data-action="detail"]').forEach(button => {
+                                button.addEventListener('click', () => {
+                                        const idx = Number.parseInt(button.dataset.index || '0', 10);
+                                        const item = historyData[idx];
+                                        if (item) {
+                                                openDetailModal(item);
+                                        }
+                                });
+                        });
+
+                } catch (error) {
+                        console.error("Geçmiş yüklenemedi:", error);
+                }
+        }
+
+        function applyTheme(theme) {
+                const isDark = theme === 'dark';
+                document.documentElement.classList.toggle('dark', isDark);
+                document.documentElement.classList.toggle('light', !isDark);
+        }
+
+        function renderNotifications() {
+                const today = new Date();
+                const todayKey = today.toDateString();
+                const todayItems = historyData.filter(item => {
+                        const createdAt = item.created_at ? new Date(item.created_at) : null;
+                        return createdAt && createdAt.toDateString() === todayKey;
+                });
+
+                if (todayItems.length === 0) {
+                        return '<p class="text-sm text-slate-500">Bugun bildirim yok.</p>';
+                }
+
+                return todayItems.map(item => {
+                        const createdAt = new Date(item.created_at);
+                        const time = createdAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+                        return `
+                                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+                                        <p class="text-xs text-slate-500">${time}</p>
+                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">Yeni ozet olusturuldu</p>
+                                        <p class="text-xs text-slate-500 mt-1">${escapeHtml(item.video_url || '')}</p>
+                                </div>
+                        `;
+                }).join('');
+        }
+
+        function getPlanInfo() {
+                const plan = localStorage.getItem(SUBSCRIPTION_PLAN_KEY) || 'free';
+                const cycle = localStorage.getItem(SUBSCRIPTION_CYCLE_KEY) || 'monthly';
+                const updatedAt = localStorage.getItem(SUBSCRIPTION_UPDATED_AT_KEY);
+
+                if (plan !== 'pro' || !updatedAt) {
+                        return { plan: 'Ucretsiz', daysLeft: '-' };
+                }
+
+                const startDate = new Date(updatedAt);
+                const endDate = new Date(startDate);
+                if (cycle === 'yearly') {
+                        endDate.setFullYear(endDate.getFullYear() + 1);
+                } else {
+                        endDate.setMonth(endDate.getMonth() + 1);
+                }
+
+                const diffMs = endDate.getTime() - Date.now();
+                const daysLeft = diffMs > 0 ? Math.ceil(diffMs / (1000 * 60 * 60 * 24)) : 0;
+                return { plan: 'Pro', daysLeft };
+        }
+
+        function renderPlanBadge() {
+                if (!currentPlanBadge) {
+                        return;
+                }
+                const info = getPlanInfo();
+                currentPlanBadge.textContent = `Plan: ${info.plan}`;
+        }
+
+        function renderSettings() {
+                const isDark = document.documentElement.classList.contains('dark');
+                const knobClass = isDark ? 'translate-x-4' : '';
+                return `
+                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-3">
+                                <div class="flex items-center justify-between">
+                                        <div>
+                                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">Karanlik Mod</p>
+                                                <p class="text-xs text-slate-500">Tum sayfalarda uygulanir</p>
+                                        </div>
+                                        <label class="inline-flex items-center cursor-pointer">
+                                                <input id="themeToggle" type="checkbox" class="sr-only" ${isDark ? 'checked' : ''}>
+                                                <span id="themeToggleTrack" class="w-10 h-6 bg-slate-200 dark:bg-slate-700 rounded-full relative transition">
+                                                        <span id="themeToggleKnob" class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition ${knobClass}"></span>
+                                                </span>
+                                        </label>
+                                </div>
+                        </div>
+                `;
+        }
+
+        function renderProfile() {
+                const rawUser = localStorage.getItem('edua_registered_user');
+                let user = null;
+                if (rawUser) {
+                        try {
+                                user = JSON.parse(rawUser);
+                        } catch (_) {
+                                user = null;
+                        }
+                }
+                const planInfo = getPlanInfo();
+
+                return `
+                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2">
+                                <p class="text-xs text-slate-500">Ad Soyad</p>
+                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(user?.fullName || 'Bilinmiyor')}</p>
+                                <p class="text-xs text-slate-500 mt-2">E-posta</p>
+                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(user?.email || 'Bilinmiyor')}</p>
+                                <p class="text-xs text-slate-500 mt-2">Plan</p>
+                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${planInfo.plan}</p>
+                                <p class="text-xs text-slate-500 mt-2">Kalan Gun</p>
+                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${planInfo.daysLeft}</p>
+                        </div>
+                `;
+        }
+
+        function openPanel(type) {
+                if (type === 'notifications') {
+                        quickPanelTitle.textContent = 'Bildirimler';
+                        quickPanelContent.innerHTML = renderNotifications();
+                }
+                if (type === 'settings') {
+                        quickPanelTitle.textContent = 'Ayarlar';
+                        quickPanelContent.innerHTML = renderSettings();
+                        const toggle = document.getElementById('themeToggle');
+                        const knob = document.getElementById('themeToggleKnob');
+                        if (toggle && knob) {
+                                toggle.addEventListener('change', () => {
+                                        const nextTheme = toggle.checked ? 'dark' : 'light';
+                                        localStorage.setItem(THEME_KEY, nextTheme);
+                                        applyTheme(nextTheme);
+                                        knob.classList.toggle('translate-x-4', toggle.checked);
+                                });
+                        }
+                }
+                if (type === 'profile') {
+                        quickPanelTitle.textContent = 'Kullanici Bilgileri';
+                        quickPanelContent.innerHTML = renderProfile();
+                }
+
+                quickPanel.classList.remove('hidden');
+                activePanelType = type;
+        }
+
+        function togglePanel(type) {
+                if (!quickPanel.classList.contains('hidden') && activePanelType === type) {
+                        closePanel();
+                        return;
+                }
+                openPanel(type);
+        }
+
+        function closePanel() {
+                quickPanel.classList.add('hidden');
+                activePanelType = null;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+                applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+                loadRealHistory();
+                renderPlanBadge();
+        });
+
+        notificationsButton.onclick = () => { togglePanel('notifications'); };
+        settingsButton.onclick = () => { togglePanel('settings'); };
+        profileButton.onclick = () => { togglePanel('profile'); };
+        closeQuickPanel.onclick = closePanel;
+        closeDetailModal.onclick = closeDetail;
+        detailOverlay.addEventListener('click', closeDetail);
+
+        window.addEventListener('storage', (event) => {
+                if (event.key === THEME_KEY) {
+                        applyTheme(event.newValue || 'light');
+                }
+                if ([SUBSCRIPTION_PLAN_KEY, SUBSCRIPTION_CYCLE_KEY, SUBSCRIPTION_UPDATED_AT_KEY].includes(event.key || '')) {
+                        renderPlanBadge();
+                }
+        });
 </script>
 </body></html>
