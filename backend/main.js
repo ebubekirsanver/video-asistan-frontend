@@ -151,12 +151,12 @@ function getSummaryGuidance(summaryLength) {
 
 function getDifficultyGuidance(questionDifficulty) {
   if (questionDifficulty === 'kolay') {
-    return 'Soru zorlugu kolay olsun, temel bilgileri yoklasin.';
+    return 'Sorular KOLAY seviyede olmalı: Temel tanımları, videoda doğrudan söylenen açık bilgileri ve yüzeysel gerçekleri sorgula. Cevaplar doğrudan metinden bulunabilmeli.';
   }
   if (questionDifficulty === 'zor') {
-    return 'Soru zorlugu zor olsun, kavramlari ayirt ettirsin.';
+    return 'Sorular ZOR seviyede olmalı: Kavramlar arası ilişkileri, derin analiz gerektiren durumları ve videodaki bilgilerin farklı senaryolara uygulanmasını sorgula. Çeldiriciler (yanlış seçenekler) birbirine yakın ve düşündürücü olmalı.';
   }
-  return 'Soru zorlugu orta olsun, hem tanim hem uygulama sorgulansin.';
+  return 'Sorular ORTA seviyede olmalı: Hem temel tanımları hem de bu bilgilerin temel seviyede uygulanmasını (örnek olaylar üzerinden) sorgula.';
 }
 
 function findAnalysisRecord(analysisId, videoId) {
@@ -337,6 +337,14 @@ ${fullText}
 
 function buildQuestionsPrompt(fullText, options, existingQuestions) {
   const difficulty = getDifficultyGuidance(options.questionDifficulty);
+  const isSayisal = options.subjectType === 'sayisal';
+  const sayisalExtra = isSayisal ? `
+BU SAYISAL/STEM BIR DERSTIR. Soru köklerinde işlem yapmayı, formül kullanımını veya bir problemin çözüm adımını sorgula.
+Sayısal verileri, birimleri ve hesaplamaları doğru kullan. Örnek: "V hızıyla giden..." gibi sayısal senaryolu sorular ekle.
+` : `
+BU SÖZEL/SOSYAL BIR DERSTIR. Sorular daha çok kavramların anlamını, olayların neden-sonuç ilişkilerini ve videodaki ana fikirleri sorgulamalı.
+`;
+
   const existingList = (existingQuestions || [])
     .map((q, idx) => `${idx + 1}. ${q.soru}`)
     .join('\n');
@@ -347,23 +355,28 @@ SADECE GECERLI JSON DON:
 {
  "sorular": [
   {
-   "soru": "...",
+   "soru": "Soru metni...",
    "secenekler": {
-     "A": "...",
-     "B": "...",
-     "C": "...",
-     "D": "..."
+     "A": "Secenek A",
+     "B": "Secenek B",
+     "C": "Secenek C",
+     "D": "Secenek D"
    },
-   "dogru_cevap": "A"
+   "dogru_cevap": "A",
+   "aciklama": "Dogru cevabin neden dogru oldugunu, yanlislarin neden yanlis oldugunu anlatan net aciklama (1-2 cumle)",
+   "zaman_referansi": "MM:SS formatinda videoda bu konunun gectigi sure"
   }
  ]
 }
 
 Kurallar:
 - ${options.questionCount} adet soru uret.
-- Sorular birbirinin aynisi olmamali.
-- Sorular sadece metindeki bilgiye dayanmalidir, metin disina cikma.
+- ${sayisalExtra}
 - ${difficulty}
+- Sorular birbirinden farkli olmali.
+- Sorular sadece metindeki bilgiye dayanmali, disina cikma.
+- "aciklama" alanı COK ONEMLIDIR; kullanıcının konuyu kavraması için doğru cevabı açıkla.
+- "zaman_referansi" alanını metindeki [MM:SS] etiketlerini kullanarak videodaki GERÇEK süreyi yaz. Kesinlikle uydurma, metindeki etiketi bul.
 - Daha once sorulanlar (TEKRAR ETME):
 ${existingList}
 
@@ -524,7 +537,10 @@ function validateSummaryOutput(data) {
 
 function cleanSubtitles(raw) {
   let cleaned = raw.replace(/WEBVTT.*?\n\n/s, '');
-  cleaned = cleaned.replace(/\d{1,2}:\d{2}:\d{2}.*?\n/g, '');
+  
+  // Format timestamps to [MM:SS] to help AI reference time accurately
+  cleaned = cleaned.replace(/(\d{2}):(\d{2}):(\d{2})\.\d{3}\s*-->\s*\d{2}:\d{2}:\d{2}\.\d{3}/g, ' [$2:$3] ');
+  
   cleaned = cleaned.replace(/<[^>]+>/g, '');
 
   const lines = cleaned
@@ -1132,6 +1148,7 @@ const chatHistories = new Map();
 app.post('/api/chat', async (req, res) => {
   const reqId = createRequestId();
   const startedAt = Date.now();
+  log('chat request processed with new rules', { reqId });
   try {
     if (!FAL_KEY) {
       log('chat missing FAL key', { reqId });
@@ -1197,25 +1214,27 @@ app.post('/api/chat', async (req, res) => {
     }
     const chatHistory = chatHistories.get(chatKey);
 
-    const systemPrompt = `Sen bu egitim videosunun icerigini tamamen bilen, uzman bir egitim asistanisin.
+    const systemPrompt = `Sen her konuda bilgi sahibi, yardımsever ve uzman bir egitim asistanisin. Sana referans olması için bir video transkripti ve ozeti verilecek.
 
-CRITIK KURALLAR:
-1. Asagidaki transkript ve ozet bilgilerini DIKKATLICE ve TAMAMEN oku.
-2. Bilgi transkriptte veya ozette VARSA, kesinlikle "bahsedilmemistir" veya "ele alinmamistir" DEME. Dogrudan ve detayli cevap ver.
-3. Transkriptlerde kelimeler yanlis bolunmus, bitisik yazilmis veya Turkce karakterler eksik olabilir. "vitamin" yerine "vitam in", "çözünen" yerine "cozunen" gibi. Bu farkliliklara ragmen ANLAMI yakala.
-4. Eger bilgi transkriptte farkli bir baslik altinda veya farkli bir ifadeyle anlatiliyorsa, yine de bul ve cevapla.
-5. Cevaplarini Turkce, acik, anlasilir ve egitici ver.
-6. Madde isaretleri (*), basliklar (**baslik**) ve numarali listeler kullanarak duzgun formatla.
-7. SADECE transkriptte ve ozette GERCEKTEN HIC bahsedilmeyen, tamamen ilgisiz konularda "Bu konu videoda ele alinmamistir" de.
-8. Onceki sohbet gecmisini de dikkate al, ayni seyleri tekrar sormak yerine devam et.`;
+TEMEL GÖREVİN:
+Kullanıcının sorduğu HER soruya, video ile ilgili olsun veya olmasın, mutlaka en doğru ve detaylı cevabı vermektir.
 
-    const userPrompt = `--- TRANSKRIPT ---
+KURALLAR:
+1. Soru videodaki bir konuyla ilgiliyse, öncelikle transkriptteki bilgileri kullanarak cevap ver.
+2. Soru VİDEO HARİCİ bir konuyla ilgiliyse (tamamen bağımsız olsa bile), uzman eğitim bilginle eksiksiz cevap ver. Asla "videoda yok" veya "cevap veremem" deme.
+3. Kullanıcıya her zaman eğitici, nazik ve destekleyici bir dille yaklaş.
+4. Cevaplarını Türkçe, açık ve madde işaretleri (*) kullanarak formatla.
+5. Önceki sohbet geçmişini dikkate alarak akıcı bir diyalog sürdür.`;
+
+    const userPrompt = `--- REFERANS VIDEO ICERIGI ---
 ${contextText}
 ${summaryContext}
 ${conceptsContext}
 
 --- KULLANICI SORUSU ---
-${question}`;
+${question}
+
+Uzman egitim bilginle bu soruyu detayli bir sekilde cevapla.`;
 
     // Build messages array with conversation history (last 10 turns max)
     const messages = [
@@ -1343,6 +1362,47 @@ Kurallar:
     log('recommendations error', { reqId, message: String(error?.message || error) });
     return res.status(500).json({ detail: String(error?.message || error) });
   }
+});
+
+// --- FEEDBACK SYSTEM ---
+const feedbackStore = { liked: [], disliked: [] };
+
+app.post('/api/feedback', (req, res) => {
+  const { title, action } = req.body || {};
+  if (!title || !['like', 'dislike', 'remove'].includes(action)) {
+    return res.status(400).json({ detail: 'Gecersiz feedback' });
+  }
+
+  // Remove from both lists first
+  feedbackStore.liked = feedbackStore.liked.filter(t => t !== title);
+  feedbackStore.disliked = feedbackStore.disliked.filter(t => t !== title);
+
+  if (action === 'like') {
+    feedbackStore.liked.push(title);
+  } else if (action === 'dislike') {
+    feedbackStore.disliked.push(title);
+  }
+
+  log('feedback recorded', { title, action, liked: feedbackStore.liked.length, disliked: feedbackStore.disliked.length });
+  return res.json({ status: 'success', feedback: feedbackStore });
+});
+
+app.get('/api/feedback', (req, res) => {
+  return res.json(feedbackStore);
+});
+
+// --- USER SETTINGS ---
+let userSettings = {};
+
+app.get('/api/user-settings', (req, res) => {
+  return res.json(userSettings);
+});
+
+app.post('/api/user-settings', (req, res) => {
+  const newSettings = req.body || {};
+  userSettings = { ...userSettings, ...newSettings };
+  log('settings updated', userSettings);
+  return res.json({ status: 'success', settings: userSettings });
 });
 
 app.get('/health', (req, res) => {

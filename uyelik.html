@@ -133,10 +133,10 @@
           </div>
 
           <ul class="mt-6 space-y-2 text-sm text-slate-700">
-            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Ayda 8 video ozetleme</span></li>
-            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Temel soru uretimi (10 soru)</span></li>
-            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Temel tavsiye motoru</span></li>
-            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Topluluk destek kanali</span></li>
+            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Ayda 10 video özetleme</span></li>
+            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Max 5 soru üretimi</span></li>
+            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Analiz başı 3 chatbot sorusu</span></li>
+            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Standart PDF dışa aktar</span></li>
           </ul>
 
           <button id="selectFreePlan" type="button" class="mt-6 w-full rounded-lg border border-slate-300 text-slate-800 font-semibold py-2.5 hover:bg-slate-50 transition-colors">Ucretsiz Plani Sec</button>
@@ -160,10 +160,11 @@
             </div>
 
             <ul class="mt-6 space-y-2 text-sm text-slate-700">
-              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Sinirsiz video ozetleme</span></li>
-              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Gelismis soru bankasi (50+ soru)</span></li>
-              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Kisisel tavsiye ve adaptif feed</span></li>
-              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Oncelikli destek ve hizli isleme</span></li>
+              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Sınırsız video özetleme</span></li>
+              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>15+ Soru & Zorluk seçenekleri</span></li>
+              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Sınırsız chatbot etkileşimi</span></li>
+              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Görsel İnfografik Posterler</span></li>
+              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>YouTube Senkronizasyonu</span></li>
             </ul>
 
             <button id="selectProPlan" type="button" class="mt-6 w-full rounded-lg bg-indigo-600 text-white font-semibold py-2.5 hover:bg-indigo-700 transition-colors">Pro Plana Gec</button>
@@ -184,24 +185,29 @@
             </thead>
             <tbody class="text-slate-700">
               <tr class="border-b border-slate-100">
-                <td class="py-3">Aylik ozet limiti</td>
-                <td class="py-3">8</td>
-                <td class="py-3">Sinirsiz</td>
+                <td class="py-3">Aylık özet limiti</td>
+                <td class="py-3">10 Video</td>
+                <td class="py-3">Sınırsız</td>
               </tr>
               <tr class="border-b border-slate-100">
-                <td class="py-3">Soru uretimi</td>
-                <td class="py-3">10 soru</td>
-                <td class="py-3">50+ soru</td>
+                <td class="py-3">Soru üretimi</td>
+                <td class="py-3">Max 5</td>
+                <td class="py-3">15+ (Zorluk Seçenekli)</td>
               </tr>
               <tr class="border-b border-slate-100">
-                <td class="py-3">Reward bonusu</td>
-                <td class="py-3">Standart</td>
-                <td class="py-3">2x puan carpani</td>
+                <td class="py-3">Chatbot sınırı</td>
+                <td class="py-3">3 Soru / Analiz</td>
+                <td class="py-3">Sınırsız</td>
+              </tr>
+              <tr class="border-b border-slate-100">
+                <td class="py-3">İnfografik Posterler</td>
+                <td class="py-3">Kilitli (Blur)</td>
+                <td class="py-3">Sınırsız Erişim</td>
               </tr>
               <tr>
-                <td class="py-3">Tavsiye sistemi</td>
-                <td class="py-3">Temel</td>
-                <td class="py-3">Kisisellestirilmis Pro Feed</td>
+                <td class="py-3">Dışa Aktarma</td>
+                <td class="py-3">Temel PDF</td>
+                <td class="py-3">Premium PDF & GDocs / Notion</td>
               </tr>
             </tbody>
           </table>
@@ -346,7 +352,14 @@
       setCardStates(plan);
       setPriceByCycle(cycle);
 
-      headerPlanChip.textContent = 'Aktif Plan: ' + planLabel;
+      headerPlanChip.textContent = 'Aktif Plan: ' + (plan === 'pro' ? 'PRO' : 'Ücretsiz');
+      if (plan === 'pro') {
+        headerPlanChip.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+        headerPlanChip.classList.add('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
+      } else {
+        headerPlanChip.classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+        headerPlanChip.classList.remove('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
+      }
       activePlanText.textContent = planLabel + ' (' + cycleLabel + ')';
       planUpdatedText.textContent = 'Plan bitis tarihi: ' + getPlanEndDate(plan, cycle, updatedAt);
     }

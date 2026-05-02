@@ -207,9 +207,10 @@
 <input class="bg-transparent border-none focus:ring-0 text-sm w-full text-slate-600 dark:text-slate-200 dark:placeholder:text-slate-500" placeholder="Eğitimlerde ara..." type="text"/>
 </div>
 <div class="flex items-center gap-6">
-<a class="hidden lg:inline-flex items-center rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1.5 border border-indigo-100 hover:bg-indigo-100 transition-colors" href="uyelik.html" id="currentPlanBadge">Plan: Ucretsiz</a>
-<button class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" id="notificationsButton" type="button">
+<a class="hidden lg:inline-flex items-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-4 py-1.5 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 transition-colors" href="uyelik.html" id="currentPlanBadge">Aktif Plan: Ücretsiz</a>
+<button class="relative text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" id="notificationsButton" type="button">
 <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span id="notifBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center px-1 animate-bounce" style="animation-duration:2s;animation-iteration-count:3"></span>
 </button>
 <button class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" id="settingsButton" type="button">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
@@ -281,6 +282,20 @@
                     <span class="material-symbols-outlined text-[20px]" data-icon="expand_more">expand_more</span>
 </button>
 </div>
+
+<!-- YouTube Watch Later Section (Dynamically shown) -->
+<section class="mt-12 hidden" id="watchLaterSection">
+<div class="bg-gradient-to-r from-red-50 to-rose-50 border border-red-100 dark:border-rose-900/50 dark:bg-slate-900 rounded-2xl p-6 shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube" class="w-8 h-8">
+<div>
+<h3 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Daha Sonra İzle Listesi</h3>
+<p class="text-sm text-slate-600 dark:text-slate-400 mt-0.5">YouTube hesabınızdan otomatik çekilen videolar.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="watchLaterList"></div>
+</div>
+</section>
 
 <!-- Recommendation Section -->
 <section class="mt-12">
@@ -361,6 +376,25 @@
                         html += lines.map(line => `<p class="text-sm text-slate-700 dark:text-slate-300 mb-2">${line}</p>`).join('');
                 } else {
                         html += '<p class="text-sm text-slate-500">Ozet bulunamadi.</p>';
+                }
+
+                const plan = localStorage.getItem('edua_subscription_plan') || 'free';
+                const isPro = plan === 'pro';
+
+                if (!isPro) {
+                        html += `
+                        <div class="relative mt-8 p-12 border-2 border-dashed border-indigo-200 dark:border-indigo-800 rounded-2xl bg-indigo-50/30 dark:bg-indigo-950/20 text-center overflow-hidden">
+                                <div class="absolute inset-0 backdrop-blur-[2px]"></div>
+                                <div class="relative z-10 flex flex-col items-center">
+                                        <div class="bg-indigo-600 text-white p-3 rounded-full mb-3 shadow-lg">
+                                                <span class="material-symbols-outlined text-[24px]">lock</span>
+                                        </div>
+                                        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100 mb-1">Görsel Özet Paneli Kilitli</h4>
+                                        <p class="text-xs text-slate-600 dark:text-slate-400 max-w-[240px] mb-4">Surec akisi, kavram haritasi ve temel formulleri gormek için PRO'ya geçin.</p>
+                                        <a href="uyelik.html" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-5 py-2 rounded-lg transition-colors">Planı Yükselt</a>
+                                </div>
+                        </div>`;
+                        return html;
                 }
 
                 // Important Regions
@@ -491,6 +525,8 @@
         }
 
         async function openDetailModal(item) {
+                const plan = localStorage.getItem('edua_subscription_plan') || 'free';
+                const isPro = plan === 'pro';
                 const summaryHtml = formatSummary(item);
                 const titleText = item.user_title || item.title || 'Video Analizi';
 
@@ -500,17 +536,10 @@
                                         <p class="text-xs uppercase tracking-wide text-slate-500">Baslik</p>
                                         <p class="text-base font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(titleText)}</p>
                                 </div>
-                                <div class="relative" id="detailExportWrap">
+                                <div class="relative">
                                         <button id="detailExportBtn" type="button" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                                                <span class="material-symbols-outlined text-[16px]">download</span> Disa Aktar
-                                                <span class="material-symbols-outlined text-[14px]">expand_more</span>
+                                                <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span> PDF İndir
                                         </button>
-                                        <div id="detailExportMenu" class="hidden absolute right-0 mt-1 w-48 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl z-50 py-1">
-                                                <button type="button" data-detail-export="pdf" class="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>PDF</button>
-                                                <button type="button" data-detail-export="markdown" class="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">code</span>Markdown</button>
-                                                <button type="button" data-detail-export="gdocs" class="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">docs_add_on</span>Google Docs</button>
-                                                <button type="button" data-detail-export="notion" class="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">widgets</span>Notion</button>
-                                        </div>
                                 </div>
                         </div>
                         <div class="space-y-3">
@@ -527,17 +556,12 @@
                 detailModal.classList.remove('hidden');
                 currentDetailItem = item;
 
-                // Export dropdown logic
+                // Export button logic
                 var eBtn = document.getElementById('detailExportBtn');
-                var eMenu = document.getElementById('detailExportMenu');
-                if (eBtn && eMenu) {
-                        eBtn.onclick = function() { eMenu.classList.toggle('hidden'); };
-                        document.querySelectorAll('[data-detail-export]').forEach(function(b) {
-                                b.onclick = function() {
-                                        eMenu.classList.add('hidden');
-                                        handleDetailExport(b.dataset.detailExport, item);
-                                };
-                        });
+                if (eBtn) {
+                        eBtn.onclick = function() {
+                                handleDetailExport('pdf', item);
+                        };
                 }
 
                 if (Array.isArray(item.sorular) && item.sorular.length > 0) {
@@ -780,6 +804,54 @@
                 const insightText = document.getElementById('historyInsight');
 
                 try {
+                        const isYtConnected = localStorage.getItem('edua_yt_connected') === 'true';
+                        const watchLaterSection = document.getElementById('watchLaterSection');
+                        const watchLaterList = document.getElementById('watchLaterList');
+                        
+                        if (isYtConnected) {
+                                watchLaterSection.classList.remove('hidden');
+                                // Dummy Watch Later Data
+                                const dummyWL = [
+                                        { url: 'https://www.youtube.com/watch?v=1bEg00Bq7o8', title: 'The Future of AI Explained', img: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=300&h=170&fit=crop', duration: '12:45', author: 'Tech Vision' },
+                                        { url: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', title: 'Learn React in 30 Minutes', img: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=300&h=170&fit=crop', duration: '32:10', author: 'CodeAcademy' },
+                                        { url: 'https://www.youtube.com/watch?v=JhHMJCUmq28', title: 'Quantum Computing Fundamentals', img: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=300&h=170&fit=crop', duration: '18:20', author: 'Science Today' }
+                                ];
+                                watchLaterList.innerHTML = dummyWL.map(v => `
+                                        <div class="rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-shadow group relative">
+                                                <div class="relative">
+                                                        <img src="${v.img}" alt="${v.title}" class="w-full h-32 object-cover">
+                                                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">${v.duration}</span>
+                                                </div>
+                                                <div class="p-3">
+                                                        <h4 class="font-semibold text-slate-900 dark:text-slate-100 text-xs line-clamp-2 mb-1 group-hover:text-indigo-600 transition-colors">${v.title}</h4>
+                                                        <p class="text-[10px] text-slate-500">${v.author}</p>
+                                                        <a href="islem.html?url=${encodeURIComponent(v.url)}" class="mt-2 block w-full text-center py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
+                                                                Hemen Özetle
+                                                        </a>
+                                                </div>
+                                        </div>
+                                `).join('');
+                                
+                                const plan = localStorage.getItem('edua_subscription_plan') || 'free';
+                                const isPro = plan === 'pro';
+
+                                if (!isPro) {
+                                        watchLaterList.classList.add('relative');
+                                        watchLaterList.innerHTML += `
+                                                <div class="absolute inset-0 bg-white/70 dark:bg-slate-950/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700">
+                                                        <div class="bg-indigo-100 dark:bg-indigo-900/50 p-3 rounded-full mb-3 text-indigo-600 dark:text-indigo-400">
+                                                                <span class="material-symbols-outlined text-[28px]">lock</span>
+                                                        </div>
+                                                        <p class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1">PRO Özellik</p>
+                                                        <p class="text-xs text-slate-600 dark:text-slate-400 max-w-[200px] text-center mb-3">Daha Sonra İzle listenize erişmek için planınızı yükseltin.</p>
+                                                        <a href="uyelik.html" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors">Yükselt</a>
+                                                </div>
+                                        `;
+                                }
+                        } else {
+                                watchLaterSection.classList.add('hidden');
+                        }
+
                         const response = await fetch(`${API_BASE}/api/history`);
                         const data = await response.json();
                         historyData = Array.isArray(data) ? data : [];
@@ -838,17 +910,71 @@
                                         insightText.textContent = `${historyData.length} Analiz Arşivlendi`;
                                 }
 
+                                // Load existing feedback
+                                let feedbackData = { liked: [], disliked: [] };
+                                try { const fbRes = await fetch(`${API_BASE}/api/feedback`); feedbackData = await fbRes.json(); } catch(_){}
+
                                 const recList = document.getElementById('recommendationList');
                                 if (recData.recommendations && recData.recommendations.length > 0) {
-                                        recList.innerHTML = recData.recommendations.map(r => `
-                                                <article class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                        recList.innerHTML = recData.recommendations.map(r => {
+                                                const isLiked = feedbackData.liked?.includes(r.title);
+                                                const isDisliked = feedbackData.disliked?.includes(r.title);
+                                                return `
+                                                <article class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all relative" data-rec-title="${escapeHtml(r.title)}">
                                                         <h4 class="font-semibold text-slate-900 dark:text-slate-100 text-sm mb-1 line-clamp-2">${escapeHtml(r.title)}</h4>
                                                         <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2">${escapeHtml(r.reason)}</p>
-                                                        <a href="${escapeHtml(r.search_url)}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
-                                                                <span class="material-symbols-outlined text-[14px]">play_circle</span> YouTube'da Ara
-                                                        </a>
-                                                </article>
-                                        `).join('');
+                                                        <div class="flex items-center justify-between">
+                                                                <a href="${escapeHtml(r.search_url)}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
+                                                                        <span class="material-symbols-outlined text-[14px]">play_circle</span> YouTube'da Ara
+                                                                </a>
+                                                                <div class="flex items-center gap-1">
+                                                                        <button type="button" data-fb-action="like" class="rounded-lg p-1.5 transition-all hover:scale-110 ${isLiked ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600' : 'text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'}" title="Beğen">
+                                                                                <span class="material-symbols-outlined text-[18px]" style="${isLiked ? 'font-variation-settings:\"FILL\" 1' : ''}">thumb_up</span>
+                                                                        </button>
+                                                                        <button type="button" data-fb-action="dislike" class="rounded-lg p-1.5 transition-all hover:scale-110 ${isDisliked ? 'bg-rose-100 dark:bg-rose-900/40 text-rose-600' : 'text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20'}" title="Beğenme">
+                                                                                <span class="material-symbols-outlined text-[18px]" style="${isDisliked ? 'font-variation-settings:\"FILL\" 1' : ''}">thumb_down</span>
+                                                                        </button>
+                                                                </div>
+                                                        </div>
+                                                </article>`;
+                                        }).join('');
+                                        
+                                        const plan = localStorage.getItem('edua_subscription_plan') || 'free';
+                                        const isPro = plan === 'pro';
+
+                                        if (!isPro) {
+                                                recList.classList.add('relative');
+                                                recList.innerHTML += `
+                                                        <div class="absolute inset-0 bg-white/70 dark:bg-slate-950/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700">
+                                                                <div class="bg-violet-100 dark:bg-violet-900/50 p-3 rounded-full mb-3 text-violet-600 dark:text-violet-400">
+                                                                        <span class="material-symbols-outlined text-[28px]">lock</span>
+                                                                </div>
+                                                                <p class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1">PRO Özellik</p>
+                                                                <p class="text-xs text-slate-600 dark:text-slate-400 max-w-[200px] text-center mb-3">Kişisel yapay zeka tavsiyelerini görmek için planınızı yükseltin.</p>
+                                                                <a href="uyelik.html" class="bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors">Yükselt</a>
+                                                        </div>
+                                                `;
+                                        }
+
+                                        // Feedback event delegation
+                                        recList.addEventListener('click', async function(e) {
+                                                const btn = e.target.closest('[data-fb-action]');
+                                                if (!btn) return;
+                                                const article = btn.closest('[data-rec-title]');
+                                                const title = article?.dataset.recTitle;
+                                                const action = btn.dataset.fbAction;
+                                                if (!title) return;
+                                                const isActive = btn.classList.contains('bg-emerald-100') || btn.classList.contains('bg-rose-100');
+                                                try {
+                                                        await fetch(`${API_BASE}/api/feedback`, {
+                                                                method: 'POST',
+                                                                headers: { 'Content-Type': 'application/json' },
+                                                                body: JSON.stringify({ title, action: isActive ? 'remove' : action })
+                                                        });
+                                                        // Reload recommendations
+                                                        loadRealHistory();
+                                                } catch(err) { console.error('Feedback hata:', err); }
+                                        });
                                 } else {
                                         recList.innerHTML = '<p class="text-sm text-slate-500 col-span-2">Yeterli veri birikmediği için henüz öneri yok.</p>';
                                 }
@@ -859,6 +985,8 @@
 
                 } catch (error) {
                         console.error("Geçmiş yüklenemedi:", error);
+                } finally {
+                        updateNotificationBadge();
                 }
         }
 
@@ -868,7 +996,7 @@
                 document.documentElement.classList.toggle('light', !isDark);
         }
 
-        function renderNotifications() {
+        function getNotificationsData() {
                 const today = new Date();
                 const todayKey = today.toDateString();
                 const todayItems = historyData.filter(item => {
@@ -876,21 +1004,108 @@
                         return createdAt && createdAt.toDateString() === todayKey;
                 });
 
-                if (todayItems.length === 0) {
-                        return '<p class="text-sm text-slate-500">Bugun bildirim yok.</p>';
+                let notifications = [];
+
+                // Motivational progress notification
+                if (todayItems.length > 0) {
+                        const goals = [3, 5, 10];
+                        let goalText = '';
+                        const nextGoal = goals.find(g => g > todayItems.length);
+                        if (nextGoal) {
+                                goalText = `Hedefe ${nextGoal - todayItems.length} video kaldı!`;
+                        } else {
+                                goalText = 'Günlük hedefini aştın, harikasın! 🏆';
+                        }
+                        notifications.push({
+                                icon: 'trending_up',
+                                iconColor: 'text-emerald-500',
+                                bgColor: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50',
+                                title: `Bugün ${todayItems.length} video özetledin!`,
+                                subtitle: goalText,
+                                time: 'Şimdi'
+                        });
+                } else {
+                        notifications.push({
+                                icon: 'emoji_objects',
+                                iconColor: 'text-amber-500',
+                                bgColor: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50',
+                                title: 'Bugün henüz video özetlemedin',
+                                subtitle: 'Hedefine ulaşmak için hemen başla! 🚀',
+                                time: 'Şimdi'
+                        });
                 }
 
-                return todayItems.map(item => {
+                // Recent analysis notifications
+                todayItems.slice(0, 3).forEach(item => {
                         const createdAt = new Date(item.created_at);
                         const time = createdAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-                        return `
-                                <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
-                                        <p class="text-xs text-slate-500">${time}</p>
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">Yeni ozet olusturuldu</p>
-                                        <p class="text-xs text-slate-500 mt-1">${escapeHtml(item.video_url || '')}</p>
+                        notifications.push({
+                                icon: 'check_circle',
+                                iconColor: 'text-indigo-500',
+                                bgColor: 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800/50',
+                                title: 'Yeni özet oluşturuldu',
+                                subtitle: escapeHtml(item.user_title || item.title || item.video_url || '').slice(0, 60),
+                                time: time
+                        });
+                });
+
+                // AI recommendation suggestion
+                if (historyData.length > 0) {
+                        const lastItem = historyData[0];
+                        const lastTitle = lastItem.user_title || lastItem.title || '';
+                        if (lastTitle) {
+                                notifications.push({
+                                        icon: 'auto_awesome',
+                                        iconColor: 'text-violet-500',
+                                        bgColor: 'bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800/50',
+                                        title: 'Yapay Zeka Önerisi',
+                                        subtitle: `"${escapeHtml(lastTitle.slice(0, 40))}" videosuna benzer popüler içerikler var!`,
+                                        time: 'AI'
+                                });
+                        }
+                }
+                return notifications;
+        }
+
+        function updateNotificationBadge() {
+                const notifications = getNotificationsData();
+                const lastSeenCount = parseInt(localStorage.getItem('edua_last_seen_notif_count') || '0', 10);
+                const unreadCount = Math.max(0, notifications.length - lastSeenCount);
+                
+                const badge = document.getElementById('notifBadge');
+                if (badge) {
+                        if (unreadCount > 0) {
+                                badge.textContent = unreadCount;
+                                badge.classList.remove('hidden');
+                        } else {
+                                badge.classList.add('hidden');
+                        }
+                }
+        }
+
+        function renderNotifications() {
+                const notifications = getNotificationsData();
+                
+                // User is viewing notifications, update last seen count
+                localStorage.setItem('edua_last_seen_notif_count', notifications.length);
+                updateNotificationBadge();
+
+                if (notifications.length === 0) {
+                        return '<p class="text-sm text-slate-500">Bugün bildirim yok.</p>';
+                }
+
+                return notifications.map(n => `
+                        <div class="rounded-xl border ${n.bgColor} p-3 flex items-start gap-3 transition-all hover:shadow-sm">
+                                <div class="mt-0.5 flex-shrink-0">
+                                        <span class="material-symbols-outlined ${n.iconColor} text-[20px]">${n.icon}</span>
                                 </div>
-                        `;
-                }).join('');
+                                <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${n.title}</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">${n.subtitle}</p>
+                                </div>
+                                <span class="text-[10px] text-slate-400 font-medium flex-shrink-0">${n.time}</span>
+                        </div>
+                `).join('');
         }
 
         function getPlanInfo() {
@@ -919,19 +1134,38 @@
                 if (!currentPlanBadge) {
                         return;
                 }
-                const info = getPlanInfo();
-                currentPlanBadge.textContent = `Plan: ${info.plan}`;
+                const plan = localStorage.getItem(SUBSCRIPTION_PLAN_KEY) || 'free';
+                currentPlanBadge.textContent = plan === 'pro' ? 'Aktif Plan: PRO' : 'Aktif Plan: Ücretsiz';
+                if (plan === 'pro') {
+                        currentPlanBadge.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+                        currentPlanBadge.classList.add('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
+                } else {
+                        currentPlanBadge.classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+                        currentPlanBadge.classList.remove('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
+                }
         }
 
         function renderSettings() {
                 const isDark = document.documentElement.classList.contains('dark');
                 const knobClass = isDark ? 'translate-x-4' : '';
+                const savedLen = localStorage.getItem('edua_default_summary_length') || 'orta';
+                const savedQCount = localStorage.getItem('edua_default_question_count') || '10';
+                const savedDiff = localStorage.getItem('edua_default_difficulty') || 'orta';
+                const savedPdfTemplate = localStorage.getItem('edua_pdf_template') || 'renkli';
+                const ytConnected = localStorage.getItem('edua_yt_connected') === 'true';
+
+                function radioHtml(name, value, label, current) {
+                        const checked = value === current;
+                        return `<label class="cursor-pointer"><input type="radio" name="${name}" value="${value}" class="sr-only peer" ${checked ? 'checked' : ''}><div class="rounded-lg border border-slate-300 dark:border-slate-600 py-1.5 px-2 text-center text-[11px] font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/30 peer-checked:text-indigo-700 dark:peer-checked:text-indigo-300 transition-all">${label}</div></label>`;
+                }
+
                 return `
+                        <!-- Tema -->
                         <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-3">
                                 <div class="flex items-center justify-between">
                                         <div>
-                                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">Karanlik Mod</p>
-                                                <p class="text-xs text-slate-500">Tum sayfalarda uygulanir</p>
+                                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">Karanlık Mod</p>
+                                                <p class="text-xs text-slate-500">Tüm sayfalarda uygulanır</p>
                                         </div>
                                         <label class="inline-flex items-center cursor-pointer">
                                                 <input id="themeToggle" type="checkbox" class="sr-only" ${isDark ? 'checked' : ''}>
@@ -940,6 +1174,18 @@
                                                 </span>
                                         </label>
                                 </div>
+                        </div>
+
+                        <!-- YouTube Hesap Baglantisi -->
+                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2">
+                                <div class="flex items-center gap-2 mb-1">
+                                        <span class="material-symbols-outlined text-red-500 text-[18px]">smart_display</span>
+                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">YouTube Hesabı</p>
+                                </div>
+                                <p class="text-xs text-slate-500">"Daha Sonra İzle" listesinden videoları otomatik çekin.</p>
+                                <button id="ytConnectBtn" type="button" class="w-full rounded-lg py-2 text-sm font-semibold transition-all ${ytConnected ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40'}">
+                                        ${ytConnected ? '✓ Bağlı — Bağlantıyı Kes' : 'YouTube Hesabını Bağla'}
+                                </button>
                         </div>
                 `;
         }
@@ -986,6 +1232,27 @@
                                         localStorage.setItem(THEME_KEY, nextTheme);
                                         applyTheme(nextTheme);
                                         knob.classList.toggle('translate-x-4', toggle.checked);
+                                });
+                        }
+                        
+                        // YouTube connect
+                        const ytBtn = document.getElementById('ytConnectBtn');
+                        if (ytBtn) {
+                                ytBtn.addEventListener('click', () => {
+                                        const isConnected = localStorage.getItem('edua_yt_connected') === 'true';
+                                        if (isConnected) {
+                                                localStorage.setItem('edua_yt_connected', 'false');
+                                                openPanel('settings');
+                                                loadRealHistory(); // Re-render main dashboard
+                                        } else {
+                                                ytBtn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Bağlanıyor...';
+                                                ytBtn.classList.add('opacity-75', 'cursor-not-allowed');
+                                                setTimeout(() => {
+                                                        localStorage.setItem('edua_yt_connected', 'true');
+                                                        openPanel('settings');
+                                                        loadRealHistory(); // Re-render main dashboard
+                                                }, 1500);
+                                        }
                                 });
                         }
                 }
