@@ -532,6 +532,10 @@
   </aside>
 
     <script>
+    const USER_STORAGE_KEY = 'edua_registered_user';
+    if (!localStorage.getItem(USER_STORAGE_KEY)) {
+      window.location.href = 'giris.html';
+    }
     const THEME_KEY = 'edua_theme';
     const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') ? 'http://127.0.0.1:8010' : '';
     const analysisForm = document.getElementById('analysisForm');
@@ -1430,9 +1434,36 @@
       sendChatMessage(message);
     });
 
+    function showProModal(featureName, featureDesc) {
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in';
+      modal.id = 'proFeatureModal';
+      modal.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-[32px] p-8 shadow-2xl flex flex-col items-center text-center">
+            <div class="w-24 h-24 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-[44px]">lock</span>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">PRO Özellik</h3>
+            <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm leading-relaxed">
+                ${featureDesc}
+            </p>
+            <div class="flex flex-col w-full gap-3">
+                <a href="uyelik.html" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-colors">Yükselt</a>
+                <button onclick="this.closest('#proFeatureModal').remove()" class="w-full text-slate-400 font-semibold py-2 text-xs hover:text-slate-600 transition-colors">Kapat</button>
+            </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
     // ---- EXPORT ----
     const exportBtn = document.getElementById('exportBtn');
     exportBtn.addEventListener('click', () => {
+      const plan = localStorage.getItem('edua_subscription_plan') || 'free';
+      if (plan !== 'pro') {
+        showProModal('PDF Dışa Aktar', 'Özetlerinizi şık bir PDF olarak indirmek için planınızı yükseltin.');
+        return;
+      }
       exportPdf();
     });
 

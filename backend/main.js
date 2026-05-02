@@ -1237,6 +1237,9 @@ ${question}
 Uzman egitim bilginle bu soruyu detayli bir sekilde cevapla.`;
 
     // Build messages array with conversation history (last 10 turns max)
+    console.log("\n--- DEBUG: SISTEM PROMPTU ---");
+    console.log(systemPrompt);
+    console.log("-----------------------------\n");
     const messages = [
       { role: 'system', content: systemPrompt }
     ];

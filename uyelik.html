@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <nav class="flex-1 space-y-2">
+    <nav id="sidebarNav" class="flex-1 space-y-2">
       <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="islem.html">
         <span class="material-symbols-outlined">add_circle</span><span>Yeni Islem</span>
       </a>
@@ -92,7 +92,7 @@
       </a>
     </nav>
 
-    <div class="mt-auto border-t border-slate-100 pt-6">
+    <div id="sidebarBottom" class="mt-auto border-t border-slate-100 pt-6">
       <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors" href="giris.html">
         <span class="material-symbols-outlined">logout</span><span>Cikis Yap</span>
       </a>
@@ -136,7 +136,7 @@
             <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Ayda 10 video özetleme</span></li>
             <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Max 5 soru üretimi</span></li>
             <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Analiz başı 3 chatbot sorusu</span></li>
-            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Standart PDF dışa aktar</span></li>
+            <li class="flex gap-2 text-slate-400"><span class="material-symbols-outlined text-[18px]">cancel</span><span class="line-through">PDF dışa aktarma</span></li>
           </ul>
 
           <button id="selectFreePlan" type="button" class="mt-6 w-full rounded-lg border border-slate-300 text-slate-800 font-semibold py-2.5 hover:bg-slate-50 transition-colors">Ucretsiz Plani Sec</button>
@@ -341,6 +341,30 @@
       }
     }
 
+    const USER_STORAGE_KEY = 'edua_registered_user';
+    const isVisitor = !localStorage.getItem(USER_STORAGE_KEY);
+
+    if (isVisitor) {
+      // Hide Sidebar Nav & Plan Badge for visitors
+      const sidebarNav = document.getElementById('sidebarNav');
+      const sidebarBottom = document.getElementById('sidebarBottom');
+      if (sidebarNav) sidebarNav.classList.add('hidden');
+      if (headerPlanChip) headerPlanChip.classList.add('hidden');
+      
+      // Replace logout with login for visitors
+      if (sidebarBottom) {
+        sidebarBottom.innerHTML = `
+          <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100" href="giris.html">
+            <span class="material-symbols-outlined">login</span><span>Giris Yap / Kayit Ol</span>
+          </a>
+        `;
+      }
+      
+      // Update header text
+      const headerTitle = document.querySelector('header h2');
+      if (headerTitle) headerTitle.textContent = 'EduAssistant Uyelik Paketleri';
+    }
+
     function render() {
       const plan = normalizePlan(localStorage.getItem(SUBSCRIPTION_PLAN_KEY));
       const cycle = normalizeCycle(localStorage.getItem(SUBSCRIPTION_CYCLE_KEY));
@@ -352,19 +376,25 @@
       setCardStates(plan);
       setPriceByCycle(cycle);
 
-      headerPlanChip.textContent = 'Aktif Plan: ' + (plan === 'pro' ? 'PRO' : 'Ücretsiz');
-      if (plan === 'pro') {
-        headerPlanChip.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
-        headerPlanChip.classList.add('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
-      } else {
-        headerPlanChip.classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
-        headerPlanChip.classList.remove('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
+      if (headerPlanChip) {
+        headerPlanChip.textContent = 'Aktif Plan: ' + (plan === 'pro' ? 'PRO' : 'Ücretsiz');
+        if (plan === 'pro') {
+          headerPlanChip.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+          headerPlanChip.classList.add('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
+        } else {
+          headerPlanChip.classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+          headerPlanChip.classList.remove('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
+        }
       }
       activePlanText.textContent = planLabel + ' (' + cycleLabel + ')';
       planUpdatedText.textContent = 'Plan bitis tarihi: ' + getPlanEndDate(plan, cycle, updatedAt);
     }
 
     function savePlan(plan) {
+      if (isVisitor) {
+        window.location.href = 'giris.html';
+        return;
+      }
       localStorage.setItem(SUBSCRIPTION_PLAN_KEY, plan);
       localStorage.setItem(SUBSCRIPTION_UPDATED_AT_KEY, new Date().toISOString());
       render();
@@ -373,13 +403,13 @@
     monthlyBtn.addEventListener('click', function () {
       localStorage.setItem(SUBSCRIPTION_CYCLE_KEY, 'monthly');
       localStorage.setItem(SUBSCRIPTION_UPDATED_AT_KEY, new Date().toISOString());
-      render();
+      if (!isVisitor) render();
     });
 
     yearlyBtn.addEventListener('click', function () {
       localStorage.setItem(SUBSCRIPTION_CYCLE_KEY, 'yearly');
       localStorage.setItem(SUBSCRIPTION_UPDATED_AT_KEY, new Date().toISOString());
-      render();
+      if (!isVisitor) render();
     });
 
     selectFreePlan.addEventListener('click', function () {
@@ -402,7 +432,7 @@
       localStorage.setItem(SUBSCRIPTION_UPDATED_AT_KEY, new Date().toISOString());
     }
 
-    render();
+    if (!isVisitor) render();
 
     window.addEventListener('storage', function (event) {
       if (event.key === THEME_KEY) {
