@@ -1,1334 +1,1320 @@
 <!DOCTYPE html>
+<html class="light" lang="tr">
 
-<html class="light" lang="tr"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "inverse-on-surface": "#eff1f3",
-                    "on-background": "#191c1e",
-                    "error": "#ba1a1a",
-                    "on-secondary-container": "#fffbff",
-                    "on-primary-fixed": "#07006c",
-                    "primary": "#4648d4",
-                    "outline": "#767586",
-                    "surface-container-highest": "#e0e3e5",
-                    "tertiary-fixed-dim": "#bec6e0",
-                    "on-tertiary-container": "#fefcff",
-                    "surface-bright": "#f7f9fb",
-                    "secondary-fixed-dim": "#d0bcff",
-                    "surface-dim": "#d8dadc",
-                    "surface-container-low": "#f2f4f6",
-                    "primary-fixed-dim": "#c0c1ff",
-                    "surface-tint": "#494bd6",
-                    "primary-fixed": "#e1e0ff",
-                    "error-container": "#ffdad6",
-                    "surface-container-lowest": "#ffffff",
-                    "background": "#f7f9fb",
-                    "secondary-fixed": "#e9ddff",
-                    "on-error-container": "#93000a",
-                    "secondary-container": "#8455ef",
-                    "on-tertiary-fixed": "#131b2e",
-                    "on-surface": "#191c1e",
-                    "on-secondary-fixed-variant": "#5516be",
-                    "on-primary-container": "#fffbff",
-                    "on-secondary": "#ffffff",
-                    "inverse-primary": "#c0c1ff",
-                    "secondary": "#6b38d4",
-                    "on-primary": "#ffffff",
-                    "on-tertiary": "#ffffff",
-                    "surface-variant": "#e0e3e5",
-                    "tertiary": "#545c72",
-                    "on-error": "#ffffff",
-                    "tertiary-container": "#6c748b",
-                    "surface-container": "#eceef0",
-                    "inverse-surface": "#2d3133",
-                    "primary-container": "#6063ee",
-                    "on-tertiary-fixed-variant": "#3f465c",
-                    "surface-container-high": "#e6e8ea",
-                    "on-surface-variant": "#464554",
-                    "outline-variant": "#c7c4d7",
-                    "tertiary-fixed": "#dae2fd",
-                    "on-primary-fixed-variant": "#2f2ebe",
-                    "on-secondary-fixed": "#23005c",
-                    "surface": "#f7f9fb"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "md": "1rem",
-                    "lg": "1.5rem",
-                    "sm": "0.5rem",
-                    "base": "4px",
-                    "xs": "0.25rem",
-                    "xl": "2rem",
-                    "3xl": "4rem",
-                    "margin": "2rem",
-                    "2xl": "3rem",
-                    "gutter": "1.5rem"
-            },
-            "fontFamily": {
-                    "body-md": ["Inter"],
-                    "label-sm": ["Inter"],
-                    "h1": ["Inter"],
-                    "body-lg": ["Inter"],
-                    "h2": ["Inter"],
-                    "h3": ["Inter"],
-                    "body-sm": ["Inter"],
-                    "label-md": ["Inter"]
-            },
-            "fontSize": {
-                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
-                    "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "600"}],
-                    "h1": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
-                    "h2": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                    "h3": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
-                    "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "500"}]
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#116dff",
+                        "primary-container": "#116dff",
+                        surface: "#f7f9fb",
+                        "on-surface": "#191c1e"
+                    }
+                }
             }
-          },
-        },
-      }
+        }
     </script>
-<style>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-                body {
-                        font-family: 'Inter', sans-serif;
-                        transition: background-color 220ms ease, color 220ms ease;
-                }
 
-                html.dark body,
-                html.dark main {
-                        background-color: #020617 !important;
-                        color: #e2e8f0;
-                }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-                html.dark .bg-surface {
-                        background-color: #020617 !important;
-                }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s ease;
+        }
 
-                html.dark .text-on-surface {
-                        color: #e2e8f0 !important;
-                }
+        .sidebar-item-active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white !important;
+            box-shadow: 0 10px 20px -5px rgba(168, 85, 247, 0.4);
+        }
 
-                html.dark .history-card,
-                html.dark #historyList > a,
-                html.dark section > .bg-white,
-                html.dark #recommendationList article,
-                html.dark .bg-white {
-                        background-color: #0f172a !important;
-                        border-color: #334155 !important;
-                }
+        .sidebar-item-active span {
+            color: white !important;
+        }
 
-                html.dark .bg-slate-50,
-                html.dark .bg-slate-100,
-                html.dark .bg-slate-50\/30,
-                html.dark .bg-slate-50\/40 {
-                        background-color: #111827 !important;
-                }
+        /* PREMIUM DARK MODE */
+        html.dark body {
+            background-color: #020617;
+            color: #f1f5f9;
+        }
 
-                html.dark .border-slate-100,
-                html.dark .border-slate-200,
-                html.dark .border-slate-300 {
-                        border-color: #334155 !important;
-                }
+        html.dark .bg-white {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+        }
 
-                html.dark .text-slate-900 { color: #f8fafc !important; }
-                html.dark .text-slate-800 { color: #e2e8f0 !important; }
-                html.dark .text-slate-700 { color: #cbd5e1 !important; }
-                html.dark .text-slate-600,
-                html.dark .text-slate-500 { color: #94a3b8 !important; }
-                html.dark .text-slate-400 { color: #64748b !important; }
+        html.dark .glass-header {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+        }
 
-                html.dark .bg-indigo-50 {
-                        background-color: rgba(99, 102, 241, 0.15) !important;
-                }
+        html.dark .text-slate-900 { color: #f8fafc !important; }
+        html.dark .text-slate-800 { color: #f1f5f9 !important; }
+        html.dark .text-slate-700 { color: #e2e8f0 !important; }
+        html.dark .text-slate-600 { color: #cbd5e1 !important; }
+        html.dark .text-slate-600 { color: #cbd5e1 !important; }
+    html.dark .text-slate-500 { color: #94a3b8 !important; }
+        html.dark .text-slate-400 { color: #64748b !important; }
 
-                html.dark .border-indigo-100 {
-                        border-color: rgba(129, 140, 248, 0.35) !important;
-                }
+        html.dark .border-slate-100 { border-color: #0f172a !important; }
+        html.dark .border-slate-200 { border-color: #1e293b !important; }
+        html.dark .border-slate-300 { border-color: #334155 !important; }
+        html.dark .border-indigo-100 { border-color: #312e81 !important; }
 
-                html.dark .hover\:bg-slate-50:hover,
-                html.dark .hover\:bg-slate-100:hover {
-                        background-color: #1e293b !important;
-                }
+        html.dark .bg-slate-50 { background-color: #020617 !important; }
+        html.dark .bg-slate-100 { background-color: #0f172a !important; }
+        html.dark .bg-indigo-50 { background-color: #1e1b4b !important; }
+        html.dark .bg-surface { background-color: #020617 !important; }
 
-                html.dark .hover\:bg-slate-200:hover {
-                        background-color: #334155 !important;
-                }
+        html.dark .hover\:bg-slate-50:hover {
+            background-color: #1e293b !important;
+        }
 
-                html.dark input::placeholder {
-                        color: #64748b;
-                }
+        html.dark * {
+            box-shadow: none !important;
+            --tw-shadow: 0 0 #0000 !important;
+            --tw-shadow-colored: 0 0 #0000 !important;
+        }
+
+        .history-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .history-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Infographic Styles from islem.html */
+        .infographic-poster {
+            position: relative;
+            border: 3px solid #34d399;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 15%, #ffffff 85%, #f0fdf4 100%);
+        }
+
+        .ribbon-header {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 28px 8px 16px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .ribbon-header::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 0;
+            border-style: solid;
+            border-width: 18px 8px 18px 0;
+        }
+
+        .ribbon-green {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .ribbon-green::after {
+            border-color: transparent transparent transparent #10b981;
+        }
+
+        .ribbon-blue {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+        }
+
+        .ribbon-blue::after {
+            border-color: transparent transparent transparent #3b82f6;
+        }
+
+        .ribbon-purple {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+        }
+
+        .ribbon-purple::after {
+            border-color: transparent transparent transparent #8b5cf6;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
-<body class="bg-surface text-on-surface transition-colors duration-200">
-<!-- SideNavBar -->
-<aside class="fixed left-0 top-0 h-full w-[280px] border-r bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col h-screen py-8 px-4 z-50">
-<div class="mb-10 px-2 flex items-center gap-3">
-<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-white">
-<span class="material-symbols-outlined" data-icon="school">school</span>
-</div>
-<div>
-<h1 class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">EduAssistant</h1>
-<p class="text-xs text-slate-500 font-medium tracking-tight">Kişisel Eğitmen</p>
-</div>
-</div>
-<nav class="flex-1 space-y-2">
-<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-200 ease-in-out" href="islem.html"><span class="material-symbols-outlined" data-icon="add_circle">add_circle</span><span>Yeni İşlem</span></a>
-<!-- Active State: History -->
-<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium tracking-tight bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border-l-4 border-indigo-600 transition-all duration-200" href="code.html"><span class="material-symbols-outlined" data-icon="history">history</span><span>Geçmiş</span></a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-200 ease-in-out" href="uyelik.html"><span class="material-symbols-outlined" data-icon="workspace_premium">workspace_premium</span><span>Üyelik</span></a>
-</nav>
-<div class="mt-auto border-t border-slate-100 pt-6">
-<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-inter text-sm font-medium tracking-tight text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 ease-in-out" href="giris.html"><span class="material-symbols-outlined" data-icon="logout">logout</span><span>Çıkış Yap</span></a>
-</div>
-</aside>
-<!-- TopAppBar -->
-<header class="fixed top-0 right-0 left-[280px] z-40 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex justify-between items-center h-16 px-8">
-<div class="flex items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full px-4 py-1.5 w-full max-w-md">
-<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-[20px]" data-icon="search">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm w-full text-slate-600 dark:text-slate-200 dark:placeholder:text-slate-500" placeholder="Eğitimlerde ara..." type="text"/>
-</div>
-<div class="flex items-center gap-6">
-<a class="hidden lg:inline-flex items-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-4 py-1.5 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 transition-colors" href="uyelik.html" id="currentPlanBadge">Aktif Plan: Ücretsiz</a>
-<button class="relative text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" id="notificationsButton" type="button">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-<span id="notifBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center px-1 animate-bounce" style="animation-duration:2s;animation-iteration-count:3"></span>
-</button>
-<button class="text-slate-500 dark:text-slate-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors" id="settingsButton" type="button">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-</button>
-<button class="flex items-center gap-2" id="profileButton" type="button">
-<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm">
-<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a young professional man with a friendly expression in a clean studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB2FVIge6W1MX-Wc8rDgo_GACKlnf0G6Sdt45RLRv9tohq9MgGv5NLSlnaOukx-AXP4xxMemUIW2LHpGWZ-cp7P0uKOldTrCxL6HTh18i0MinGeXQ1EnWFnlxv4grVqAyWi2fQc0KSpj5XZGZSQsWuW2rgMSgO7umcwanNqX6o_91UVJp4557q-sY-kK_xrdwgJdqFOstoQbjmYydXkI0HrISIvoHxVzxV8gCPhVrpIAs_ua4HWCN8omWcyFDDl6AJDozDX43PvPb2"/>
-</div>
-<span class="material-symbols-outlined text-slate-400 text-[18px]">expand_more</span>
-</button>
-</div>
-</header>
-<div class="hidden fixed top-20 right-8 z-[60] w-[calc(100%-2rem)] max-w-sm" id="quickPanel">
-<div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl overflow-hidden">
-<div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800">
-<h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100" id="quickPanelTitle">Hizli Panel</h3>
-<button class="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeQuickPanel" type="button">
-<span class="material-symbols-outlined text-[18px]">close</span>
-</button>
-</div>
-<div class="p-4 space-y-3" id="quickPanelContent"></div>
-</div>
-</div>
-<div id="detailModal" class="hidden fixed inset-0 z-[70]">
-<div id="detailOverlay" class="absolute inset-0 bg-slate-900/40"></div>
-<div class="relative mx-auto mt-20 max-w-3xl w-[calc(100%-2rem)]">
-<div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl overflow-hidden">
-<div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800">
-<h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Analiz Detayi</h3>
-<button class="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800" id="closeDetailModal" type="button">
-<span class="material-symbols-outlined text-[18px]">close</span>
-</button>
-</div>
-<div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto" id="detailContent"></div>
-</div>
-</div>
-</div>
-<!-- Main Content Canvas -->
-<main class="ml-[280px] pt-16 min-h-screen bg-surface dark:bg-slate-950 transition-colors duration-200">
-<div class="p-8 max-w-[1400px] mx-auto">
-<!-- Header Section -->
-<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-<div>
-<nav class="flex gap-2 text-xs font-label-sm text-slate-400 mb-2">
-<span>EduAssistant</span>
-<span>/</span>
-<span class="text-indigo-600">Arşiv</span>
-</nav>
-<h2 class="text-h2 font-h2 text-slate-900">Geçmiş Eğitimleriniz</h2>
-<p class="text-body-md font-body-md text-slate-500 mt-2">Paylaştığınız video linklerinden alınan transkriptler modele okutulur ve yazılı konu özetleri burada saklanır.</p>
-</div>
-</div>
-<!-- Bento-style Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter" id="historyList">
 
-<!-- Add New Empty State Card -->
-<a class="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center p-8 bg-slate-50/30 hover:bg-slate-50 transition-colors cursor-pointer group" href="islem.html">
-<div class="w-16 h-16 rounded-full bg-white shadow-sm border border-slate-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-indigo-600 text-[32px]" data-icon="add">add</span>
-</div>
-<h4 class="text-slate-900 font-semibold mb-1">Yeni Eğitim Ekle</h4>
-<p class="text-slate-500 text-xs text-center">Video linkini yapıştırın ve hemen öğrenmeye başlayın.</p>
-</a>
-</div>
-<!-- Pagination/Load More -->
-<div class="mt-12 flex items-center justify-center">
-<button class="px-8 py-3 bg-slate-100 text-slate-900 rounded-full font-semibold text-sm hover:bg-slate-200 transition-colors flex items-center gap-2">
-                    Daha Fazla Yükle
-                    <span class="material-symbols-outlined text-[20px]" data-icon="expand_more">expand_more</span>
-</button>
-</div>
+<body class="bg-surface text-on-surface">
+    <!-- SideNavBar -->
+    <aside
+        class="fixed left-0 top-0 h-full w-[280px] border-r bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 flex flex-col py-8 px-6 z-50">
+        <div class="mb-12 px-2 flex items-center gap-3">
+            <div
+                class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100 dark:shadow-none">
+                <span class="material-symbols-outlined text-[28px]">auto_awesome</span>
+            </div>
+            <div>
+                <h1 class="text-xl font-black font-outfit tracking-tighter text-slate-900 dark:text-white">EduAssistant
+                </h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Kişisel Eğitmen</p>
+            </div>
+        </div>
+        <nav class="flex-1 space-y-3">
+            <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+                href="islem.html">
+                <span
+                    class="material-symbols-outlined group-hover:text-indigo-600 transition-colors">add_circle</span><span>Yeni
+                    İşlem</span>
+            </a>
+            <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-black sidebar-item-active"
+                href="code.html">
+                <span class="material-symbols-outlined">history</span><span>Geçmiş</span>
+            </a>
+            <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+                href="uyelik.html">
+                <span
+                    class="material-symbols-outlined group-hover:text-indigo-600 transition-colors">workspace_premium</span><span>Üyelik</span>
+            </a>
+        </nav>
+        <div class="mt-auto border-t border-slate-100 dark:border-slate-800 pt-8">
+            <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-colors group"
+                href="giris.html">
+                <span
+                    class="material-symbols-outlined group-hover:scale-110 transition-transform">logout</span><span>Çıkış
+                    Yap</span>
+            </a>
+        </div>
+    </aside>
 
-<!-- YouTube Watch Later Section (Dynamically shown) -->
-<section class="mt-12 hidden" id="watchLaterSection">
-<div class="bg-gradient-to-r from-red-50 to-rose-50 border border-red-100 dark:border-rose-900/50 dark:bg-slate-900 rounded-2xl p-6 shadow-sm">
-<div class="flex items-center gap-3 mb-6">
-<img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube" class="w-8 h-8">
-<div>
-<h3 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Daha Sonra İzle Listesi</h3>
-<p class="text-sm text-slate-600 dark:text-slate-400 mt-0.5">YouTube hesabınızdan otomatik çekilen videolar.</p>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="watchLaterList"></div>
-</div>
-</section>
+    <header class="fixed top-0 right-0 left-[280px] z-40 glass-header h-20 flex items-center justify-between px-8">
+        <div
+            class="flex items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-2.5 w-full max-w-md shadow-sm">
+            <span class="material-symbols-outlined text-slate-400 text-[22px]">search</span>
+            <input
+                class="bg-transparent border-none focus:ring-0 text-[13px] font-medium w-full ml-3 text-slate-600 dark:text-slate-200"
+                placeholder="Geçmiş analizlerinizde arayın..." type="text" />
+        </div>
+        <div class="flex items-center gap-6">
+            <a href="uyelik.html" id="currentPlanBadge"
+                class="px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-widest border transition-all">Aktif
+                Plan: Ücretsiz</a>
 
-<!-- Recommendation Section -->
-<section class="mt-12">
-<div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-<div>
-<h3 class="text-2xl font-semibold tracking-tight text-slate-900">Kişisel Tavsiye Merkezi</h3>
-<p class="text-sm text-slate-500 mt-1">Geçmiş özetlerinize göre örnek video tavsiyeleri.</p>
-</div>
-<div class="rounded-xl bg-indigo-50 border border-indigo-100 px-4 py-3">
-<p class="text-xs uppercase tracking-wide text-indigo-700 font-semibold">Özetten öğrenilen ilgi alanları</p>
-<p class="text-sm text-indigo-800 font-medium mt-1" id="historyInsight">Analiz hazırlanıyor...</p>
-</div>
-</div>
+            <div class="flex items-center gap-2">
+                <button id="notifyBtn"
+                    class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all relative">
+                    <span class="material-symbols-outlined text-[22px]">notifications</span>
+                    <span id="notifyBadge"
+                        class="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-rose-500 text-white text-[10px] font-black rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center hidden scale-in shadow-lg shadow-rose-200 dark:shadow-none animate-bounce" style="animation-duration: 3s">0</span>
+                </button>
+                <button id="settingsBtn"
+                    class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
+                    <span class="material-symbols-outlined text-[22px]">settings</span>
+                </button>
+            </div>
 
-<div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4" id="recommendationList"></div>
-</div>
-</section>
-</div>
-</main>
-<script>
-                const USER_STORAGE_KEY = 'edua_registered_user';
-                if (!localStorage.getItem(USER_STORAGE_KEY)) {
-                        window.location.href = 'giris.html';
-                }
-                const THEME_KEY = 'edua_theme';
-                const SUBSCRIPTION_PLAN_KEY = 'edua_subscription_plan';
-                const SUBSCRIPTION_CYCLE_KEY = 'edua_subscription_cycle';
-                const SUBSCRIPTION_UPDATED_AT_KEY = 'edua_subscription_updated_at';
-                const API_BASE = 'http://127.0.0.1:8010';
+            <div id="userProfileBtn"
+                class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-100 cursor-pointer hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-[20px]">person</span>
+            </div>
+        </div>
+    </header>
 
-        // Panel ve Buton Tanımlamaları
-        const quickPanel = document.getElementById('quickPanel');
-        const quickPanelTitle = document.getElementById('quickPanelTitle');
-        const quickPanelContent = document.getElementById('quickPanelContent');
-        const closeQuickPanel = document.getElementById('closeQuickPanel');
-        const notificationsButton = document.getElementById('notificationsButton');
-        const settingsButton = document.getElementById('settingsButton');
-        const profileButton = document.getElementById('profileButton');
-        const currentPlanBadge = document.getElementById('currentPlanBadge');
-        const detailModal = document.getElementById('detailModal');
-        const detailOverlay = document.getElementById('detailOverlay');
-        const detailContent = document.getElementById('detailContent');
-        const closeDetailModal = document.getElementById('closeDetailModal');
-        let activePanelType = null;
-        let historyData = [];
+    <!-- Main -->
+    <main class="ml-[280px] pt-24 min-h-screen bg-slate-50 dark:bg-slate-950">
+        <div class="px-8 max-w-7xl mx-auto pb-12">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none">
+                        <span class="material-symbols-outlined text-[28px]">history</span>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Geçmiş Eğitimleriniz</h2>
+                        <p class="text-slate-500 mt-1 max-w-xl text-base font-bold">Daha önce analiz ettiğiniz videoların özetlerine ve sınav sorularına buradan ulaşabilirsiniz.</p>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-3 shadow-sm">
+                    <p class="text-[10px] font-black text-primary uppercase tracking-widest mb-1">ARŞİV DURUMU</p>
+                    <p id="historyInsight" class="text-sm font-bold text-slate-900 dark:text-white">Yükleniyor...</p>
+                </div>
+            </div>
 
-        function escapeHtml(value) {
-                return String(value || '')
-                        .replaceAll('&', '&amp;')
-                        .replaceAll('<', '&lt;')
-                        .replaceAll('>', '&gt;')
-                        .replaceAll('"', '&quot;')
-                        .replaceAll("'", '&#39;');
+            <!-- History List -->
+            <div id="historyList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                <a href="islem.html"
+                    class="border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center p-10 bg-white/50 dark:bg-slate-900/50 hover:border-primary hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all group">
+                    <div
+                        class="w-14 h-14 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-primary text-[28px]">add</span>
+                    </div>
+                    <p class="font-bold text-slate-900 dark:text-white">Yeni Analiz Başlat</p>
+                    <p class="text-xs text-slate-500 mt-1">Video linkini hemen yapıştırın.</p>
+                </a>
+            </div>
+
+            <!-- YouTube Imported Library -->
+            <section id="youtubeImportSection" class="hidden mb-12">
+                <div class="flex items-center gap-3 mb-6">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-red-600 text-white flex items-center justify-center shadow-lg shadow-red-200 dark:shadow-none">
+                        <span class="material-symbols-outlined text-[24px]">subscriptions</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">YouTube
+                            Kütüphaneniz</h3>
+                        <p class="text-sm text-slate-500 font-bold">Daha sonra izle listenizden aktarılan eğitimler.</p>
+                    </div>
+                </div>
+                <div id="youtubeList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- YouTube cards will be injected -->
+                </div>
+            </section>
+
+            <!-- Recommendations -->
+            <section
+                class="mt-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] p-8 shadow-sm relative overflow-hidden">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-12 h-12 bg-amber-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-amber-200 dark:shadow-none">
+                        <span class="material-symbols-outlined text-[28px]">auto_awesome</span>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Size Özel Tavsiyeler</h3>
+                        <p class="text-base text-slate-500 mt-1 font-bold">İlgi alanlarınıza göre yapay zeka tarafından önerilen videolar.</p>
+                    </div>
+                </div>
+                <div id="recommendationList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards will be injected -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="detailModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-md" onclick="closeModal()"></div>
+        <div
+            class="relative bg-white dark:bg-slate-900 w-full max-w-5xl max-h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col animate-fade-in">
+            <div class="flex items-center justify-between px-8 py-6 border-b border-slate-100 dark:border-slate-800">
+                <h3 id="modalTitle" class="text-xl font-black text-slate-900 dark:text-white">Analiz Detayı</h3>
+                <button onclick="closeModal()" class="p-2 text-slate-400 hover:text-rose-500 transition-colors"><span
+                        class="material-symbols-outlined">close</span></button>
+            </div>
+            <div id="modalBody" class="p-8 overflow-y-auto space-y-10"></div>
+        </div>
+    </div>
+
+    <script>
+        const CURRENT_USER_EMAIL = localStorage.getItem('edua_current_user');
+        if (!CURRENT_USER_EMAIL) { window.location.href = 'giris.html'; }
+
+        function getUserKey(key) { return `edua_${CURRENT_USER_EMAIL}_${key}`; }
+
+        function closeModal() { document.getElementById('detailModal').classList.add('hidden'); }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
         }
 
-        function formatSummary(item) {
-                let html = '';
-
-                // Summary Sections
-                if (Array.isArray(item.summary_sections) && item.summary_sections.length > 0) {
-                        const sColors = [
-                                {bg:'bg-indigo-50/60', border:'border-l-indigo-500', text:'text-indigo-700', num:'bg-indigo-500'},
-                                {bg:'bg-violet-50/60', border:'border-l-violet-500', text:'text-violet-700', num:'bg-violet-500'},
-                                {bg:'bg-sky-50/60', border:'border-l-sky-500', text:'text-sky-700', num:'bg-sky-500'},
-                                {bg:'bg-emerald-50/60', border:'border-l-emerald-500', text:'text-emerald-700', num:'bg-emerald-500'},
-                                {bg:'bg-amber-50/60', border:'border-l-amber-500', text:'text-amber-700', num:'bg-amber-500'},
-                                {bg:'bg-rose-50/60', border:'border-l-rose-500', text:'text-rose-700', num:'bg-rose-500'}
-                        ];
-                        html += item.summary_sections.map((section, i) => {
-                                const c = sColors[i % sColors.length];
-                                return `<div class="rounded-xl ${c.bg} border border-slate-200 dark:border-slate-700 border-l-4 ${c.border} p-4 hover:shadow-sm transition-shadow mb-3">
-                                        <div class="flex items-center gap-2.5 mb-2">
-                                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-md ${c.num} text-white text-[11px] font-black">${i+1}</span>
-                                                <h5 class="text-sm font-bold ${c.text} dark:text-slate-200">${escapeHtml(section.subtitle)}</h5>
-                                        </div>
-                                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${escapeHtml(section.content)}</p>
-                                </div>`;
-                        }).join('');
-                } else if (item.ozet) {
-                        const lines = escapeHtml(item.ozet).split(/\n+/).filter(Boolean);
-                        html += lines.map(line => `<p class="text-sm text-slate-700 dark:text-slate-300 mb-2">${line}</p>`).join('');
-                } else {
-                        html += '<p class="text-sm text-slate-500">Ozet bulunamadi.</p>';
-                }
-
-                const plan = localStorage.getItem('edua_subscription_plan') || 'free';
-                const isPro = plan === 'pro';
-
-                if (!isPro) {
-                        html += `
-                        <div class="relative mt-8 p-12 border-2 border-dashed border-indigo-200 dark:border-indigo-800 rounded-2xl bg-indigo-50/30 dark:bg-indigo-950/20 text-center overflow-hidden">
-                                <div class="absolute inset-0 backdrop-blur-[2px]"></div>
-                                <div class="relative z-10 flex flex-col items-center">
-                                        <div class="bg-indigo-600 text-white p-3 rounded-full mb-3 shadow-lg">
-                                                <span class="material-symbols-outlined text-[24px]">lock</span>
-                                        </div>
-                                        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100 mb-1">Görsel Özet Paneli Kilitli</h4>
-                                        <p class="text-xs text-slate-600 dark:text-slate-400 max-w-[240px] mb-4">Surec akisi, kavram haritasi ve temel formulleri gormek için PRO'ya geçin.</p>
-                                        <a href="uyelik.html" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-5 py-2 rounded-lg transition-colors">Planı Yükselt</a>
-                                </div>
-                        </div>`;
-                        return html;
-                }
-
-                // Important Regions
-                const regions = Array.isArray(item.important_regions) ? item.important_regions : [];
-                if (regions.length > 0) {
-                        html += `<div class="mt-6 mb-4">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
-                                        <span class="material-symbols-outlined text-amber-500 text-[18px]">warning</span> Dikkat Edilmesi Gerekenler
-                                </h4>
-                                <div class="grid gap-3">`;
-                        html += regions.map(r => `
-                                <div class="flex items-start gap-2 p-3 rounded-lg bg-amber-100/60 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50">
-                                        <span class="material-symbols-outlined text-amber-600 dark:text-amber-500 text-[16px] mt-0.5">warning</span>
-                                        <div>
-                                                <p class="text-xs font-semibold text-amber-800 dark:text-amber-400 mb-0.5">${escapeHtml(r.label || 'Kritik Bolge')}</p>
-                                                <p class="text-xs text-amber-700 dark:text-amber-300/80">${escapeHtml(r.text)}</p>
-                                        </div>
-                                </div>`).join('');
-                        html += `</div></div>`;
-                }
-
-                // Process Flow
-                const flowSteps = Array.isArray(item.process_flow) ? item.process_flow : [];
-                if (flowSteps.length > 0) {
-                        html += `<div class="mt-6 mb-4">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
-                                        <span class="material-symbols-outlined text-indigo-500 text-[18px]">account_tree</span> Surec / Akis
-                                </h4>
-                                <div class="flex flex-wrap items-start gap-2">`;
-                        const flowColors = ['border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20', 'border-sky-400 bg-sky-50 dark:bg-sky-900/20', 'border-violet-400 bg-violet-50 dark:bg-violet-900/20', 'border-amber-400 bg-amber-50 dark:bg-amber-900/20', 'border-rose-400 bg-rose-50 dark:bg-rose-900/20', 'border-cyan-400 bg-cyan-50 dark:bg-cyan-900/20'];
-                        const flowIconColors = ['text-emerald-600 dark:text-emerald-400', 'text-sky-600 dark:text-sky-400', 'text-violet-600 dark:text-violet-400', 'text-amber-600 dark:text-amber-400', 'text-rose-600 dark:text-rose-400', 'text-cyan-600 dark:text-cyan-400'];
-                        flowSteps.forEach((fs, i) => {
-                                const fc = flowColors[i % flowColors.length];
-                                const ic = flowIconColors[i % flowIconColors.length];
-                                if (i > 0) {
-                                        html += `<div class="flex items-center justify-center px-1 text-slate-400 self-center"><span class="material-symbols-outlined text-[18px]">arrow_forward</span></div>`;
-                                }
-                                html += `<div class="flex-1 min-w-[120px] rounded-xl border-2 ${fc} p-3 text-center shadow-sm">
-                                        <div class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white dark:bg-slate-800 border-2 border-current ${ic} text-xs font-black mb-1.5">${i+1}</div>
-                                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight">${escapeHtml(fs.step)}</p>
-                                        ${fs.detail ? `<p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">${escapeHtml(fs.detail)}</p>` : ''}
-                                </div>`;
-                        });
-                        html += `</div></div>`;
-                }
-
-                // Key Formulas
-                const formulas = Array.isArray(item.key_formulas) ? item.key_formulas : [];
-                if (formulas.length > 0) {
-                        html += `<div class="mt-6 mb-4">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
-                                        <span class="material-symbols-outlined text-rose-500 text-[18px]">functions</span> Temel Formuller
-                                </h4>
-                                <div class="grid gap-3 grid-cols-1 md:grid-cols-2">`;
-                        html += formulas.map(f => `
-                                <div class="rounded-xl border border-rose-200 dark:border-rose-800/50 bg-gradient-to-br from-rose-50 to-white dark:from-rose-900/10 dark:to-slate-800 p-3 shadow-sm text-center">
-                                        <p class="text-[10px] font-bold text-rose-500 uppercase tracking-wide mb-1.5">${escapeHtml(f.label || '')}</p>
-                                        <p class="font-mono text-[13px] md:text-[15px] font-bold text-slate-800 dark:text-slate-200 overflow-x-auto">${escapeHtml(f.formula || '')}</p>
-                                </div>`).join('');
-                        html += `</div></div>`;
-                }
-
-                // Key Concepts
-                const concepts = Array.isArray(item.key_concepts) ? item.key_concepts : [];
-                if (concepts.length > 0) {
-                        html += `<div class="mt-6 mb-4">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
-                                        <span class="material-symbols-outlined text-purple-500 text-[18px]">lightbulb</span> Anahtar Kavramlar
-                                </h4>
-                                <div class="grid gap-3 grid-cols-2 md:grid-cols-3">`;
-                        const cColors = ['border-violet-300 dark:border-violet-700/50 bg-violet-50/60 dark:bg-violet-900/10', 'border-fuchsia-300 dark:border-fuchsia-700/50 bg-fuchsia-50/60 dark:bg-fuchsia-900/10', 'border-indigo-300 dark:border-indigo-700/50 bg-indigo-50/60 dark:bg-indigo-900/10'];
-                        html += concepts.map((kc, i) => {
-                                const cc = cColors[i % cColors.length];
-                                return `<div class="rounded-xl border-2 ${cc} p-3 text-center">
-                                        <p class="text-[11px] font-extrabold text-violet-900 dark:text-violet-300 mb-1">${escapeHtml(kc.term)}</p>
-                                        <div class="w-8 h-0.5 bg-violet-300 dark:bg-violet-700 mx-auto mb-1.5 rounded"></div>
-                                        <p class="text-[10px] text-slate-600 dark:text-slate-400 leading-relaxed">${escapeHtml(kc.definition)}</p>
-                                </div>`;
-                        }).join('');
-                        html += `</div></div>`;
-                }
-
-                // Fun Facts
-                const funFacts = Array.isArray(item.fun_facts) ? item.fun_facts : [];
-                if (funFacts.length > 0) {
-                        html += `<div class="mt-6 mb-4">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">
-                                        <span class="material-symbols-outlined text-teal-500 text-[18px]">psychology</span> Biliyor Muydunuz?
-                                </h4>
-                                <div class="space-y-2">`;
-                        html += funFacts.map(ff => `
-                                <div class="flex items-start gap-2.5 bg-teal-50/50 dark:bg-teal-900/10 p-3 rounded-lg border border-teal-100 dark:border-teal-800/30">
-                                        <div class="mt-0.5 w-5 h-5 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center flex-shrink-0">
-                                                <span class="material-symbols-outlined text-[12px] text-teal-600 dark:text-teal-400 font-bold">check</span>
-                                        </div>
-                                        <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">${escapeHtml(ff)}</p>
-                                </div>`).join('');
-                        html += `</div></div>`;
-                }
-
-                return html;
-        }
-
-        function renderQuestionList(questions) {
-                if (!Array.isArray(questions) || questions.length === 0) {
-                        return '<p class="text-sm text-slate-500">Soru bulunamadi.</p>';
-                }
-
-                return questions.map((q, idx) => {
-                        const answers = q.secenekler || {};
-                        const correctKey = q.dogru_cevap;
-                        const options = ['A', 'B', 'C', 'D'].map(key => {
-                                const isCorrect = key === correctKey;
-                                const baseClass = 'flex items-center gap-2 rounded-lg border p-3 text-sm';
-                                const stateClass = isCorrect
-                                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                                        : 'border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300';
-                                return `<div class="${baseClass} ${stateClass}"><span class="font-semibold">${key}.</span><span>${escapeHtml(answers[key] || '')}</span></div>`;
-                        }).join('');
-
-                        return `
-                                <div class="space-y-3">
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${idx + 1}. ${escapeHtml(q.soru || '')}</p>
-                                        <div class="space-y-2">${options}</div>
-                                </div>
-                        `;
-                }).join('');
-        }
-
-        async function openDetailModal(item) {
-                const plan = localStorage.getItem('edua_subscription_plan') || 'free';
-                const isPro = plan === 'pro';
-                const summaryHtml = formatSummary(item);
-                const titleText = item.user_title || item.title || 'Video Analizi';
-
-                detailContent.innerHTML = `
-                        <div class="flex flex-wrap items-center justify-between gap-3">
-                                <div class="space-y-1">
-                                        <p class="text-xs uppercase tracking-wide text-slate-500">Baslik</p>
-                                        <p class="text-base font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(titleText)}</p>
-                                </div>
-                                <div class="relative">
-                                        <button id="detailExportBtn" type="button" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                                                <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span> PDF İndir
-                                        </button>
-                                </div>
-                        </div>
-                        <div class="space-y-3">
-                                <p class="text-xs uppercase tracking-wide text-slate-500">Ozet</p>
-                                <div class="space-y-3">${summaryHtml}</div>
-                        </div>
-                        <div class="border-t border-slate-200 dark:border-slate-700 pt-6 space-y-3" id="detailQuestions">
-                                <p class="text-xs uppercase tracking-wide text-slate-500">Sorular ve Dogru Cevaplar</p>
-                                <div class="space-y-4" id="detailQuestionsContent">
-                                  <p class="text-sm text-slate-500">Sorular yukleniyor...</p>
-                                </div>
-                        </div>
-                `;
-                detailModal.classList.remove('hidden');
-                currentDetailItem = item;
-
-                function showProModal(desc) {
-                        const modal = document.createElement('div');
-                        modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in';
-                        modal.id = 'proFeatureModal';
-                        modal.innerHTML = `
-                          <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-[32px] p-8 shadow-2xl flex flex-col items-center text-center">
-                              <div class="w-24 h-24 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-6">
-                                  <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-[44px]">lock</span>
-                              </div>
-                              <h3 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">PRO Özellik</h3>
-                              <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm leading-relaxed">
-                                  ${desc}
-                              </p>
-                              <div class="flex flex-col w-full gap-3">
-                                  <a href="uyelik.html" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-colors">Yükselt</a>
-                                  <button onclick="this.closest('#proFeatureModal').remove()" class="w-full text-slate-400 font-semibold py-2 text-xs hover:text-slate-600 transition-colors">Kapat</button>
-                              </div>
-                          </div>
-                        `;
-                        document.body.appendChild(modal);
-                }
-
-                // Export button logic
-                var eBtn = document.getElementById('detailExportBtn');
-                if (eBtn) {
-                        eBtn.onclick = function() {
-                                const plan = localStorage.getItem('edua_subscription_plan') || 'free';
-                                if (plan !== 'pro') {
-                                        showProModal('Özetlerinizi PDF olarak indirmek için planınızı yükseltin.');
-                                        return;
-                                }
-                                handleDetailExport('pdf', item);
-                        };
-                }
-
-                if (Array.isArray(item.sorular) && item.sorular.length > 0) {
-                        document.getElementById('detailQuestionsContent').innerHTML = renderQuestionList(item.sorular);
-                        return;
-                }
-
-                try {
-                        const questionCount = Number.parseInt(item.question_count || '10', 10) || 10;
-                        const response = await fetch(`${API_BASE}/api/questions`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                        analysis_id: item.analysis_id,
-                                        youtube_url: item.video_url,
-                                        question_count: questionCount,
-                                        question_difficulty: item.last_question_difficulty || 'orta'
-                                })
-                        });
-
-                        if (!response.ok) {
-                                throw new Error('Soru yuklenemedi');
-                        }
-
-                        const data = await response.json();
-                        item.sorular = data.sorular || [];
-                        document.getElementById('detailQuestionsContent').innerHTML = renderQuestionList(item.sorular);
-                } catch (error) {
-                        document.getElementById('detailQuestionsContent').innerHTML = '<p class="text-sm text-slate-500">Sorular yuklenemedi.</p>';
-                }
-        }
-
-        let currentDetailItem = null;
-
-        function buildExportFromItem(item) {
-                var title = item.user_title || item.title || 'Video Analizi';
-                var body = '# ' + title + '\n\nKaynak: ' + (item.video_url || '') + '\n\n';
-                if (Array.isArray(item.summary_sections)) {
-                        body += '## Konu Özeti\n\n';
-                        item.summary_sections.forEach(function(s) { body += '### ' + s.subtitle + '\n' + s.content + '\n\n'; });
-                } else if (item.ozet) {
-                        body += item.ozet + '\n\n';
-                }
-                var regions = Array.isArray(item.important_regions) ? item.important_regions : [];
-                if (regions.length) {
-                        body += '## ⚠️ Önemli Bölgeler\n\n';
-                        regions.forEach(function(r) { body += '- **' + (r.label || 'Kritik') + '**: ' + r.text + '\n'; });
-                        body += '\n';
-                }
-                if (Array.isArray(item.process_flow) && item.process_flow.length) {
-                        body += '## 🔄 Süreç / Akış\n\n';
-                        item.process_flow.forEach(function(f, i) { body += (i+1) + '. **' + f.step + '**' + (f.detail ? ' — ' + f.detail : '') + '\n'; });
-                        body += '\n';
-                }
-                if (Array.isArray(item.key_formulas) && item.key_formulas.length) {
-                        body += '## 📐 Temel Formüller / Kurallar\n\n';
-                        item.key_formulas.forEach(function(f) { body += '- **' + (f.label || '') + '**: `' + (f.formula || '') + '`\n'; });
-                        body += '\n';
-                }
-                if (Array.isArray(item.key_concepts) && item.key_concepts.length) {
-                        body += '## 📚 Anahtar Kavramlar\n\n';
-                        item.key_concepts.forEach(function(c) { body += '- **' + c.term + '**: ' + c.definition + '\n'; });
-                        body += '\n';
-                }
-                if (Array.isArray(item.fun_facts) && item.fun_facts.length) {
-                        body += '## 💡 Biliyor Muydunuz?\n\n';
-                        item.fun_facts.forEach(function(f) { body += '- ' + f + '\n'; });
-                        body += '\n';
-                }
-                if (Array.isArray(item.sorular) && item.sorular.length) {
-                        body += '## 📝 Sorular\n\n';
-                        item.sorular.forEach(function(q, i) {
-                                body += (i+1) + '. ' + q.soru + '\n';
-                                ['A','B','C','D'].forEach(function(k) { body += '   ' + k + ') ' + (q.secenekler && q.secenekler[k] || '') + '\n'; });
-                                body += '   ✅ Doğru: ' + q.dogru_cevap + '\n\n';
-                        });
-                }
-                return { title: title, body: body };
-        }
-
-        function handleDetailExport(type, item) {
-                var exp = buildExportFromItem(item);
-                if (type === 'pdf') {
-                        var date = new Date().toLocaleDateString('tr-TR', {year:'numeric', month:'long', day:'numeric'});
-                        var esc = function(t) { return String(t||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
-                        var html = '<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>' + esc(exp.title) + '</title>';
-                        html += '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
-                        html += '<style>';
-                        html += '*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }';
-                        html += 'body { font-family: "Inter", sans-serif; color: #1e293b; background: #fff; }';
-                        html += '@media print { body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
-                        html += '.page { max-width: 800px; margin: 0 auto; padding: 0; }';
-                        html += '.header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 40px 48px; border-radius: 0 0 24px 24px; margin-bottom: 32px; }';
-                        html += '.header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }';
-                        html += '.header-meta { font-size: 12px; opacity: 0.8; display: flex; gap: 16px; align-items: center; }';
-                        html += '.header-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }';
-                        html += '.content { padding: 0 48px 40px; }';
-                        html += '.section { margin-bottom: 28px; }';
-                        html += '.section-title { font-size: 16px; font-weight: 700; color: #4f46e5; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid #e0e7ff; }';
-                        html += '.summary-card { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }';
-                        html += '.summary-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }';
-                        html += '.summary-card p { font-size: 13px; line-height: 1.6; color: #475569; }';
-                        html += '.num-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; color: white; font-size: 11px; font-weight: 800; }';
-                        html += '.c-indigo { border-left-color: #6366f1; } .c-indigo .num-badge { background: #6366f1; } .c-indigo h4 { color: #4338ca; }';
-                        html += '.c-violet { border-left-color: #8b5cf6; } .c-violet .num-badge { background: #8b5cf6; } .c-violet h4 { color: #6d28d9; }';
-                        html += '.c-sky { border-left-color: #0ea5e9; } .c-sky .num-badge { background: #0ea5e9; } .c-sky h4 { color: #0369a1; }';
-                        html += '.c-emerald { border-left-color: #10b981; } .c-emerald .num-badge { background: #10b981; } .c-emerald h4 { color: #047857; }';
-                        html += '.c-amber { border-left-color: #f59e0b; } .c-amber .num-badge { background: #f59e0b; } .c-amber h4 { color: #b45309; }';
-                        html += '.c-rose { border-left-color: #f43f5e; } .c-rose .num-badge { background: #f43f5e; } .c-rose h4 { color: #be123c; }';
-                        html += '.formula-box { background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: 1px solid #c7d2fe; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
-                        html += '.formula-box .label { font-size: 10px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.05em; }';
-                        html += '.formula-box .formula { font-size: 15px; font-weight: 700; color: #312e81; margin-top: 2px; }';
-                        html += '.concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }';
-                        html += '.concept-card { border: 1px solid #ddd6fe; background: #f5f3ff; border-radius: 10px; padding: 12px; text-align: center; }';
-                        html += '.concept-card .term { font-size: 12px; font-weight: 700; color: #5b21b6; }';
-                        html += '.concept-card .def { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4; }';
-                        html += '.question { margin-bottom: 16px; page-break-inside: avoid; }';
-                        html += '.question .q-text { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }';
-                        html += '.option { font-size: 12px; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 4px; color: #475569; }';
-                        html += '.option.correct { border-color: #10b981; background: #ecfdf5; color: #047857; font-weight: 600; }';
-                        html += '.flow-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }';
-                        html += '.flow-step-box { background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 10px 14px; text-align: center; flex: 1; min-width: 100px; }';
-                        html += '.flow-step-box .snum { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #10b981; color: white; font-size: 11px; font-weight: 800; margin-bottom: 4px; }';
-                        html += '.flow-step-box .stxt { font-size: 11px; font-weight: 600; color: #1e293b; }';
-                        html += '.flow-arrow { color: #94a3b8; font-size: 18px; }';
-                        html += '.warning-card { background: #fffbeb; border: 1px solid #fcd34d; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
-                        html += '.warning-card .wlabel { font-size: 12px; font-weight: 700; color: #92400e; }';
-                        html += '.warning-card .wtext { font-size: 12px; color: #78350f; margin-top: 2px; }';
-                        html += '.fact-item { font-size: 12px; color: #475569; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; gap: 8px; }';
-                        html += '.fact-icon { color: #14b8a6; font-size: 14px; flex-shrink: 0; }';
-                        html += '.footer { text-align: center; padding: 24px 48px; border-top: 2px solid #e2e8f0; margin-top: 20px; color: #94a3b8; font-size: 11px; }';
-                        html += '</style></head><body><div class="page">';
-
-                        html += '<div class="header">';
-                        html += '<div class="header-badge">EduAssistant AI</div>';
-                        html += '<h1 style="margin-top:12px">' + esc(exp.title) + '</h1>';
-                        html += '<div class="header-meta"><span>📅 ' + date + '</span><span>🔗 ' + esc(item.video_url || '') + '</span></div>';
-                        html += '</div>';
-
-                        html += '<div class="content">';
-
-                        var sColors = ['c-indigo','c-violet','c-sky','c-emerald','c-amber','c-rose'];
-                        if (Array.isArray(item.summary_sections) && item.summary_sections.length) {
-                                html += '<div class="section"><div class="section-title">📝 Konu Özeti</div>';
-                                item.summary_sections.forEach(function(s, i) {
-                                        var c = sColors[i % sColors.length];
-                                        html += '<div class="summary-card ' + c + '"><h4><span class="num-badge">' + (i+1) + '</span>' + esc(s.subtitle) + '</h4><p>' + esc(s.content) + '</p></div>';
-                                });
-                                html += '</div>';
-                        }
-
-                        if (Array.isArray(item.important_regions) && item.important_regions.length) {
-                                html += '<div class="section"><div class="section-title">⚠️ Dikkat Edilmesi Gerekenler</div>';
-                                item.important_regions.forEach(function(r) {
-                                        html += '<div class="warning-card"><div class="wlabel">' + esc(r.label || 'Dikkat') + '</div><div class="wtext">' + esc(r.text) + '</div></div>';
-                                });
-                                html += '</div>';
-                        }
-
-                        if (Array.isArray(item.process_flow) && item.process_flow.length) {
-                                html += '<div class="section"><div class="section-title">🔄 Süreç / Akış</div><div class="flow-steps">';
-                                item.process_flow.forEach(function(f, i) {
-                                        if (i > 0) html += '<span class="flow-arrow">→</span>';
-                                        html += '<div class="flow-step-box"><div class="snum">' + (i+1) + '</div><div class="stxt">' + esc(f.step) + '</div></div>';
-                                });
-                                html += '</div></div>';
-                        }
-
-                        if (Array.isArray(item.key_formulas) && item.key_formulas.length) {
-                                html += '<div class="section"><div class="section-title">📐 Temel Formüller / Kurallar</div>';
-                                item.key_formulas.forEach(function(f) {
-                                        html += '<div class="formula-box"><div class="label">' + esc(f.label) + '</div><div class="formula">' + esc(f.formula) + '</div></div>';
-                                });
-                                html += '</div>';
-                        }
-
-                        if (Array.isArray(item.key_concepts) && item.key_concepts.length) {
-                                html += '<div class="section"><div class="section-title">📚 Anahtar Kavramlar</div><div class="concept-grid">';
-                                item.key_concepts.forEach(function(c) {
-                                        html += '<div class="concept-card"><div class="term">' + esc(c.term) + '</div><div class="def">' + esc(c.definition) + '</div></div>';
-                                });
-                                html += '</div></div>';
-                        }
-
-                        if (Array.isArray(item.fun_facts) && item.fun_facts.length) {
-                                html += '<div class="section"><div class="section-title">💡 Biliyor Muydunuz?</div>';
-                                item.fun_facts.forEach(function(f) {
-                                        html += '<div class="fact-item"><span class="fact-icon">✓</span><span>' + esc(f) + '</span></div>';
-                                });
-                                html += '</div>';
-                        }
-
-                        if (Array.isArray(item.sorular) && item.sorular.length) {
-                                html += '<div class="section"><div class="section-title">📝 Sorular</div>';
-                                item.sorular.forEach(function(q, i) {
-                                        html += '<div class="question"><div class="q-text">' + (i+1) + '. ' + esc(q.soru) + '</div>';
-                                        ['A','B','C','D'].forEach(function(k) {
-                                                var isCorrect = k === q.dogru_cevap;
-                                                html += '<div class="option' + (isCorrect ? ' correct' : '') + '">' + k + ') ' + esc(q.secenekler && q.secenekler[k] || '') + (isCorrect ? ' ✓' : '') + '</div>';
-                                        });
-                                        html += '</div>';
-                                });
-                                html += '</div>';
-                        }
-
-                        html += '</div><div class="footer">Bu doküman EduAssistant AI tarafından otomatik oluşturulmuştur. &bull; ' + date + '</div></div></body></html>';
-
-                        var win = window.open('', '_blank');
-                        win.document.write(html);
-                        win.document.close();
-                        setTimeout(function() { win.print(); }, 600);
-                } else if (type === 'markdown') {
-                        var blob = new Blob([exp.body], { type: 'text/markdown' });
-                        var a = document.createElement('a');
-                        a.href = URL.createObjectURL(blob);
-                        a.download = exp.title.replace(/[^a-zA-Z0-9]/g, '_') + '.md';
-                        a.click();
-                } else if (type === 'gdocs') {
-                        window.open('https://docs.google.com/document/create?title=EduAssistant+Ozet&body=' + encodeURIComponent(exp.body.slice(0, 5000)), '_blank');
-                } else if (type === 'notion') {
-                        navigator.clipboard.writeText(exp.body).then(function() {
-                                alert('İçerik panoya kopyalandı! Notion\'a yapıştırabilirsiniz.');
-                        }).catch(function() {
-                                var blob = new Blob([exp.body], { type: 'text/markdown' });
-                                var a = document.createElement('a');
-                                a.href = URL.createObjectURL(blob);
-                                a.download = 'notion_export.md';
-                                a.click();
-                        });
-                }
-        }
-
-        function closeDetail() {
-                detailModal.classList.add('hidden');
-                detailContent.innerHTML = '';
-        }
-
-        async function loadRealHistory() {
-                const historyList = document.getElementById('historyList');
-                const insightText = document.getElementById('historyInsight');
-
-                try {
-                        const isYtConnected = localStorage.getItem('edua_yt_connected') === 'true';
-                        const watchLaterSection = document.getElementById('watchLaterSection');
-                        const watchLaterList = document.getElementById('watchLaterList');
-                        
-                        if (isYtConnected) {
-                                watchLaterSection.classList.remove('hidden');
-                                // Dummy Watch Later Data
-                                const dummyWL = [
-                                        { url: 'https://www.youtube.com/watch?v=1bEg00Bq7o8', title: 'The Future of AI Explained', img: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=300&h=170&fit=crop', duration: '12:45', author: 'Tech Vision' },
-                                        { url: 'https://www.youtube.com/watch?v=w7ejDZ8SWv8', title: 'Learn React in 30 Minutes', img: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=300&h=170&fit=crop', duration: '32:10', author: 'CodeAcademy' },
-                                        { url: 'https://www.youtube.com/watch?v=JhHMJCUmq28', title: 'Quantum Computing Fundamentals', img: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=300&h=170&fit=crop', duration: '18:20', author: 'Science Today' }
-                                ];
-                                watchLaterList.innerHTML = dummyWL.map(v => `
-                                        <div class="rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-shadow group relative">
-                                                <div class="relative">
-                                                        <img src="${v.img}" alt="${v.title}" class="w-full h-32 object-cover">
-                                                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">${v.duration}</span>
-                                                </div>
-                                                <div class="p-3">
-                                                        <h4 class="font-semibold text-slate-900 dark:text-slate-100 text-xs line-clamp-2 mb-1 group-hover:text-indigo-600 transition-colors">${v.title}</h4>
-                                                        <p class="text-[10px] text-slate-500">${v.author}</p>
-                                                        <a href="islem.html?url=${encodeURIComponent(v.url)}" class="mt-2 block w-full text-center py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors">
-                                                                Hemen Özetle
-                                                        </a>
-                                                </div>
-                                        </div>
-                                `).join('');
-                                
-                                const plan = localStorage.getItem('edua_subscription_plan') || 'free';
-                                const isPro = plan === 'pro';
-
-                                if (!isPro) {
-                                        watchLaterList.classList.add('relative');
-                                        watchLaterList.innerHTML += `
-                                                <div class="absolute inset-0 bg-white/70 dark:bg-slate-950/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700">
-                                                        <div class="bg-indigo-100 dark:bg-indigo-900/50 p-3 rounded-full mb-3 text-indigo-600 dark:text-indigo-400">
-                                                                <span class="material-symbols-outlined text-[28px]">lock</span>
-                                                        </div>
-                                                        <p class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1">PRO Özellik</p>
-                                                        <p class="text-xs text-slate-600 dark:text-slate-400 max-w-[200px] text-center mb-3">Daha Sonra İzle listenize erişmek için planınızı yükseltin.</p>
-                                                        <a href="uyelik.html" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors">Yükselt</a>
-                                                </div>
-                                        `;
-                                }
-                        } else {
-                                watchLaterSection.classList.add('hidden');
-                        }
-
-                        const response = await fetch(`${API_BASE}/api/history`);
-                        const data = await response.json();
-                        historyData = Array.isArray(data) ? data : [];
-
-                        if (!historyData || historyData.length === 0) {
-                                insightText.textContent = "Henüz analiz edilmiş özet bulunmuyor.";
-                                return;
-                        }
-
-                        historyList.querySelectorAll('.history-card').forEach(card => card.remove());
-
-                        const cardsHtml = historyData.map((item, index) => {
-                                const date = new Date(item.created_at).toLocaleDateString('tr-TR');
-                                const titleText = item.user_title || item.title || 'Video Analizi';
-                                return `
-                                        <div class="history-card bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-shadow">
-                                                <div class="flex justify-between items-start gap-3 mb-3">
-                                                        <span class="bg-indigo-100 text-indigo-700 text-[11px] font-semibold px-2 py-1 rounded uppercase">YAPAY ZEKA</span>
-                                                        <span class="text-slate-400 text-[12px] font-medium">${date}</span>
-                                                </div>
-                                                <h3 class="text-body-md font-semibold text-slate-900 leading-snug line-clamp-2">${escapeHtml(titleText)}</h3>
-                                                <p class="text-xs text-slate-500 mt-2">Kaynak: <a class="text-indigo-600 truncate block" href="${item.video_url || '#'}" target="_blank">${item.video_url || '-'}</a></p>
-                                                <div class="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
-                                                        <p class="text-sm text-slate-700 line-clamp-4">${item.ozet || ''}</p>
-                                                </div>
-                                                <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-                                                        <span class="text-xs font-medium text-slate-500">${item.sorular ? item.sorular.length : 0} Soru Hazır</span>
-                                                        <button class="text-indigo-600 text-sm font-semibold" data-action="detail" data-index="${index}">Tam Metni Gör</button>
-                                                </div>
-                                        </div>
-                                `;
-                        }).join('');
-
-                        historyList.insertAdjacentHTML('afterbegin', cardsHtml);
-                        insightText.textContent = `${historyData.length} Analiz Arşivlendi`;
-
-                        historyList.querySelectorAll('button[data-action="detail"]').forEach(button => {
-                                button.addEventListener('click', () => {
-                                        const idx = Number.parseInt(button.dataset.index || '0', 10);
-                                        const item = historyData[idx];
-                                        if (item) {
-                                                openDetailModal(item);
-                                        }
-                                });
-                        });
-
-                        // Fetch recommendations
-                        insightText.textContent = "Analiz ediliyor...";
-                        try {
-                                const recRes = await fetch(`${API_BASE}/api/recommendations`, { method: 'POST' });
-                                const recData = await recRes.json();
-                                
-                                if (recData.interests && recData.interests.length > 0) {
-                                        insightText.textContent = recData.interests.join(' • ');
-                                } else {
-                                        insightText.textContent = `${historyData.length} Analiz Arşivlendi`;
-                                }
-
-                                // Load existing feedback
-                                let feedbackData = { liked: [], disliked: [] };
-                                try { const fbRes = await fetch(`${API_BASE}/api/feedback`); feedbackData = await fbRes.json(); } catch(_){}
-
-                                const recList = document.getElementById('recommendationList');
-                                if (recData.recommendations && recData.recommendations.length > 0) {
-                                        recList.innerHTML = recData.recommendations.map(r => {
-                                                const isLiked = feedbackData.liked?.includes(r.title);
-                                                const isDisliked = feedbackData.disliked?.includes(r.title);
-                                                return `
-                                                <article class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all relative" data-rec-title="${escapeHtml(r.title)}">
-                                                        <h4 class="font-semibold text-slate-900 dark:text-slate-100 text-sm mb-1 line-clamp-2">${escapeHtml(r.title)}</h4>
-                                                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2">${escapeHtml(r.reason)}</p>
-                                                        <div class="flex items-center justify-between">
-                                                                <a href="${escapeHtml(r.search_url)}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
-                                                                        <span class="material-symbols-outlined text-[14px]">play_circle</span> YouTube'da Ara
-                                                                </a>
-                                                                <div class="flex items-center gap-1">
-                                                                        <button type="button" data-fb-action="like" class="rounded-lg p-1.5 transition-all hover:scale-110 ${isLiked ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600' : 'text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'}" title="Beğen">
-                                                                                <span class="material-symbols-outlined text-[18px]" style="${isLiked ? 'font-variation-settings:\"FILL\" 1' : ''}">thumb_up</span>
-                                                                        </button>
-                                                                        <button type="button" data-fb-action="dislike" class="rounded-lg p-1.5 transition-all hover:scale-110 ${isDisliked ? 'bg-rose-100 dark:bg-rose-900/40 text-rose-600' : 'text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20'}" title="Beğenme">
-                                                                                <span class="material-symbols-outlined text-[18px]" style="${isDisliked ? 'font-variation-settings:\"FILL\" 1' : ''}">thumb_down</span>
-                                                                        </button>
-                                                                </div>
-                                                        </div>
-                                                </article>`;
-                                        }).join('');
-                                        
-                                        const plan = localStorage.getItem('edua_subscription_plan') || 'free';
-                                        const isPro = plan === 'pro';
-
-                                        if (!isPro) {
-                                                recList.classList.add('relative');
-                                                recList.innerHTML += `
-                                                        <div class="absolute inset-0 bg-white/70 dark:bg-slate-950/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700">
-                                                                <div class="bg-violet-100 dark:bg-violet-900/50 p-3 rounded-full mb-3 text-violet-600 dark:text-violet-400">
-                                                                        <span class="material-symbols-outlined text-[28px]">lock</span>
-                                                                </div>
-                                                                <p class="font-bold text-slate-800 dark:text-slate-100 text-sm mb-1">PRO Özellik</p>
-                                                                <p class="text-xs text-slate-600 dark:text-slate-400 max-w-[200px] text-center mb-3">Kişisel yapay zeka tavsiyelerini görmek için planınızı yükseltin.</p>
-                                                                <a href="uyelik.html" class="bg-violet-600 hover:bg-violet-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors">Yükselt</a>
-                                                        </div>
-                                                `;
-                                        }
-
-                                        // Feedback event delegation
-                                        recList.addEventListener('click', async function(e) {
-                                                const btn = e.target.closest('[data-fb-action]');
-                                                if (!btn) return;
-                                                const article = btn.closest('[data-rec-title]');
-                                                const title = article?.dataset.recTitle;
-                                                const action = btn.dataset.fbAction;
-                                                if (!title) return;
-                                                const isActive = btn.classList.contains('bg-emerald-100') || btn.classList.contains('bg-rose-100');
-                                                try {
-                                                        await fetch(`${API_BASE}/api/feedback`, {
-                                                                method: 'POST',
-                                                                headers: { 'Content-Type': 'application/json' },
-                                                                body: JSON.stringify({ title, action: isActive ? 'remove' : action })
-                                                        });
-                                                        // Reload recommendations
-                                                        loadRealHistory();
-                                                } catch(err) { console.error('Feedback hata:', err); }
-                                        });
-                                } else {
-                                        recList.innerHTML = '<p class="text-sm text-slate-500 col-span-2">Yeterli veri birikmediği için henüz öneri yok.</p>';
-                                }
-                        } catch (e) {
-                                console.error('Oneri hatasi:', e);
-                                insightText.textContent = `${historyData.length} Analiz Arşivlendi`;
-                        }
-
-                } catch (error) {
-                        console.error("Geçmiş yüklenemedi:", error);
-                } finally {
-                        updateNotificationBadge();
-                }
-        }
-
+        // Dark Mode Logic
         function applyTheme(theme) {
-                const isDark = theme === 'dark';
-                document.documentElement.classList.toggle('dark', isDark);
-                document.documentElement.classList.toggle('light', !isDark);
+            const isDark = theme === 'dark';
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.classList.toggle('light', !isDark);
+            localStorage.setItem('edua_theme', theme);
+        }
+        applyTheme(localStorage.getItem('edua_theme') || 'light');
+
+        function loadData() {
+            const plan = localStorage.getItem('edua_subscription_plan') || 'free';
+            const isPro = plan === 'pro';
+            const badge = document.getElementById('currentPlanBadge');
+
+            if (isPro) {
+                badge.textContent = 'Aktif Plan: PRO';
+                badge.className = 'px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-widest border bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400 shadow-lg dark:shadow-none shadow-orange-200/50';
+            } else {
+                badge.textContent = 'Aktif Plan: Ücretsiz';
+                badge.className = 'px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-widest border bg-indigo-50 text-indigo-700 border-indigo-100';
+            }
+
+            const history = JSON.parse(localStorage.getItem(getUserKey('history')) || '[]');
+            renderHistory(history, isPro);
+            renderRecommendations(history, isPro);
+
+            // Search Logic
+            const searchInput = document.querySelector('header input');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                const filtered = history.filter(item =>
+                    (item.user_title || item.title || '').toLowerCase().includes(query) ||
+                    (item.video_url || '').toLowerCase().includes(query)
+                );
+                renderHistory(filtered, isPro, history.length);
+            });
+
+            setupHeaderIcons();
+            updateNotifyBadge();
         }
 
-        function getNotificationsData() {
-                const today = new Date();
-                const todayKey = today.toDateString();
-                const todayItems = historyData.filter(item => {
-                        const createdAt = item.created_at ? new Date(item.created_at) : null;
-                        return createdAt && createdAt.toDateString() === todayKey;
-                });
-
-                let notifications = [];
-
-                // Motivational progress notification
-                if (todayItems.length > 0) {
-                        const goals = [3, 5, 10];
-                        let goalText = '';
-                        const nextGoal = goals.find(g => g > todayItems.length);
-                        if (nextGoal) {
-                                goalText = `Hedefe ${nextGoal - todayItems.length} video kaldı!`;
-                        } else {
-                                goalText = 'Günlük hedefini aştın, harikasın! 🏆';
-                        }
-                        notifications.push({
-                                icon: 'trending_up',
-                                iconColor: 'text-emerald-500',
-                                bgColor: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50',
-                                title: `Bugün ${todayItems.length} video özetledin!`,
-                                subtitle: goalText,
-                                time: 'Şimdi'
-                        });
-                } else {
-                        notifications.push({
-                                icon: 'emoji_objects',
-                                iconColor: 'text-amber-500',
-                                bgColor: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50',
-                                title: 'Bugün henüz video özetlemedin',
-                                subtitle: 'Hedefine ulaşmak için hemen başla! 🚀',
-                                time: 'Şimdi'
-                        });
-                }
-
-                // Recent analysis notifications
-                todayItems.slice(0, 3).forEach(item => {
-                        const createdAt = new Date(item.created_at);
-                        const time = createdAt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-                        notifications.push({
-                                icon: 'check_circle',
-                                iconColor: 'text-indigo-500',
-                                bgColor: 'bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800/50',
-                                title: 'Yeni özet oluşturuldu',
-                                subtitle: escapeHtml(item.user_title || item.title || item.video_url || '').slice(0, 60),
-                                time: time
-                        });
-                });
-
-                // AI recommendation suggestion
-                if (historyData.length > 0) {
-                        const lastItem = historyData[0];
-                        const lastTitle = lastItem.user_title || lastItem.title || '';
-                        if (lastTitle) {
-                                notifications.push({
-                                        icon: 'auto_awesome',
-                                        iconColor: 'text-violet-500',
-                                        bgColor: 'bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800/50',
-                                        title: 'Yapay Zeka Önerisi',
-                                        subtitle: `"${escapeHtml(lastTitle.slice(0, 40))}" videosuna benzer popüler içerikler var!`,
-                                        time: 'AI'
-                                });
-                        }
-                }
-                return notifications;
+        function updateNotifyBadge() {
+            const notifications = JSON.parse(localStorage.getItem(getUserKey('notifications')) || '[]');
+            const badge = document.getElementById('notifyBadge');
+            if (notifications.length > 0) {
+                badge.textContent = notifications.length > 9 ? '9+' : notifications.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
         }
 
-        function updateNotificationBadge() {
-                const notifications = getNotificationsData();
-                const lastSeenCount = parseInt(localStorage.getItem('edua_last_seen_notif_count') || '0', 10);
-                const unreadCount = Math.max(0, notifications.length - lastSeenCount);
-                
-                const badge = document.getElementById('notifBadge');
-                if (badge) {
-                        if (unreadCount > 0) {
-                                badge.textContent = unreadCount;
-                                badge.classList.remove('hidden');
-                        } else {
-                                badge.classList.add('hidden');
-                        }
-                }
-        }
+        function renderHistory(items, isPro, totalCount = null) {
+            const historyList = document.getElementById('historyList');
+            const youtubeList = document.getElementById('youtubeList');
+            const youtubeSection = document.getElementById('youtubeImportSection');
+            const insightText = document.getElementById('historyInsight');
+            const originalHistory = JSON.parse(localStorage.getItem(getUserKey('history')) || '[]');
+            const archiveCount = originalHistory.filter(h => !h.is_youtube).length;
+            insightText.textContent = `${archiveCount} Analiz Arşivlendi`;
 
-        function renderNotifications() {
-                const notifications = getNotificationsData();
-                
-                // User is viewing notifications, update last seen count
-                localStorage.setItem('edua_last_seen_notif_count', notifications.length);
-                updateNotificationBadge();
+            // Clear Existing Cards
+            const existingCards = historyList.querySelectorAll('.history-card');
+            existingCards.forEach(c => c.remove());
+            if (youtubeList) youtubeList.innerHTML = '';
 
-                if (notifications.length === 0) {
-                        return '<p class="text-sm text-slate-500">Bugün bildirim yok.</p>';
-                }
+            let ytCount = 0;
+            items.forEach((item) => {
+                const originalIndex = originalHistory.findIndex(h => h.created_at === item.created_at && h.video_url === item.video_url);
+                const date = new Date(item.created_at).toLocaleDateString('tr-TR');
+                const card = document.createElement('div');
+                card.className = 'history-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] p-8 shadow-sm group flex flex-col relative overflow-hidden transition-all';
 
-                return notifications.map(n => `
-                        <div class="rounded-xl border ${n.bgColor} p-3 flex items-start gap-3 transition-all hover:shadow-sm">
-                                <div class="mt-0.5 flex-shrink-0">
-                                        <span class="material-symbols-outlined ${n.iconColor} text-[20px]">${n.icon}</span>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${n.title}</p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">${n.subtitle}</p>
-                                </div>
-                                <span class="text-[10px] text-slate-400 font-medium flex-shrink-0">${n.time}</span>
+                if (item.is_youtube) {
+                    ytCount++;
+                    card.className += ' border-l-4 border-l-red-500 hover:border-red-500';
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-widest flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">play_circle</span> YOUTUBE
+                            </span>
+                            <span class="text-slate-400 text-[11px] font-bold mt-1.5">${date}</span>
                         </div>
-                `).join('');
-        }
-
-        function getPlanInfo() {
-                const plan = localStorage.getItem(SUBSCRIPTION_PLAN_KEY) || 'free';
-                const cycle = localStorage.getItem(SUBSCRIPTION_CYCLE_KEY) || 'monthly';
-                const updatedAt = localStorage.getItem(SUBSCRIPTION_UPDATED_AT_KEY);
-
-                if (plan !== 'pro' || !updatedAt) {
-                        return { plan: 'Ucretsiz', daysLeft: '-' };
-                }
-
-                const startDate = new Date(updatedAt);
-                const endDate = new Date(startDate);
-                if (cycle === 'yearly') {
-                        endDate.setFullYear(endDate.getFullYear() + 1);
-                } else {
-                        endDate.setMonth(endDate.getMonth() + 1);
-                }
-
-                const diffMs = endDate.getTime() - Date.now();
-                const daysLeft = diffMs > 0 ? Math.ceil(diffMs / (1000 * 60 * 60 * 24)) : 0;
-                return { plan: 'Pro', daysLeft };
-        }
-
-        function renderPlanBadge() {
-                if (!currentPlanBadge) {
-                        return;
-                }
-                const plan = localStorage.getItem(SUBSCRIPTION_PLAN_KEY) || 'free';
-                currentPlanBadge.textContent = plan === 'pro' ? 'Aktif Plan: PRO' : 'Aktif Plan: Ücretsiz';
-                if (plan === 'pro') {
-                        currentPlanBadge.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
-                        currentPlanBadge.classList.add('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
-                } else {
-                        currentPlanBadge.classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
-                        currentPlanBadge.classList.remove('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
-                }
-        }
-
-        function renderSettings() {
-                const isDark = document.documentElement.classList.contains('dark');
-                const knobClass = isDark ? 'translate-x-4' : '';
-                const savedLen = localStorage.getItem('edua_default_summary_length') || 'orta';
-                const savedQCount = localStorage.getItem('edua_default_question_count') || '10';
-                const savedDiff = localStorage.getItem('edua_default_difficulty') || 'orta';
-                const savedPdfTemplate = localStorage.getItem('edua_pdf_template') || 'renkli';
-                const ytConnected = localStorage.getItem('edua_yt_connected') === 'true';
-
-                function radioHtml(name, value, label, current) {
-                        const checked = value === current;
-                        return `<label class="cursor-pointer"><input type="radio" name="${name}" value="${value}" class="sr-only peer" ${checked ? 'checked' : ''}><div class="rounded-lg border border-slate-300 dark:border-slate-600 py-1.5 px-2 text-center text-[11px] font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/30 peer-checked:text-indigo-700 dark:peer-checked:text-indigo-300 transition-all">${label}</div></label>`;
-                }
-
-                return `
-                        <!-- Tema -->
-                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-3">
-                                <div class="flex items-center justify-between">
-                                        <div>
-                                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">Karanlık Mod</p>
-                                                <p class="text-xs text-slate-500">Tüm sayfalarda uygulanır</p>
-                                        </div>
-                                        <label class="inline-flex items-center cursor-pointer">
-                                                <input id="themeToggle" type="checkbox" class="sr-only" ${isDark ? 'checked' : ''}>
-                                                <span id="themeToggleTrack" class="w-10 h-6 bg-slate-200 dark:bg-slate-700 rounded-full relative transition">
-                                                        <span id="themeToggleKnob" class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition ${knobClass}"></span>
-                                                </span>
-                                        </label>
-                                </div>
-                        </div>
-
-                        <!-- YouTube Hesap Baglantisi -->
-                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2">
-                                <div class="flex items-center gap-2 mb-1">
-                                        <span class="material-symbols-outlined text-red-500 text-[18px]">smart_display</span>
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">YouTube Hesabı</p>
-                                </div>
-                                <p class="text-xs text-slate-500">"Daha Sonra İzle" listesinden videoları otomatik çekin.</p>
-                                <button id="ytConnectBtn" type="button" class="w-full rounded-lg py-2 text-sm font-semibold transition-all ${ytConnected ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40'}">
-                                        ${ytConnected ? '✓ Bağlı — Bağlantıyı Kes' : 'YouTube Hesabını Bağla'}
-                                </button>
-                        </div>
-                `;
-        }
-
-        function renderProfile() {
-                const rawUser = localStorage.getItem('edua_registered_user');
-                let user = null;
-                if (rawUser) {
-                        try {
-                                user = JSON.parse(rawUser);
-                        } catch (_) {
-                                user = null;
-                        }
-                }
-                const planInfo = getPlanInfo();
-
-                return `
-                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3 space-y-2">
-                                <p class="text-xs text-slate-500">Ad Soyad</p>
-                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(user?.fullName || 'Bilinmiyor')}</p>
-                                <p class="text-xs text-slate-500 mt-2">E-posta</p>
-                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${escapeHtml(user?.email || 'Bilinmiyor')}</p>
-                                <p class="text-xs text-slate-500 mt-2">Plan</p>
-                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${planInfo.plan}</p>
-                                <p class="text-xs text-slate-500 mt-2">Kalan Gun</p>
-                                <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">${planInfo.daysLeft}</p>
-                        </div>
-                `;
-        }
-
-        function openPanel(type) {
-                if (type === 'notifications') {
-                        quickPanelTitle.textContent = 'Bildirimler';
-                        quickPanelContent.innerHTML = renderNotifications();
-                }
-                if (type === 'settings') {
-                        quickPanelTitle.textContent = 'Ayarlar';
-                        quickPanelContent.innerHTML = renderSettings();
-                        const toggle = document.getElementById('themeToggle');
-                        const knob = document.getElementById('themeToggleKnob');
-                        if (toggle && knob) {
-                                toggle.addEventListener('change', () => {
-                                        const nextTheme = toggle.checked ? 'dark' : 'light';
-                                        localStorage.setItem(THEME_KEY, nextTheme);
-                                        applyTheme(nextTheme);
-                                        knob.classList.toggle('translate-x-4', toggle.checked);
-                                });
-                        }
+                        <h4 class="text-xl font-black text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-red-600 transition-colors flex-1">${escapeHtml(item.user_title || item.title)}</h4>
+                        <p class="text-xs text-slate-500 mt-2 italic font-bold opacity-80">Daha sonra izle listenizden aktarıldı.</p>
                         
-                        // YouTube connect
-                        const ytBtn = document.getElementById('ytConnectBtn');
-                        if (ytBtn) {
-                                ytBtn.addEventListener('click', () => {
-                                        const isConnected = localStorage.getItem('edua_yt_connected') === 'true';
-                                        if (isConnected) {
-                                                localStorage.setItem('edua_yt_connected', 'false');
-                                                openPanel('settings');
-                                                loadRealHistory(); // Re-render main dashboard
-                                        } else {
-                                                ytBtn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Bağlanıyor...';
-                                                ytBtn.classList.add('opacity-75', 'cursor-not-allowed');
-                                                setTimeout(() => {
-                                                        localStorage.setItem('edua_yt_connected', 'true');
-                                                        openPanel('settings');
-                                                        loadRealHistory(); // Re-render main dashboard
-                                                }, 1500);
-                                        }
-                                });
-                        }
+                        <div class="mt-8 pt-6 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
+                            <a href="islem.html?url=${encodeURIComponent(item.video_url)}" class="flex items-center gap-2 text-xs font-black text-indigo-600 hover:gap-3 transition-all">
+                                ANALİZ ET <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
+                            </a>
+                            <button onclick="deleteAnalysis(${originalIndex})" class="p-2 text-slate-300 hover:text-rose-500 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    `;
+                    youtubeList.appendChild(card);
+                } else {
+                    card.classList.add('cursor-pointer', 'hover:border-indigo-500');
+                    card.onclick = (e) => {
+                        if (e.target.closest('button')) return;
+                        showDetail(originalIndex);
+                    };
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-widest">ANALİZ</span>
+                            <span class="text-slate-400 text-[11px] font-bold mt-1.5">${date}</span>
+                        </div>
+                        <h4 class="text-xl font-black text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-indigo-600 transition-colors flex-1">${escapeHtml(item.user_title || item.title || 'Video Analizi')}</h4>
+                        <div class="mt-4 flex items-center gap-2 text-slate-400">
+                            <span class="material-symbols-outlined text-[16px]">link</span>
+                            <p class="text-[11px] truncate font-bold max-w-[200px]">${item.video_url}</p>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-slate-50 dark:border-slate-800 flex flex-col gap-4">
+                            <button onclick="handlePdfDownload(${originalIndex})" class="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all text-xs font-black uppercase tracking-widest shadow-sm">
+                                <span class="material-symbols-outlined text-[24px]">download_for_offline</span>
+                                PDF OLARAK İNDİR
+                            </button>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="flex -space-x-2">
+                                        <div class="w-7 h-7 rounded-full bg-indigo-100 border-2 border-white dark:border-slate-800 flex items-center justify-center text-indigo-600">
+                                            <span class="material-symbols-outlined text-[14px]">article</span>
+                                        </div>
+                                        <div class="w-7 h-7 rounded-full bg-emerald-100 border-2 border-white dark:border-slate-800 flex items-center justify-center text-emerald-600">
+                                            <span class="material-symbols-outlined text-[14px]">quiz</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs font-black text-slate-400 uppercase tracking-tighter">${item.sorular ? item.sorular.length : 0} Soru + Özet</span>
+                                </div>
+                                <button onclick="deleteAnalysis(${originalIndex})" class="p-2 text-slate-300 hover:text-rose-500 transition-all duration-300">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    historyList.appendChild(card);
                 }
-                if (type === 'profile') {
-                        quickPanelTitle.textContent = 'Kullanici Bilgileri';
-                        quickPanelContent.innerHTML = renderProfile();
-                }
+            });
 
-                quickPanel.classList.remove('hidden');
-                activePanelType = type;
+            if (ytCount > 0) youtubeSection.classList.remove('hidden');
+            else youtubeSection.classList.add('hidden');
         }
 
-        function togglePanel(type) {
-                if (!quickPanel.classList.contains('hidden') && activePanelType === type) {
-                        closePanel();
-                        return;
+        function handlePdfDownload(index) {
+            const plan = localStorage.getItem('edua_subscription_plan') || 'free';
+            if (plan !== 'pro') {
+                showProModal('PDF İndirme', 'Analizlerinizi PDF olarak indirmek için PRO plana geçmelisiniz.');
+                return;
+            }
+            const history = JSON.parse(localStorage.getItem(getUserKey('history')) || '[]');
+            const item = history[index];
+            if (item) exportPdf(item);
+        }
+
+        function showProModal(title, desc) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in';
+            modal.id = 'proFeatureModal';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-[32px] p-8 shadow-2xl flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-[44px]">lock</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">${title}</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm leading-relaxed">${desc}</p>
+                    <div class="flex flex-col w-full gap-3">
+                        <a href="uyelik.html" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-colors">Yükselt</a>
+                        <button onclick="this.closest('#proFeatureModal').remove()" class="w-full text-slate-400 font-semibold py-2 text-xs hover:text-slate-600 transition-colors">Kapat</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function exportPdf(item) {
+            const title = item.user_title || item.title || 'Video Analizi';
+            const date = new Date(item.created_at).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' });
+            const esc = (t) => String(t || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            let html = `<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>${esc(title)}</title>`;
+            html += '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
+            html += '<style>body { font-family: "Inter", sans-serif; color: #1e293b; padding: 50px; background: #fff; line-height: 1.6; } .header { border-bottom: 2px solid #4f46e5; padding-bottom: 20px; margin-bottom: 40px; } .title { color: #4f46e5; font-size: 28px; font-weight: 800; margin: 0; } .meta { font-size: 12px; color: #64748b; margin-top: 10px; font-weight: 600; } .section { margin-bottom: 40px; } .section-title { font-size: 18px; font-weight: 800; color: #1e293b; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid #4f46e5; padding-left: 15px; } .card { background: #f8fafc; padding: 25px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #e2e8f0; } .card-title { font-weight: 700; font-size: 15px; color: #4f46e5; margin-bottom: 10px; } .card-content { font-size: 14px; color: #334155; } .footer { margin-top: 60px; pt-20; border-top: 1px solid #e2e8f0; font-size: 10px; color: #94a3b8; text-align: center; }</style>';
+            html += `</head><body><div class="header"><h1 class="title">${esc(title)}</h1><div class="meta">Tarih: ${date} &bull; Kaynak: ${item.video_url}</div></div>`;
+
+            if (item.summary_sections && item.summary_sections.length) {
+                html += '<div class="section"><h2 class="section-title">Yazılı Özet</h2>';
+                item.summary_sections.forEach((s, i) => {
+                    html += `<div class="card"><div class="card-title">${i + 1}. ${esc(s.subtitle)}</div><div class="card-content">${esc(s.content)}</div></div>`;
+                });
+                html += '</div>';
+            }
+
+            if (item.important_regions && item.important_regions.length) {
+                html += '<div class="section"><h2 class="section-title">Kritik Anlar</h2>';
+                item.important_regions.forEach(r => {
+                    html += `<div class="card"><div class="card-title">${esc(r.time || '00:00')}</div><div class="card-content">${esc(r.description || r.text)}</div></div>`;
+                });
+                html += '</div>';
+            }
+
+            if (item.key_concepts && item.key_concepts.length) {
+                html += '<div class="section"><h2 class="section-title">Kavram Sözlüğü</h2>';
+                item.key_concepts.forEach(c => {
+                    html += `<div class="card"><div class="card-title">${esc(c.term)}</div><div class="card-content">${esc(c.definition)}</div></div>`;
+                });
+                html += '</div>';
+            }
+
+            if (item.key_formulas && item.key_formulas.length) {
+                html += '<div class="section"><h2 class="section-title">Ders Notları</h2>';
+                item.key_formulas.forEach(f => {
+                    html += `<div class="card"><div class="card-title">${esc(f.label)}</div><div class="card-content">${esc(f.formula)}</div></div>`;
+                });
+                html += '</div>';
+            }
+
+            if (item.sorular) {
+                html += '<div class="section"><h2 class="section-title">Sınav Soruları</h2>';
+                item.sorular.forEach((q, i) => {
+                    html += `<div class="card"><div class="card-title">Soru ${i + 1}: ${esc(q.soru || q.question)}</div><div class="card-content">`;
+                    ['A', 'B', 'C', 'D'].forEach(l => {
+                        const text = q.secenekler ? q.secenekler[l] : (q.choices ? q.choices[l.charCodeAt(0) - 65] : '');
+                        html += `<div style="margin-bottom:5px;"><strong>${l}:</strong> ${esc(text)}</div>`;
+                    });
+                    const dogru = q.dogru_cevap || (q.answer !== undefined ? ['A', 'B', 'C', 'D'][q.answer] : '');
+                    html += `<div style="margin-top:10px; color:#059669; font-weight:bold;">Doğru Cevap: ${dogru}</div>`;
+                    html += `</div></div>`;
+                });
+                html += '</div>';
+            }
+
+            html += '<div class="footer">Bu belge EduAssistant AI tarafından profesyonel olarak oluşturulmuştur.</div></body></html>';
+
+            const win = window.open('', '_blank');
+            win.document.write(html);
+            win.document.close();
+            setTimeout(() => {
+                win.print();
+            }, 500);
+        }
+
+        function getWeightedKeywords(history) {
+            const weights = JSON.parse(localStorage.getItem('edua_topic_weights') || '{}');
+            const stopWords = ['video', 'nedir', 'nasıl', 'dersi', 'eğitimi', 'hakkında', 'bölüm', 'analizi', 'özeti'];
+
+            const keywords = history.flatMap(h =>
+                (h.user_title || h.title || '').toLowerCase()
+                    .split(/[\s,.-]+/)
+                    .filter(k => k.length > 3 && !stopWords.includes(k))
+            );
+
+            const counts = {};
+            keywords.forEach(k => {
+                const weight = weights[k] || 0;
+                counts[k] = Math.max(0.1, (counts[k] || 0) + 1 + weight);
+            });
+
+            return Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+        }
+
+        function generateSuggestion(keyword, index) {
+            const templates = [
+                (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} Teknolojileri ve Gelecek`,
+                (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} Eğitiminde Yeni Yaklaşımlar`,
+                (k) => `İleri Seviye ${k.charAt(0).toUpperCase() + k.slice(1)} Teknikleri`,
+                (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} ile Problem Çözme`,
+                (k) => `Akademik ${k.charAt(0).toUpperCase() + k.slice(1)} Analizi`,
+                (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} Temelleri ve Uygulama`
+            ];
+            const title = templates[index % templates.length](keyword);
+            return {
+                id: `rec_${Math.random().toString(36).substr(2, 9)}`,
+                title,
+                keyword,
+                reason: `${keyword} konusundaki ilginize dayanarak önerildi.`,
+                url: `https://www.youtube.com/results?search_query=${encodeURIComponent(keyword)}`
+            };
+        }
+
+        function renderRecommendations(history, isPro) {
+            const recList = document.getElementById('recommendationList');
+            if (history.length === 0) {
+                recList.innerHTML = '<p class="text-sm text-slate-500 col-span-full text-center py-8">Henüz analiziniz olmadığı için öneri oluşturulamadı.</p>';
+                return;
+            }
+
+            const sortedKeywords = getWeightedKeywords(history);
+            const suggestions = [];
+            for (let i = 0; i < 6; i++) {
+                const keyword = sortedKeywords[i % sortedKeywords.length] || 'Eğitim';
+                suggestions.push(generateSuggestion(keyword, i));
+            }
+
+            recList.innerHTML = suggestions.map(r => renderRecommendationCard(r)).join('');
+
+            if (!isPro) {
+                recList.classList.add('relative');
+                const overlay = document.createElement('div');
+                overlay.className = 'absolute inset-0 bg-white/70 dark:bg-slate-950/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center rounded-[32px] border border-dashed border-slate-200 dark:border-slate-800';
+                overlay.innerHTML = `
+                    <div class="w-12 h-12 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-3">
+                        <span class="material-symbols-outlined text-indigo-600 text-[28px]">lock</span>
+                    </div>
+                    <p class="font-black text-slate-900 dark:text-white text-sm">Öneriler PRO Üyelik Gerektirir</p>
+                    <a href="uyelik.html" class="mt-3 px-6 py-2 bg-indigo-600 text-white rounded-xl font-bold text-[11px] hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 uppercase tracking-widest">Planı Yükselt</a>
+                `;
+                recList.appendChild(overlay);
+            }
+        }
+
+        function renderRecommendationCard(r) {
+            return `
+                <article id="${r.id}" data-keyword="${r.keyword}" class="p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/20 hover:bg-white dark:hover:bg-slate-900 transition-all group relative flex flex-col h-full animate-fade-in">
+                    <div class="flex-1">
+                        <h4 class="font-black text-slate-900 dark:text-white text-lg mb-2 group-hover:text-indigo-600 transition-colors">${r.title}</h4>
+                        <p class="text-[15px] text-slate-500 font-bold leading-relaxed mb-6">${r.reason}</p>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mt-auto pt-6 border-t border-slate-100 dark:border-slate-800/50">
+                        <a href="${r.url}" target="_blank" class="inline-flex items-center gap-2 text-xs font-black text-indigo-600 hover:underline uppercase tracking-widest">
+                            İzle <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                        </a>
+                        <div class="flex items-center gap-2">
+                            <button onclick="handleRecommendationFeedback('${r.id}', 'like')" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 transition-all">
+                                <span class="material-symbols-outlined text-[18px]">thumb_up</span>
+                            </button>
+                            <button onclick="handleRecommendationFeedback('${r.id}', 'dislike')" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all">
+                                <span class="material-symbols-outlined text-[18px]">thumb_down</span>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function handleRecommendationFeedback(id, type) {
+            const card = document.getElementById(id);
+            if (!card) return;
+
+            const keyword = card.getAttribute('data-keyword');
+            const weights = JSON.parse(localStorage.getItem('edua_topic_weights') || '{}');
+            const history = JSON.parse(localStorage.getItem(getUserKey('history')) || '[]');
+            const isPro = (localStorage.getItem('edua_subscription_plan') || 'free') === 'pro';
+
+            if (type === 'like') {
+                weights[keyword] = (weights[keyword] || 0) + 5;
+                localStorage.setItem('edua_topic_weights', JSON.stringify(weights));
+                renderRecommendations(history, isPro);
+            } else {
+                weights[keyword] = (weights[keyword] || 0) - 10;
+                localStorage.setItem('edua_topic_weights', JSON.stringify(weights));
+
+                card.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full space-y-4 py-4">
+                        <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                        <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Analiz Ediliyor...</p>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    const sortedKeywords = getWeightedKeywords(history);
+                    const newKeyword = sortedKeywords[Math.floor(Math.random() * Math.min(sortedKeywords.length, 10))] || 'Eğitim';
+                    const newSuggestion = generateSuggestion(newKeyword, Math.floor(Math.random() * 6));
+
+                    const newCardHtml = renderRecommendationCard(newSuggestion);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = newCardHtml;
+                    card.replaceWith(tempDiv.firstElementChild);
+                }, 1500);
+            }
+        }
+
+        function setupHeaderIcons() {
+            const notifyBtn = document.getElementById('notifyBtn');
+            const settingsBtn = document.getElementById('settingsBtn');
+            const userBtn = document.getElementById('userProfileBtn');
+            const plan = localStorage.getItem('edua_subscription_plan') || 'free';
+            const history = JSON.parse(localStorage.getItem(getUserKey('history')) || '[]');
+
+            const today = new Date().toLocaleDateString();
+            const todayAnalyses = history.filter(item => new Date(item.created_at).toLocaleDateString() === today);
+            const analysisCount = todayAnalyses.length;
+
+            // Bildirim Paneli
+            notifyBtn.onclick = () => {
+                const badge = document.getElementById('notifyBadge');
+                // notifications.length = 0; // We don't clear them here, user just viewed them
+                // localStorage.setItem(getUserKey('notifications'), '[]'); 
+                // Alternatively, just hide the badge
+                badge.classList.add('hidden');
+
+                const messages = [
+                    "Bugün harika bir ilerleme kaydettiniz! 🚀",
+                    "Öğrenme maratonunda bir adım daha öndesiniz. ✨",
+                    "Bilgi paylaştıkça çoğalır, zihninize sağlık! 🧠",
+                    "Küçük adımlar, büyük başarıların temelidir. 🏆",
+                    "Zihniniz bugün çok aktif, böyle devam edin! 🔥"
+                ];
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+
+                let quotaHtml = '';
+                if (plan !== 'pro') {
+                    const remaining = Math.max(0, 5 - analysisCount);
+                    quotaHtml = `
+                        <div class="mx-6 mt-4 p-5 rounded-[28px] bg-indigo-600 text-white shadow-xl shadow-indigo-200 dark:shadow-none">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[11px] font-black uppercase tracking-widest opacity-80">Günlük Limitiniz</span>
+                                <span class="text-[11px] font-black">${analysisCount}/5</span>
+                            </div>
+                            <div class="w-full h-2 bg-white/20 rounded-full overflow-hidden">
+                                <div class="h-full bg-white" style="width: ${(analysisCount / 5) * 100}%"></div>
+                            </div>
+                            <p class="text-[10px] mt-3 font-bold opacity-90">${remaining > 0 ? `${remaining} analiz hakkınız kaldı.` : 'Bugünlük limit doldu.'}</p>
+                        </div>
+                    `;
                 }
-                openPanel(type);
+
+                const notifications = JSON.parse(localStorage.getItem(getUserKey('notifications')) || '[]');
+                const getNotifyStyle = (title) => {
+                    const t = (title || '').toLowerCase();
+                    if (t.includes('analiz silindi')) return { icon: 'delete_sweep', color: 'rose' };
+                    if (t.includes('analiz')) return { icon: 'analytics', color: 'indigo' };
+                    if (t.includes('plan') || t.includes('üye') || t.includes('pro')) return { icon: 'stars', color: 'amber' };
+                    if (t.includes('youtube') || t.includes('aktarıldı')) return { icon: 'smart_display', color: 'red' };
+                    return { icon: 'notifications', color: 'blue' };
+                };
+
+                const html = `
+                    <div class="pb-6">
+                        ${quotaHtml}
+                        <div class="mx-6 mt-6 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-indigo-600 text-[20px]">auto_awesome</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-600 dark:text-slate-400 italic">"${randomMsg}"</p>
+                        </div>
+                        <div class="px-6 mt-6 space-y-4 max-h-[350px] overflow-y-auto custom-scrollbar">
+                            ${notifications.length ? notifications.map(n => {
+                    const style = getNotifyStyle(n.title);
+                    const themeClasses = {
+                        indigo: 'bg-indigo-100 text-indigo-700',
+                        amber: 'bg-amber-100 text-amber-700',
+                        blue: 'bg-blue-100 text-blue-700',
+                        rose: 'bg-rose-100 text-rose-700',
+                        red: 'bg-red-100 text-red-700'
+                    }[style.color] || 'bg-slate-100 text-slate-700';
+
+                    const cardThemes = {
+                        indigo: 'bg-indigo-50/60 border-indigo-100 hover:border-indigo-300',
+                        amber: 'bg-amber-50/60 border-amber-100 hover:border-amber-300',
+                        blue: 'bg-blue-50/60 border-blue-100 hover:border-blue-300',
+                        rose: 'bg-rose-50/60 border-rose-100 hover:border-rose-300',
+                        red: 'bg-red-50/60 border-red-100 hover:border-red-300'
+                    }[style.color] || 'bg-white border-slate-100';
+
+                    return `
+                                    <div class="p-5 rounded-[28px] ${cardThemes} border transition-all group animate-fade-in shadow-sm hover:shadow-md">
+                                        <div class="flex gap-4">
+                                            <div class="w-10 h-10 rounded-2xl ${themeClasses} flex items-center justify-center flex-shrink-0 shadow-sm">
+                                                <span class="material-symbols-outlined text-[22px]">${style.icon}</span>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">${n.title}</p>
+                                                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed line-clamp-2">${n.message}</p>
+                                                <p class="text-[9px] text-slate-400 mt-2 font-bold uppercase tracking-widest">${new Date(n.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                }).join('') : `
+                                <div class="py-12 text-center">
+                                    <span class="material-symbols-outlined text-[48px] text-slate-200">notifications_off</span>
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-4">Sessiz Mod: Henüz Bildirim Yok</p>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+                showDropdownModal('Bildirim Merkezi', html);
+            };
+
+            // Ayarlar Paneli
+            settingsBtn.onclick = () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                const html = `
+                    <div class="p-6 space-y-6">
+                        <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
+                            <div>
+                                <p class="text-xs font-black text-slate-900 dark:text-white">Karanlık Mod</p>
+                                <p class="text-[10px] text-slate-500 mt-1">Gözlerinizi dinlendirin.</p>
+                            </div>
+                            <button onclick="applyTheme('${isDark ? 'light' : 'dark'}'); this.closest('#dropdownModal').remove(); setupHeaderIcons();" 
+                                class="w-12 h-6 rounded-full p-1 transition-colors ${isDark ? 'bg-indigo-600' : 'bg-slate-200'} relative">
+                                <div class="w-4 h-4 bg-white rounded-full transition-transform ${isDark ? 'translate-x-6' : 'translate-x-0'}"></div>
+                            </button>
+                        </div>
+
+                        <div class="pt-2">
+                            <div onclick="${plan === 'pro' ? 'handleYouTubeConnection()' : "showProFeatureModal('YouTube Entegrasyonu', 'Hesabınızı bağlayarak oynatma listelerinizi otomatik analiz etmek için PRO plana geçmelisiniz.')"}" class="cursor-pointer group relative overflow-hidden">
+                                <div id="ytConnectCard" class="flex items-center justify-between p-4 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-red-200 transition-all">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-600 flex items-center justify-center shadow-sm">
+                                            <span class="material-symbols-outlined text-[28px]">smart_display</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs font-black text-slate-900 dark:text-white">YouTube Bağla</p>
+                                            <p class="text-[10px] text-slate-500 mt-1">Oynatma listelerini yönet.</p>
+                                        </div>
+                                    </div>
+                                    ${plan !== 'pro' ? `
+                                        <div class="px-3 py-1 bg-amber-100 text-amber-700 text-[9px] font-black rounded-full uppercase tracking-widest">Upgrade</div>
+                                    ` : '<span id="ytStatusIcon" class="material-symbols-outlined text-slate-300">chevron_right</span>'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                showDropdownModal('Sistem Ayarlar', html);
+            };
+
+            // Kullanıcı Paneli
+            userBtn.onclick = () => {
+                const user = JSON.parse(localStorage.getItem('edua_registered_user') || '{}');
+                const html = `
+                    <div class="p-6">
+                        <div class="flex flex-col items-center text-center mb-8">
+                            <div class="w-24 h-24 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-[32px] flex items-center justify-center mb-4 shadow-xl shadow-indigo-200 dark:shadow-none text-white">
+                                <span class="material-symbols-outlined text-[44px]">person_filled</span>
+                            </div>
+                            <h4 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">${user.fullName || 'EduAssistant Kullanıcısı'}</h4>
+                            <p class="text-xs text-slate-500 font-bold mt-1">${user.email || CURRENT_USER_EMAIL}</p>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="p-5 rounded-[24px] bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Hesap Özeti</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs font-black ${plan === 'pro' ? 'text-amber-600' : 'text-indigo-600'}">${plan === 'pro' ? 'PRO ÜYE' : 'ÜCRETSİZ ÜYE'}</span>
+                                    <span class="px-2 py-1 bg-white dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-500">${analysisCount} Analiz</span>
+                                </div>
+                            </div>
+                            
+                            <a href="giris.html" class="flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-rose-50 dark:bg-rose-900/10 text-rose-500 font-black text-xs hover:bg-rose-100 transition-all uppercase tracking-widest">
+                                <span class="material-symbols-outlined text-[18px]">logout</span>
+                                Güvenli Çıkış
+                            </a>
+                        </div>
+                    </div>
+                `;
+                showDropdownModal('Hesap Detayları', html);
+            };
         }
 
-        function closePanel() {
-                quickPanel.classList.add('hidden');
-                activePanelType = null;
+        function showDropdownModal(title, content) {
+            const existing = document.getElementById('dropdownModal');
+            if (existing) existing.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'dropdownModal';
+            modal.className = 'fixed top-24 right-8 w-80 bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl border border-slate-100 dark:border-slate-800 z-[60] animate-fade-in overflow-hidden';
+            modal.innerHTML = `
+                <div class="px-6 py-4 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/20">
+                    <h3 class="text-[11px] font-black uppercase tracking-widest text-slate-900 dark:text-white">${title}</h3>
+                    <button onclick="this.closest('#dropdownModal').remove()" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined text-[18px]">close</span></button>
+                </div>
+                ${content}
+            `;
+            document.body.appendChild(modal);
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-                applyTheme(localStorage.getItem(THEME_KEY) || 'light');
-                loadRealHistory();
-                renderPlanBadge();
+        function showProFeatureModal(featureName, description) {
+            const existing = document.getElementById('proModal');
+            if (existing) existing.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'proModal';
+            modal.className = 'fixed inset-0 z-[200] flex items-center justify-center p-4 animate-fade-in';
+            modal.innerHTML = `
+                <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onclick="this.parentElement.remove()"></div>
+                <div class="relative bg-white dark:bg-slate-900 w-full max-w-sm rounded-[40px] p-10 text-center shadow-2xl scale-in">
+                    <div class="w-24 h-24 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <span class="material-symbols-outlined text-indigo-600 text-[48px]">lock</span>
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-4">${featureName}</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-10 leading-relaxed">${description}</p>
+                    
+                    <button onclick="window.location.href='uyelik.html'" class="w-full py-5 bg-indigo-600 text-white rounded-[24px] font-black text-sm hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 dark:shadow-none mb-4">
+                        Yükselt
+                    </button>
+                    
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">
+                        Kapat
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function handleYouTubeConnection() {
+            const card = document.getElementById('ytConnectCard');
+            const icon = document.getElementById('ytStatusIcon');
+
+            // UI Updating
+            card.classList.add('border-indigo-500', 'bg-indigo-50/10');
+            icon.innerHTML = 'sync';
+            icon.classList.add('animate-spin', 'text-indigo-600');
+
+            setTimeout(() => {
+                // Mock YouTube Data
+                const youtubeVideos = [
+                    {
+                        id: 'yt_' + Date.now() + '_1',
+                        title: 'Modern Web Geliştirme Eğitimi 2026',
+                        video_url: 'https://youtube.com/watch?v=example1',
+                        created_at: new Date().toISOString(),
+                        user_title: 'Daha Sonra İzle: Web Geliştirme',
+                        is_youtube: true
+                    },
+                    {
+                        id: 'yt_' + Date.now() + '_2',
+                        title: 'Yapay Zeka ve Gelecek Projeksiyonları',
+                        video_url: 'https://youtube.com/watch?v=example2',
+                        created_at: new Date().toISOString(),
+                        user_title: 'Daha Sonra İzle: AI',
+                        is_youtube: true
+                    }
+                ];
+
+                const history = JSON.parse(localStorage.getItem(getUserKey('history')) || '[]');
+                const newHistory = [...youtubeVideos, ...history];
+                localStorage.setItem(getUserKey('history'), JSON.stringify(newHistory));
+
+                // Add Notification
+                const notifications = JSON.parse(localStorage.getItem(getUserKey('notifications')) || '[]');
+                notifications.unshift({
+                    title: 'YouTube Verileri Aktarıldı',
+                    message: '"Daha Sonra İzle" listenizdeki 2 yeni eğitim videosu geçmişinize eklendi.',
+                    time: new Date().toISOString()
+                });
+                localStorage.setItem(getUserKey('notifications'), JSON.stringify(notifications));
+
+                updateNotifyBadge();
+                // Success State
+                icon.innerHTML = 'check_circle';
+                icon.classList.remove('animate-spin', 'text-slate-300');
+                icon.classList.add('text-emerald-500');
+
+                setTimeout(() => {
+                    document.getElementById('dropdownModal').remove();
+                    loadData();
+                }, 1000);
+
+            }, 2000);
+        }
+
+        function showDetail(index) {
+            const history = JSON.parse(localStorage.getItem(getUserKey('history')) || '[]');
+            const item = history[index];
+            if (!item) return;
+
+            const isPro = (localStorage.getItem('edua_subscription_plan') || 'free') === 'pro';
+            document.getElementById('modalTitle').textContent = 'Analiz Detayı';
+            const body = document.getElementById('modalBody');
+
+            // --- ISLEM.HTML COPY START ---
+
+            // 1. Summary Output Prep
+            const sColors = [
+                { bg: 'bg-indigo-50/60', border: 'border-l-indigo-500', text: 'text-indigo-700', num: 'bg-indigo-500' },
+                { bg: 'bg-violet-50/60', border: 'border-l-violet-500', text: 'text-violet-700', num: 'bg-violet-500' },
+                { bg: 'bg-sky-50/60', border: 'border-l-sky-500', text: 'text-sky-700', num: 'bg-sky-500' },
+                { bg: 'bg-emerald-50/60', border: 'border-l-emerald-500', text: 'text-emerald-700', num: 'bg-emerald-500' },
+                { bg: 'bg-amber-50/60', border: 'border-l-amber-500', text: 'text-amber-700', num: 'bg-amber-500' },
+                { bg: 'bg-rose-50/60', border: 'border-l-rose-500', text: 'text-rose-700', num: 'bg-rose-500' }
+            ];
+
+            let summaryOutputHtml = '';
+            if (Array.isArray(item.summary_sections) && item.summary_sections.length > 0) {
+                summaryOutputHtml = item.summary_sections.map((section, i) => {
+                    const c = sColors[i % sColors.length];
+                    return `<div class="rounded-xl ${c.bg} border border-slate-200 border-l-4 ${c.border} p-4 hover:shadow-sm transition-shadow">
+                        <div class="flex items-center gap-2.5 mb-2">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-md ${c.num} text-white text-[11px] font-black">${i + 1}</span>
+                            <h5 class="text-sm font-bold ${c.text}">${escapeHtml(section.subtitle)}</h5>
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed">${escapeHtml(section.content)}</p>
+                    </div>`;
+                }).join('');
+            } else if (item.ozet) {
+                summaryOutputHtml = `<p>${escapeHtml(item.ozet)}</p>`;
+            }
+
+            // 2. Importance List Prep (Kritik Anlar)
+            let importanceHtml = '';
+            if (Array.isArray(item.important_regions) && item.important_regions.length > 0) {
+                importanceHtml = item.important_regions.map(r => `
+                    <div class="flex items-start gap-2 p-2 rounded-lg bg-amber-100/60">
+                        <span class="material-symbols-outlined text-amber-600 text-[16px] mt-0.5">warning</span>
+                        <div>
+                            <p class="text-xs font-semibold text-amber-800">${escapeHtml(r.label || 'Kritik Bölge')}</p>
+                            <p class="text-xs text-amber-700">${escapeHtml(r.text || r.description)}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // 3. Visual Summary Prep
+            // Process Flow
+            let processHtml = '';
+            if (Array.isArray(item.process_flow) && item.process_flow.length > 0) {
+                const flowColors = ['border-emerald-400 bg-emerald-50', 'border-sky-400 bg-sky-50', 'border-violet-400 bg-violet-50', 'border-amber-400 bg-amber-50'];
+                const flowIconColors = ['text-emerald-600', 'text-sky-600', 'text-violet-600', 'text-amber-600'];
+                item.process_flow.forEach((fs, i) => {
+                    if (i > 0) processHtml += '<div class="flow-arrow px-1 md:px-2"><span class="material-symbols-outlined">arrow_forward</span></div>';
+                    processHtml += `<div class="flow-step ${flowColors[i % flowColors.length]}">
+                        <div class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white border-2 border-current ${flowIconColors[i % flowIconColors.length]} text-xs font-black mb-1">${i + 1}</div>
+                        <p class="text-xs font-bold text-slate-800 leading-tight">${escapeHtml(fs.step)}</p>
+                        ${fs.detail ? `<p class="text-[10px] text-slate-500 mt-1 leading-snug">${escapeHtml(fs.detail)}</p>` : ''}
+                    </div>`;
+                });
+            }
+
+            // Formulas
+            let formulasHtml = '';
+            if (Array.isArray(item.key_formulas) && item.key_formulas.length > 0) {
+                formulasHtml = item.key_formulas.map(f => `
+                    <div class="formula-card">
+                        <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-wide mb-1">${escapeHtml(f.label || '')}</p>
+                        <p class="formula-text">${escapeHtml(f.formula || '')}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Concepts
+            let conceptsHtml = '';
+            if (Array.isArray(item.key_concepts) && item.key_concepts.length > 0) {
+                const cColors = ['border-violet-300 bg-violet-50/60', 'border-fuchsia-300 bg-fuchsia-50/60', 'border-indigo-300 bg-indigo-50/60'];
+                conceptsHtml = item.key_concepts.map((kc, i) => `
+                    <div class="rounded-xl border-2 ${cColors[i % cColors.length]} p-3 hover:shadow-md transition-shadow text-center">
+                        <p class="text-[11px] font-extrabold text-violet-900 mb-1">${escapeHtml(kc.term)}</p>
+                        <div class="w-8 h-0.5 bg-violet-300 mx-auto mb-1.5 rounded"></div>
+                        <p class="text-[10px] text-slate-600 leading-relaxed">${escapeHtml(kc.definition)}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Fun Facts
+            let factsHtml = '';
+            if (Array.isArray(item.fun_facts) && item.fun_facts.length > 0) {
+                factsHtml = item.fun_facts.map(f => `
+                    <div class="flex items-start gap-2.5">
+                        <span class="material-symbols-outlined text-teal-500 text-[16px] mt-0.5 flex-shrink-0">check_circle</span>
+                        <p class="text-xs text-slate-700 leading-relaxed">${escapeHtml(f)}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Examples
+            let examplesHtml = '';
+            if (Array.isArray(item.examples) && item.examples.length > 0) {
+                examplesHtml = item.examples.map(ex => `
+                    <div class="flex items-start gap-3 rounded-xl border-2 border-rose-200 bg-rose-50/40 p-3 hover:shadow-md transition-shadow">
+                        <div class="w-6 h-6 rounded-lg bg-rose-500 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span class="material-symbols-outlined text-[14px]">tips_and_updates</span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">${escapeHtml(ex)}</p>
+                    </div>
+                `).join('');
+            }
+
+            // 4. Final Assembler
+            body.innerHTML = `
+                <div class="space-y-8 animate-fade-in pb-12">
+                    <article class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-3 px-6 py-4" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #7c3aed 100%);">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-white text-[22px]">description</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">Üretilen Yazılı Özet</h4>
+                                    <p class="text-[11px] text-indigo-200">AI tarafından transkriptten oluşturuldu</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-5">
+                            <div class="flex items-center gap-3 rounded-xl bg-slate-50 border border-slate-200 px-4 py-3">
+                                <span class="material-symbols-outlined text-indigo-500 text-[20px]">play_circle</span>
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Kaynak Video</p>
+                                    <a href="${item.video_url}" target="_blank" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 break-all">${item.video_url}</a>
+                                </div>
+                            </div>
+                            <p class="text-lg font-bold text-slate-900">${escapeHtml(item.user_title || item.title || 'Video Analizi')}</p>
+                            <div class="text-sm text-slate-700 leading-relaxed space-y-3">${summaryOutputHtml}</div>
+                            
+                            ${importanceHtml ? `
+                            <div class="rounded-xl border-2 border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 p-4 space-y-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-white text-[18px]">priority_high</span>
+                                    </div>
+                                    <p class="text-sm font-bold text-amber-800">Önemli Bölgeler</p>
+                                </div>
+                                <div class="space-y-2">${importanceHtml}</div>
+                            </div>` : ''}
+                        </div>
+                    </article>
+
+                    <!-- Ders Notları ve Formüller (FREE - Requested Outside) -->
+                    ${formulasHtml ? `
+                    <div class="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-violet-600 flex items-center justify-center text-white">
+                                <span class="material-symbols-outlined text-[20px]">science</span>
+                            </div>
+                            <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest">DERS NOTLARI VE FORMÜLLER</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            ${formulasHtml}
+                        </div>
+                    </div>` : ''}
+
+                    <!-- Gorsel Paket (PRO LOCKED) -->
+                    <div class="relative">
+                        ${!isPro ? `
+                        <div class="absolute inset-0 z-50 backdrop-blur-md bg-white/40 flex flex-col items-center justify-center p-8 text-center rounded-3xl border-2 border-indigo-100">
+                            <div class="bg-indigo-600 text-white p-4 rounded-full shadow-lg mb-4 animate-bounce" style="animation-duration: 3s">
+                                <span class="material-symbols-outlined text-[40px]">lock</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Görsel Özet (İnfografik)</h3>
+                            <p class="text-sm text-slate-600 mb-6 max-w-[300px]">İnfografik analizleri sadece PRO üyeler içindir.</p>
+                            <a href="uyelik.html" class="bg-indigo-600 text-white font-bold px-8 py-3 rounded-xl hover:bg-indigo-700 transition-colors">Yükselt</a>
+                        </div>
+                        ` : ''}
+
+                        <div class="infographic-poster p-8 space-y-10 ${!isPro ? 'opacity-20 grayscale blur-sm pointer-events-none' : ''}">
+                            <div class="text-center pb-6 border-b-2 border-emerald-100">
+                                <h3 class="text-2xl font-black text-emerald-900">${escapeHtml(item.user_title || item.title || 'Görsel Özet')}</h3>
+                            </div>
+
+                            ${processHtml ? `
+                            <div>
+                                <span class="ribbon-header ribbon-green">Süreç Akışı</span>
+                                <div class="mt-8 flex flex-wrap md:flex-nowrap items-center gap-3 overflow-x-auto pb-4">${processHtml}</div>
+                            </div>` : ''}
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                                ${conceptsHtml ? `
+                                <div>
+                                    <span class="ribbon-header ribbon-blue">Anahtar Kavramlar</span>
+                                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">${conceptsHtml}</div>
+                                </div>` : ''}
+
+                                ${factsHtml ? `
+                                <div>
+                                    <span class="ribbon-header ribbon-teal">Biliyor Muydunuz?</span>
+                                    <div class="space-y-4 mt-8">${factsHtml}</div>
+                                </div>` : ''}
+                            </div>
+
+                            ${examplesHtml ? `
+                            <div>
+                                <span class="ribbon-header ribbon-rose">Örnekler & Senaryolar</span>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">${examplesHtml}</div>
+                            </div>` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Quiz Panel (islem.html EXACT COPY) -->
+                    ${item.sorular ? `
+                    <div class="space-y-6 pt-6 border-t border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest">SINAV SORULARI</h4>
+                        </div>
+                        <div class="grid grid-cols-1 gap-6">
+                            ${item.sorular.map((q, i) => `
+                                <div class="bg-slate-50/50 border border-slate-200 rounded-2xl p-6 md:p-8 space-y-4">
+                                    <div class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
+                                            ${i + 1}
+                                        </span>
+                                        <p class="text-[15px] font-bold text-slate-800 leading-relaxed">${escapeHtml(q.soru || q.question)}</p>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 ml-0 md:ml-11">
+                                        ${['A', 'B', 'C', 'D'].map((l) => {
+                const text = q.secenekler ? q.secenekler[l] : (q.choices ? q.choices[l.charCodeAt(0) - 65] : '');
+                const isCorrect = q.dogru_cevap === l || q.answer === (l.charCodeAt(0) - 65);
+                return `
+                                                <div class="flex items-center gap-4 p-4 rounded-xl border-2 ${isCorrect ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 bg-white'}">
+                                                    <div class="w-10 h-10 rounded-full border-2 ${isCorrect ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-200 text-slate-500'} flex items-center justify-center text-sm font-bold">${l}</div>
+                                                    <span class="flex-1 text-sm font-medium ${isCorrect ? 'text-emerald-900' : 'text-slate-700'}">${escapeHtml(text)}</span>
+                                                    ${isCorrect ? '<span class="material-symbols-outlined text-emerald-500">check_circle</span>' : ''}
+                                                </div>`;
+            }).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>` : ''}
+                </div>
+            `;
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function deleteAnalysis(index) {
+            const history = JSON.parse(localStorage.getItem(getUserKey('history')) || '[]');
+            const item = history[index];
+            if (!item) return;
+
+            // Premium Confirmation Modal
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in';
+            modal.id = 'deleteConfirmModal';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-slate-900 w-full max-w-sm rounded-[40px] p-10 text-center shadow-2xl scale-in border border-slate-100 dark:border-slate-800">
+                    <div class="w-20 h-20 bg-rose-50 dark:bg-rose-900/20 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <span class="material-symbols-outlined text-rose-500 text-[40px]">delete_forever</span>
+                    </div>
+                    <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-4">Analizi Sil?</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-10 leading-relaxed">
+                        "${escapeHtml(item.user_title || item.title || 'Bu analiz')}" kalıcı olarak silinecektir. Bu işlem geri alınamaz.
+                    </p>
+                    
+                    <div class="flex flex-col gap-3">
+                        <button id="confirmDeleteBtn" class="w-full py-5 bg-rose-500 text-white rounded-[24px] font-black text-sm hover:bg-rose-600 transition-all shadow-xl shadow-rose-100 dark:shadow-none">
+                            Evet, Sil
+                        </button>
+                        <button onclick="document.getElementById('deleteConfirmModal').remove()" class="w-full py-4 text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors">
+                            Vazgeç
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('confirmDeleteBtn').onclick = () => {
+                history.splice(index, 1);
+                localStorage.setItem(getUserKey('history'), JSON.stringify(history));
+                modal.remove();
+                
+                // Add Notification
+                const notifications = JSON.parse(localStorage.getItem(getUserKey('notifications')) || '[]');
+                notifications.unshift({
+                    title: 'Analiz Silindi',
+                    message: 'Kayıt başarıyla arşivden kaldırıldı.',
+                    time: new Date().toISOString()
+                });
+                localStorage.setItem(getUserKey('notifications'), JSON.stringify(notifications));
+                
+                updateNotifyBadge();
+                loadData();
+            };
+        }
+
+        window.onload = loadData;
+
+        window.addEventListener('storage', function (event) {
+            if (event.key === 'edua_theme') {
+                applyTheme(event.newValue || 'light');
+            }
         });
+    </script>
+</body>
 
-        notificationsButton.onclick = () => { togglePanel('notifications'); };
-        settingsButton.onclick = () => { togglePanel('settings'); };
-        profileButton.onclick = () => { togglePanel('profile'); };
-        closeQuickPanel.onclick = closePanel;
-        closeDetailModal.onclick = closeDetail;
-        detailOverlay.addEventListener('click', closeDetail);
-
-        window.addEventListener('storage', (event) => {
-                if (event.key === THEME_KEY) {
-                        applyTheme(event.newValue || 'light');
-                }
-                if ([SUBSCRIPTION_PLAN_KEY, SUBSCRIPTION_CYCLE_KEY, SUBSCRIPTION_UPDATED_AT_KEY].includes(event.key || '')) {
-                        renderPlanBadge();
-                }
-        });
-</script>
-</body></html>
+</html>

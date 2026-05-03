@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduAssistant - Yapay Zeka ile Akıllı Öğrenme Deneyimi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            600: '#7c3aed', // Royal Violet
+                            700: '#6d28d9',
+                        },
+                        accent: {
+                            500: '#06b6d4', // Electric Cyan
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-30px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        section {
+            scroll-margin-top: 120px; /* Offset for fixed header */
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .hero-mesh {
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+                #ffffff;
+        }
+        .btn-mega {
+            background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px -10px rgba(124, 58, 237, 0.3);
+        }
+        .btn-mega:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 30px 60px -12px rgba(124, 58, 237, 0.4);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #7c3aed;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-900 bg-white selection:bg-brand-100">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-header">
+        <div class="max-w-[1600px] mx-auto px-12 py-6 flex items-center justify-between">
+            <!-- Left Side: Extra Large Logo & Spaced Nav links -->
+            <div class="flex items-center gap-20">
+                <a href="index.html" class="flex items-center gap-6 group">
+                    <div class="w-20 h-20 bg-brand-600 rounded-[26px] flex items-center justify-center shadow-2xl shadow-brand-200 group-hover:rotate-6 transition-all duration-500">
+                        <span class="material-symbols-outlined text-white text-[44px] font-light">school</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-4xl font-black font-outfit tracking-tighter text-slate-900 leading-none">EduAssistant</span>
+                        <span class="text-[12px] font-black uppercase tracking-[0.3em] text-brand-600 mt-2">Smart AI Education</span>
+                    </div>
+                </a>
+                
+                <div class="hidden lg:flex items-center gap-14 text-[15px] font-extrabold text-slate-500 ml-10">
+                    <a href="javascript:void(0)" onclick="scrollToSection('features')" class="nav-link hover:text-brand-600">Özellikler</a>
+                    <a href="javascript:void(0)" onclick="scrollToSection('usage')" class="nav-link hover:text-brand-600">Kullanım</a>
+                    <a href="javascript:void(0)" onclick="scrollToSection('pricing')" class="nav-link hover:text-brand-600">Fiyatlandırma</a>
+                </div>
+            </div>
+
+            <!-- Right Side: CTA -->
+            <div class="flex items-center gap-8 ml-auto">
+                <div class="hidden xl:flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-slate-50 text-slate-500 hover:bg-slate-100 cursor-pointer transition-all border border-slate-100">
+                    <span class="material-symbols-outlined text-[20px]">translate</span>
+                    <span class="text-[12px] font-black tracking-widest">TR</span>
+                </div>
+                <a href="giris.html" class="px-10 py-4 rounded-2xl bg-slate-950 text-white text-sm font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200">
+                    Giriş Yap
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-48 pb-32 overflow-hidden hero-mesh">
+        <div class="max-w-[1600px] mx-auto px-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-32 items-center">
+                <div class="lg:col-span-7 relative z-10">
+                    <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-brand-50 border border-brand-100 text-brand-600 text-[13px] font-black mb-10 shadow-sm">
+                        <span class="relative flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-600"></span>
+                        </span>
+                        Yapay Zeka ile Eğitimi Geleceğe Taşıyın
+                    </div>
+                    <h1 class="text-6xl md:text-8xl font-black font-outfit leading-[0.95] text-slate-950 mb-10 tracking-tighter">
+                        Videonuzu <span class="gradient-text">Eşsiz Notlara</span> Dönüştürün.
+                    </h1>
+                    <p class="text-2xl text-slate-500 leading-relaxed mb-12 max-w-xl font-medium">
+                        Saatlerce süren ders videolarını izleme zahmetinden kurtulun. Dakikalar içinde profesyonel özetler ve interaktif sınavlar hazırlayın.
+                    </p>
+                    <div class="flex flex-wrap gap-6">
+                        <a href="giris.html" class="px-12 py-6 rounded-[28px] btn-mega text-white font-black text-xl">
+                            Hemen Ücretsiz Başla
+                        </a>
+                        <a href="javascript:void(0)" onclick="scrollToSection('usage')" class="px-12 py-6 rounded-[28px] bg-white border-2 border-slate-100 text-slate-900 font-black text-xl hover:bg-slate-50 hover:border-slate-200 transition-all shadow-sm">
+                            Keşfet
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 relative">
+                    <div class="absolute inset-0 bg-brand-600/10 blur-[120px] rounded-full animate-pulse-slow"></div>
+                    <div class="relative animate-float">
+                        <!-- Dashboard Preview Card -->
+                        <div class="bg-white/40 backdrop-blur-3xl border border-white/50 rounded-[60px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] p-10 overflow-hidden">
+                            <div class="aspect-[4/3] bg-slate-950 rounded-[40px] overflow-hidden relative shadow-2xl group border border-white/10">
+                                <img src="lecture_video_screenshot_1777823902059.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
+                                
+                                <!-- Screen Overlay Effect -->
+                                <div class="absolute inset-0 bg-brand-600/10 mix-blend-overlay"></div>
+                                <div class="absolute inset-0 bg-gradient-to-tr from-brand-600/20 to-transparent opacity-20"></div>
+                                
+                                <!-- Video Player UI Overlays -->
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-24 h-24 bg-brand-600/90 backdrop-blur-xl rounded-full flex items-center justify-center text-white shadow-2xl shadow-brand-500/40 group-hover:scale-110 transition-all duration-500 cursor-pointer border border-white/20 z-10">
+                                        <span class="material-symbols-outlined text-[48px] fill-1">play_arrow</span>
+                                    </div>
+                                </div>
+
+                                <!-- Player Bottom Bar -->
+                                <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-950/95 to-transparent">
+                                    <div class="flex flex-col gap-3">
+                                        <div class="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+                                            <div class="h-full w-2/3 bg-brand-600 rounded-full shadow-[0_0_10px_#7c3aed]"></div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-4 text-white/80">
+                                                <span class="material-symbols-outlined text-[18px]">pause</span>
+                                                <span class="material-symbols-outlined text-[18px]">volume_up</span>
+                                                <span class="text-[10px] font-bold font-outfit tracking-wider">18:45 / 32:00</span>
+                                            </div>
+                                            <div class="flex items-center gap-4 text-white/80">
+                                                <span class="material-symbols-outlined text-[18px]">settings</span>
+                                                <span class="material-symbols-outlined text-[18px]">fullscreen</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 space-y-6">
+                                <!-- AI Summary Section -->
+                                <div class="bg-brand-50/50 p-6 rounded-[32px] border border-brand-100/50 relative overflow-hidden group/card">
+                                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover/card:opacity-20 transition-opacity">
+                                        <span class="material-symbols-outlined text-brand-600 text-[40px]">auto_awesome</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></div>
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-brand-600">Yapay Zeka Özeti</span>
+                                    </div>
+                                    <p class="text-[13px] font-bold text-slate-700 leading-relaxed pr-8">
+                                        Dersin bu bölümünde nöral ağların katmanlı yapısı ve "backpropagation" algoritması detaylı olarak incelendi.
+                                    </p>
+                                </div>
+
+                                <!-- Quiz Section -->
+                                <div class="bg-accent-500/5 p-6 rounded-[32px] border border-accent-500/10 flex items-center justify-between group/quiz">
+                                    <div class="flex flex-col gap-2">
+                                        <div class="flex items-center gap-3">
+                                            <span class="material-symbols-outlined text-accent-500 text-sm">quiz</span>
+                                            <span class="text-[10px] font-black uppercase tracking-widest text-accent-500">Sınava Hazırlık</span>
+                                        </div>
+                                        <p class="text-[12px] font-extrabold text-slate-500">Konuyla ilgili 5 yeni soru hazırlandı.</p>
+                                    </div>
+                                    <div class="w-10 h-10 bg-accent-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-accent-500/20 group-hover/quiz:rotate-12 transition-transform">
+                                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Floating Achievement -->
+                        <div class="absolute -top-12 -right-12 bg-white rounded-[32px] p-6 shadow-2xl border border-slate-50 flex items-center gap-5">
+                            <div class="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                                <span class="material-symbols-outlined text-[32px]">verified</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Öğrenme Verimi</p>
+                                <p class="text-xl font-black text-slate-950">98% Artış</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-48 bg-slate-50/50">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="flex flex-col items-center text-center mb-24">
+                <span class="text-xs font-black text-brand-600 uppercase tracking-[0.5em] mb-6">GÜÇLÜ ÖZELLİKLER</span>
+                <h2 class="text-5xl md:text-6xl font-black font-outfit text-slate-950 tracking-tight">Eğitimin Yeni Standartı</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <!-- Feature 1 -->
+                <div class="bg-white p-10 rounded-[50px] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 group">
+                    <div class="w-20 h-20 bg-brand-50 text-brand-600 rounded-[28px] flex items-center justify-center mb-10 group-hover:bg-brand-600 group-hover:text-white transition-all duration-500">
+                        <span class="material-symbols-outlined text-[40px]">summarize</span>
+                    </div>
+                    <h4 class="text-2xl font-black mb-6">Akıllı Özet</h4>
+                    <p class="text-slate-500 font-medium leading-relaxed">Video içeriğini analiz ederek en kritik bilgileri saniyeler içinde notlara dönüştürür.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="bg-white p-10 rounded-[50px] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 group">
+                    <div class="w-20 h-20 bg-accent-500/10 text-accent-500 rounded-[28px] flex items-center justify-center mb-10 group-hover:bg-accent-500 group-hover:text-white transition-all duration-500">
+                        <span class="material-symbols-outlined text-[40px]">quiz</span>
+                    </div>
+                    <h4 class="text-2xl font-black mb-6">AI Testleri</h4>
+                    <p class="text-slate-500 font-medium leading-relaxed">Öğrendiklerinizi pekiştirmeniz için videodan özel testler hazırlar.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="bg-white p-10 rounded-[50px] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 group">
+                    <div class="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-[28px] flex items-center justify-center mb-10 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
+                        <span class="material-symbols-outlined text-[40px]">schema</span>
+                    </div>
+                    <h4 class="text-2xl font-black mb-6">Zihin Haritaları</h4>
+                    <p class="text-slate-500 font-medium leading-relaxed">Karmaşık konuları görsel akış şemaları ve haritalarla basitleştirir.</p>
+                </div>
+                <!-- Feature 4 -->
+                <div class="bg-white p-10 rounded-[50px] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 group">
+                    <div class="w-20 h-20 bg-amber-50 text-amber-600 rounded-[28px] flex items-center justify-center mb-10 group-hover:bg-amber-600 group-hover:text-white transition-all duration-500">
+                        <span class="material-symbols-outlined text-[40px]">auto_fix_high</span>
+                    </div>
+                    <h4 class="text-2xl font-black mb-6">Sınırsız PDF</h4>
+                    <p class="text-slate-500 font-medium leading-relaxed">Analizlerinizi istediğiniz zaman profesyonel PDF formatında dışa aktarın.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage Section -->
+    <section id="usage" class="py-48 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
+                <div class="relative">
+                    <div class="absolute -inset-10 bg-brand-600/5 blur-[80px] rounded-full"></div>
+                    <img src="screen.png" class="relative rounded-[60px] shadow-[0_60px_120px_-30px_rgba(0,0,0,0.1)] border border-slate-100 scale-110">
+                </div>
+                <div class="space-y-12">
+                    <div class="space-y-6">
+                        <span class="text-xs font-black text-brand-600 uppercase tracking-[0.5em]">KULLANIM REHBERİ</span>
+                        <h3 class="text-5xl md:text-6xl font-black font-outfit text-slate-950 leading-tight tracking-tighter">Dakikalar İçinde Öğrenmeye Hazırsınız</h3>
+                    </div>
+                    
+                    <div class="space-y-10">
+                        <div class="flex gap-8 group">
+                            <div class="flex-shrink-0 w-16 h-16 bg-slate-950 text-white rounded-3xl flex items-center justify-center font-black text-2xl group-hover:bg-brand-600 transition-colors duration-500">1</div>
+                            <div class="pt-2">
+                                <h4 class="text-2xl font-black mb-2 text-slate-950">Link Paylaşın</h4>
+                                <p class="text-slate-500 font-medium text-lg leading-relaxed">Analiz etmek istediğiniz video linkini kopyalayıp sisteme yapıştırın.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-8 group">
+                            <div class="flex-shrink-0 w-16 h-16 bg-slate-950 text-white rounded-3xl flex items-center justify-center font-black text-2xl group-hover:bg-brand-600 transition-colors duration-500">2</div>
+                            <div class="pt-2">
+                                <h4 class="text-2xl font-black mb-2 text-slate-950">Sihri İzleyin</h4>
+                                <p class="text-slate-500 font-medium text-lg leading-relaxed">AI, videoyu saniyeler içinde tarayıp özetleri ve görselleri hazırlar.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-8 group">
+                            <div class="flex-shrink-0 w-16 h-16 bg-slate-950 text-white rounded-3xl flex items-center justify-center font-black text-2xl group-hover:bg-brand-600 transition-colors duration-500">3</div>
+                            <div class="pt-2">
+                                <h4 class="text-2xl font-black mb-2 text-slate-950">Verimli Çalışın</h4>
+                                <p class="text-slate-500 font-medium text-lg leading-relaxed">Notlarınızı inceleyin, testinizi çözün ve kütüphanenize kaydedin.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-48 bg-slate-50/50">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="flex flex-col items-center text-center mb-24">
+                <span class="text-xs font-black text-brand-600 uppercase tracking-[0.5em] mb-6">FİYATLANDIRMA</span>
+                <h2 class="text-5xl md:text-6xl font-black font-outfit text-slate-950 tracking-tight">Kariyerinize Yatırım Yapın</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+                <!-- Free -->
+                <div class="bg-white p-12 rounded-[60px] border border-slate-100 flex flex-col hover:shadow-xl transition-all duration-500">
+                    <div class="mb-10">
+                        <span class="px-4 py-1.5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest">Giriş Paketi</span>
+                        <h4 class="text-3xl font-black mt-6 text-slate-950">Başlangıç</h4>
+                        <p class="text-slate-500 font-medium mt-2">Öğrenmeye ilk adımı atın.</p>
+                    </div>
+                    <div class="mb-12">
+                        <span class="text-6xl font-black font-outfit text-slate-950">₺0</span>
+                        <span class="text-slate-400 font-bold ml-2">/aylık</span>
+                    </div>
+                    <ul class="space-y-5 mb-16 flex-1">
+                        <li class="flex items-center gap-4 text-slate-600 font-bold">
+                            <span class="material-symbols-outlined text-brand-600">check_circle</span>
+                            Günlük 5 Video Analizi
+                        </li>
+                        <li class="flex items-center gap-4 text-slate-600 font-bold">
+                            <span class="material-symbols-outlined text-brand-600">check_circle</span>
+                            Akıllı Yazılı Özetler
+                        </li>
+                        <li class="flex items-center gap-4 text-slate-600 font-bold">
+                            <span class="material-symbols-outlined text-brand-600">check_circle</span>
+                            Temel AI Testleri
+                        </li>
+                    </ul>
+                    <a href="giris.html" class="w-full py-6 rounded-3xl border-2 border-brand-600 text-brand-600 font-black text-center hover:bg-brand-50 transition-all text-lg">
+                        Ücretsiz Başlat
+                    </a>
+                </div>
+
+                <!-- Pro -->
+                <div class="bg-slate-950 p-12 rounded-[60px] flex flex-col relative overflow-hidden shadow-2xl shadow-brand-200">
+                    <div class="absolute top-8 right-8 px-4 py-1.5 bg-brand-600 rounded-full text-[10px] font-black text-white uppercase tracking-widest">ÖNERİLEN</div>
+                    <div class="mb-10">
+                        <span class="px-4 py-1.5 rounded-full bg-white/10 text-brand-100 text-[10px] font-black uppercase tracking-widest">Tam Paket</span>
+                        <h4 class="text-3xl font-black mt-6 text-white">Profesyonel</h4>
+                        <p class="text-slate-400 font-medium mt-2">Sınırları kaldırın ve hızlanın.</p>
+                    </div>
+                    <div class="mb-12">
+                        <span class="text-6xl font-black font-outfit text-white">₺199</span>
+                        <span class="text-brand-300/50 font-bold ml-2">/aylık</span>
+                    </div>
+                    <ul class="space-y-5 mb-16 flex-1">
+                        <li class="flex items-center gap-4 text-brand-50 font-bold">
+                            <span class="material-symbols-outlined text-accent-500">verified</span>
+                            Sınırsız Video Analizi
+                        </li>
+                        <li class="flex items-center gap-4 text-brand-50 font-bold">
+                            <span class="material-symbols-outlined text-accent-500">verified</span>
+                            Görsel Akış & İnfografikler
+                        </li>
+                        <li class="flex items-center gap-4 text-brand-50 font-bold">
+                            <span class="material-symbols-outlined text-accent-500">verified</span>
+                            YouTube "Watch Later" Aktarımı
+                        </li>
+                        <li class="flex items-center gap-4 text-brand-50 font-bold">
+                            <span class="material-symbols-outlined text-accent-500">verified</span>
+                            Özel PDF Çıktıları
+                        </li>
+                        <li class="flex items-center gap-4 text-brand-50 font-bold">
+                            <span class="material-symbols-outlined text-accent-500">verified</span>
+                            Öncelikli Destek
+                        </li>
+                    </ul>
+                    <a href="giris.html" class="w-full py-6 rounded-3xl bg-white text-slate-950 font-black text-center hover:bg-brand-50 transition-all text-lg shadow-xl">
+                        Hemen Yükselt
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-32 bg-slate-950 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-8 text-center">
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <div class="w-12 h-12 bg-brand-600 rounded-2xl flex items-center justify-center shadow-2xl">
+                    <span class="material-symbols-outlined text-white text-[28px]">school</span>
+                </div>
+                <span class="text-3xl font-black font-outfit tracking-tighter">EduAssistant</span>
+            </div>
+            <p class="text-slate-400 text-xl max-w-xl mx-auto mb-16 font-medium leading-relaxed">
+                Geleceğin öğrenme teknolojilerini bugün keşfedin. Yapay zeka ile videolarınızı akıllı notlara dönüştürün.
+            </p>
+            <div class="flex flex-wrap justify-center gap-12 text-sm font-black text-slate-500 uppercase tracking-widest mb-20">
+                <a href="#" class="hover:text-brand-600 transition-colors">Gizlilik Politikası</a>
+                <a href="#" class="hover:text-brand-600 transition-colors">Hizmet Şartları</a>
+                <a href="#" class="hover:text-brand-600 transition-colors">İletişim</a>
+                <a href="#" class="hover:text-brand-600 transition-colors">Destek</a>
+            </div>
+            <div class="pt-12 border-t border-white/5 text-[11px] text-slate-600 font-black uppercase tracking-[0.4em]">
+                © 2026 EDUASSISTANT AI LABS. TÜM HAKLARI SAKLIDIR.
+            </div>
+        </div>
+    <script>
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                // Center the section on the screen
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+    </script>
+</body>
+</html>

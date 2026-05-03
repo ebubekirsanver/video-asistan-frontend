@@ -1,284 +1,302 @@
 <!DOCTYPE html>
-<html class="light" lang="tr">
+<html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduAssistant | Giris</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      transition: background-color 220ms ease, color 220ms ease;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduAssistant | Giriş Yap</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#f0f4ff',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        },
+                        accent: {
+                            500: '#06b6d4',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(263, 83%, 95%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(188, 94%, 95%, 1) 0, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
 
-    html.dark body {
-      background: #020617 !important;
-      color: #e2e8f0 !important;
-    }
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    html.dark .bg-white {
-      background-color: #0f172a !important;
-      border-color: #334155 !important;
-    }
+        .premium-card {
+            background: #ffffff;
+            border-radius: 60px;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.05);
+            padding: 60px 40px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
 
-    html.dark .bg-slate-100,
-    html.dark .bg-slate-50 {
-      background-color: #111827 !important;
-    }
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 50px;
+        }
 
-    html.dark .border-slate-100,
-    html.dark .border-slate-200,
-    html.dark .border-slate-300 {
-      border-color: #334155 !important;
-    }
+        .tab-btn {
+            padding: 14px 32px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #94a3b8;
+            transition: all 0.3s;
+        }
 
-    html.dark .text-slate-900 { color: #f8fafc !important; }
-    html.dark .text-slate-700 { color: #cbd5e1 !important; }
-    html.dark .text-slate-600,
-    html.dark .text-slate-500 { color: #94a3b8 !important; }
+        .tab-btn.active {
+            background: #f0f4ff;
+            color: #7c3aed;
+        }
 
-    html.dark input {
-      background-color: #0b1220 !important;
-      border-color: #334155 !important;
-      color: #e2e8f0 !important;
-    }
+        .input-group {
+            margin-bottom: 24px;
+        }
 
-    html.dark input::placeholder {
-      color: #64748b;
-    }
+        .input-group label {
+            display: block;
+            font-size: 10px;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            margin-left: 4px;
+        }
 
-    html.dark .hover\:bg-slate-100:hover {
-      background-color: #1e293b !important;
-    }
-  </style>
+        .input-field {
+            background: #f0f4ff;
+            border: 1.5px solid #d1d9e6;
+            border-radius: 0px; /* Matching the sharp internal corners in some cases, but actually looks rounded in image, let's keep a small radius or none if needed */
+            border-radius: 4px;
+            padding: 16px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #7c3aed;
+            background: #ffffff;
+        }
+
+        .btn-mega {
+            background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%);
+            color: white;
+            border-radius: 30px;
+            padding: 22px;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            width: 100%;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-mega:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+
+        .status-msg {
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .status-success { background: #f0fdf4; color: #15803d; }
+        .status-error { background: #fef2f2; color: #b91c1c; }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+    </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-slate-50 via-white to-indigo-50 text-slate-900">
-  <main class="min-h-screen flex items-center justify-center px-4">
-    <section class="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl p-8">
-      <div class="mb-8">
-        <p class="text-xs uppercase tracking-[0.2em] text-indigo-600 font-semibold">EduAssistant</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tight">Hos geldiniz</h1>
-        <p class="mt-2 text-sm text-slate-500">Once kayit olun, sonra kayitli hesapla giris yapin.</p>
-      </div>
+<body>
 
-      <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-lg mb-6">
-        <button id="registerTab" type="button" class="rounded-md bg-white shadow-sm text-slate-900 text-sm font-semibold py-2 transition-colors">Kayit Ol</button>
-        <button id="loginTab" type="button" class="rounded-md text-slate-600 text-sm font-semibold py-2 transition-colors">Giris Yap</button>
-      </div>
-
-      <div id="statusMessage" class="hidden mb-4 text-sm rounded-lg px-3 py-2"></div>
-
-      <form id="registerForm" class="space-y-4" novalidate>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1" for="regName">Ad Soyad</label>
-          <input id="regName" name="regName" type="text" required placeholder="Ornek Kullanici" class="w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1" for="regEmail">E-posta</label>
-          <input id="regEmail" name="regEmail" type="email" required placeholder="ornek@mail.com" class="w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1" for="regPassword">Sifre</label>
-          <div class="relative">
-            <input id="regPassword" name="regPassword" type="password" required minlength="6" placeholder="En az 6 karakter" class="w-full rounded-lg border-slate-300 pr-20 focus:border-indigo-500 focus:ring-indigo-500" />
-            <button id="regPasswordToggle" type="button" class="absolute inset-y-0 right-2 my-1 px-2 rounded text-xs font-semibold text-slate-600 hover:bg-slate-100">Goster</button>
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1" for="regPasswordConfirm">Sifre Tekrar</label>
-          <div class="relative">
-            <input id="regPasswordConfirm" name="regPasswordConfirm" type="password" required minlength="6" placeholder="Sifrenizi tekrar yazin" class="w-full rounded-lg border-slate-300 pr-20 focus:border-indigo-500 focus:ring-indigo-500" />
-            <button id="regPasswordConfirmToggle" type="button" class="absolute inset-y-0 right-2 my-1 px-2 rounded text-xs font-semibold text-slate-600 hover:bg-slate-100">Goster</button>
-          </div>
+    <div class="auth-container">
+        <!-- Logo -->
+        <div class="mb-5 flex flex-col items-center">
+            <a href="index.html" class="flex flex-col items-center gap-2">
+                <div class="w-20 h-20 bg-brand-600 rounded-[28px] flex items-center justify-center shadow-xl shadow-brand-200">
+                    <span class="material-symbols-outlined text-white text-[44px] font-light">school</span>
+                </div>
+                <div class="text-center mt-2">
+                    <h2 class="text-3xl font-black font-outfit text-slate-950 tracking-tighter">EduAssistant</h2>
+                    <p class="text-[9px] font-black uppercase tracking-[0.3em] text-brand-600 mt-0.5">Smart AI Education</p>
+                </div>
+            </a>
         </div>
 
-        <button type="submit" class="w-full rounded-lg bg-indigo-600 text-white font-semibold py-3 hover:bg-indigo-700 transition-colors">
-          Kaydi Tamamla
-        </button>
-      </form>
+        <div class="premium-card">
+            <!-- Tabs -->
+            <div class="tab-container">
+                <button id="loginTabBtn" onclick="activateTab('login')" class="tab-btn active">Giriş Yap</button>
+                <button id="registerTabBtn" onclick="activateTab('register')" class="tab-btn">Kayıt Ol</button>
+            </div>
 
-      <form id="loginForm" class="space-y-4 hidden" novalidate>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1" for="loginEmail">E-posta</label>
-          <input id="loginEmail" name="loginEmail" type="email" required placeholder="ornek@mail.com" class="w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" />
+            <div id="statusMessage" class="hidden status-msg"></div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="space-y-6" novalidate>
+                <div class="input-group">
+                    <label>E-posta Adresi</label>
+                    <input id="loginEmail" name="loginEmail" type="email" required placeholder="test@example.com" class="input-field" />
+                </div>
+                <div class="input-group">
+                    <label>Şifre</label>
+                    <div class="relative">
+                        <input id="loginPassword" name="loginPassword" type="password" required placeholder="••••••" class="input-field pr-20" />
+                        <button id="loginPasswordToggle" type="button" class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-brand-600 uppercase tracking-widest">Göster</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-mega">Oturum Aç</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="space-y-4 hidden" novalidate>
+                <div class="input-group">
+                    <label>Ad Soyad</label>
+                    <input id="regName" name="regName" type="text" required placeholder="Örnek Kullanıcı" class="input-field" />
+                </div>
+                <div class="input-group">
+                    <label>E-posta</label>
+                    <input id="regEmail" name="regEmail" type="email" required placeholder="ornek@mail.com" class="input-field" />
+                </div>
+                <div class="input-group">
+                    <label>Şifre</label>
+                    <div class="relative">
+                        <input id="regPassword" name="regPassword" type="password" required minlength="6" placeholder="En az 6 karakter" class="input-field pr-20" />
+                        <button id="regPasswordToggle" type="button" class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-brand-600 uppercase tracking-widest">Göster</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Şifre Tekrar</label>
+                    <div class="relative">
+                        <input id="regPasswordConfirm" name="regPasswordConfirm" type="password" required minlength="6" placeholder="Şifrenizi onaylayın" class="input-field pr-20" />
+                        <button id="regPasswordConfirmToggle" type="button" class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-brand-600 uppercase tracking-widest">Göster</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-mega">Hesap Oluştur</button>
+            </form>
+
+            <p class="footer-text">Yapay zeka ile öğrenme deneyimine katılın.</p>
         </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1" for="loginPassword">Sifre</label>
-          <div class="relative">
-            <input id="loginPassword" name="loginPassword" type="password" required placeholder="********" class="w-full rounded-lg border-slate-300 pr-20 focus:border-indigo-500 focus:ring-indigo-500" />
-            <button id="loginPasswordToggle" type="button" class="absolute inset-y-0 right-2 my-1 px-2 rounded text-xs font-semibold text-slate-600 hover:bg-slate-100">Goster</button>
-          </div>
-        </div>
+    </div>
 
-        <button type="submit" class="w-full rounded-lg bg-indigo-600 text-white font-semibold py-3 hover:bg-indigo-700 transition-colors">
-          Giris Yap
-        </button>
-      </form>
+    <script>
+        const STORAGE_KEY = 'edua_registered_user';
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginTabBtn = document.getElementById('loginTabBtn');
+        const registerTabBtn = document.getElementById('registerTabBtn');
+        const statusMessage = document.getElementById('statusMessage');
 
-      <div class="mt-6 flex items-center justify-center text-sm gap-3 flex-wrap border-t border-slate-100 pt-4">
-        <a href="uyelik.html" class="text-slate-600 hover:text-slate-900 font-medium">Uyelik Paketleri ve Ozellikler</a>
-      </div>
-    </section>
-  </main>
+        function activateTab(target) {
+            const isLogin = target === 'login';
+            loginForm.classList.toggle('hidden', !isLogin);
+            registerForm.classList.toggle('hidden', isLogin);
+            loginTabBtn.classList.toggle('active', isLogin);
+            registerTabBtn.classList.toggle('active', !isLogin);
+            statusMessage.classList.add('hidden');
+        }
 
-  <script>
-    const THEME_KEY = 'edua_theme';
-    const STORAGE_KEY = 'edua_registered_user';
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-msg ${type === 'error' ? 'status-error' : 'status-success'}`;
+            statusMessage.classList.remove('hidden');
+        }
 
-    const registerTab = document.getElementById('registerTab');
-    const loginTab = document.getElementById('loginTab');
-    const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
-    const statusMessage = document.getElementById('statusMessage');
-    const loginEmail = document.getElementById('loginEmail');
-    const loginPassword = document.getElementById('loginPassword');
+        function wireToggle(btnId, inputId) {
+            const btn = document.getElementById(btnId);
+            const input = document.getElementById(inputId);
+            btn.addEventListener('click', () => {
+                const isPass = input.type === 'password';
+                input.type = isPass ? 'text' : 'password';
+                btn.textContent = isPass ? 'Gizle' : 'Göster';
+            });
+        }
 
-    function applyTheme(theme) {
-      const isDark = theme === 'dark';
-      document.documentElement.classList.toggle('dark', isDark);
-      document.documentElement.classList.toggle('light', !isDark);
-    }
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fullName = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regPasswordConfirm').value;
 
-    applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+            if (!fullName || !email || !password || !confirm) return showStatus('Lütfen tüm alanları doldurun.', 'error');
+            if (password !== confirm) return showStatus('Şifreler uyuşmuyor.', 'error');
 
-    function showStatus(message, type) {
-      statusMessage.textContent = message;
-      statusMessage.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'bg-emerald-50', 'text-emerald-700', 'bg-slate-100', 'text-slate-700');
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ fullName, email, password }));
+            activateTab('login');
+            showStatus('Kayıt başarılı! Giriş yapabilirsiniz.', 'success');
+        });
 
-      if (type === 'error') {
-        statusMessage.classList.add('bg-red-50', 'text-red-700');
-        return;
-      }
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            const user = JSON.parse(localStorage.getItem(STORAGE_KEY));
 
-      if (type === 'success') {
-        statusMessage.classList.add('bg-emerald-50', 'text-emerald-700');
-        return;
-      }
+            if (!user || email !== user.email || password !== user.password) return showStatus('Hatalı e-posta veya şifre.', 'error');
 
-      statusMessage.classList.add('bg-slate-100', 'text-slate-700');
-    }
+            localStorage.setItem('edua_current_user', email);
+            showStatus('Giriş başarılı!', 'success');
+            setTimeout(() => window.location.href = 'islem.html', 500);
+        });
 
-    function activateTab(target) {
-      const isRegister = target === 'register';
+        wireToggle('loginPasswordToggle', 'loginPassword');
+        wireToggle('regPasswordToggle', 'regPassword');
+        wireToggle('regPasswordConfirmToggle', 'regPasswordConfirm');
 
-      registerForm.classList.toggle('hidden', !isRegister);
-      loginForm.classList.toggle('hidden', isRegister);
-
-      registerTab.classList.toggle('bg-white', isRegister);
-      registerTab.classList.toggle('shadow-sm', isRegister);
-      registerTab.classList.toggle('text-slate-900', isRegister);
-      registerTab.classList.toggle('text-slate-600', !isRegister);
-
-      loginTab.classList.toggle('bg-white', !isRegister);
-      loginTab.classList.toggle('shadow-sm', !isRegister);
-      loginTab.classList.toggle('text-slate-900', !isRegister);
-      loginTab.classList.toggle('text-slate-600', isRegister);
-    }
-
-    function wirePasswordToggle(buttonId, inputId) {
-      const toggleButton = document.getElementById(buttonId);
-      const input = document.getElementById(inputId);
-
-      toggleButton.addEventListener('click', function () {
-        const shouldShow = input.type === 'password';
-        input.type = shouldShow ? 'text' : 'password';
-        toggleButton.textContent = shouldShow ? 'Gizle' : 'Goster';
-      });
-    }
-
-    registerTab.addEventListener('click', function () {
-      activateTab('register');
-      showStatus('Once kayit olusturun, sonra giris yapin.', 'info');
-    });
-
-    loginTab.addEventListener('click', function () {
-      activateTab('login');
-    });
-
-    registerForm.addEventListener('submit', function (event) {
-      event.preventDefault();
-
-      const fullName = document.getElementById('regName').value.trim();
-      const email = document.getElementById('regEmail').value.trim().toLowerCase();
-      const password = document.getElementById('regPassword').value;
-      const passwordConfirm = document.getElementById('regPasswordConfirm').value;
-
-      if (!fullName || !email || !password || !passwordConfirm) {
-        showStatus('Tum alanlari doldurmaniz gerekiyor.', 'error');
-        return;
-      }
-
-      if (password.length < 6) {
-        showStatus('Sifre en az 6 karakter olmali.', 'error');
-        return;
-      }
-
-      if (password !== passwordConfirm) {
-        showStatus('Sifreler ayni degil, lutfen kontrol edin.', 'error');
-        return;
-      }
-
-      const user = {
-        fullName,
-        email,
-        password
-      };
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-      loginEmail.value = email;
-      loginPassword.value = '';
-      registerForm.reset();
-
-      activateTab('login');
-      showStatus('Kayit tamamlandi. Simdi kayitli hesapla giris yapabilirsiniz.', 'success');
-    });
-
-    loginForm.addEventListener('submit', function (event) {
-      event.preventDefault();
-
-      const rawUser = localStorage.getItem(STORAGE_KEY);
-      if (!rawUser) {
-        activateTab('register');
-        showStatus('Giris yapmadan once bir hesap olusturmaniz gerekiyor.', 'error');
-        return;
-      }
-
-      const user = JSON.parse(rawUser);
-      const email = loginEmail.value.trim().toLowerCase();
-      const password = loginPassword.value;
-
-      if (email !== user.email || password !== user.password) {
-        showStatus('E-posta veya sifre hatali. Lutfen tekrar deneyin.', 'error');
-        return;
-      }
-
-      showStatus('Giris basarili. Islem sayfasina yonlendiriliyorsunuz...', 'success');
-      window.setTimeout(function () {
-        window.location.href = 'islem.html';
-      }, 500);
-    });
-
-    wirePasswordToggle('regPasswordToggle', 'regPassword');
-    wirePasswordToggle('regPasswordConfirmToggle', 'regPasswordConfirm');
-    wirePasswordToggle('loginPasswordToggle', 'loginPassword');
-
-    const existingUser = localStorage.getItem(STORAGE_KEY);
-    if (existingUser) {
-      const user = JSON.parse(existingUser);
-      activateTab('login');
-      loginEmail.value = user.email;
-      showStatus('Kayitli hesap bulundu. Sifrenizi girerek devam edin.', 'info');
-    } else {
-      activateTab('register');
-      showStatus('Hesap olusturarak baslayin.', 'info');
-    }
-
-    window.addEventListener('storage', function (event) {
-      if (event.key === THEME_KEY) {
-        applyTheme(event.newValue || 'light');
-      }
-    });
-  </script>
+        const user = localStorage.getItem(STORAGE_KEY);
+        if (user) activateTab('login'); else activateTab('register');
+    </script>
 </body>
 </html>

@@ -1,240 +1,588 @@
 <!DOCTYPE html>
 <html class="light" lang="tr">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduAssistant | Yeni Islem</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
   <style>
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    body { font-family: 'Inter', sans-serif; transition: background-color 220ms ease, color 220ms ease; }
-    html.dark body, html.dark main { background-color: #020617 !important; color: #e2e8f0; }
-    html.dark .bg-white { background-color: #0f172a !important; border-color: #334155 !important; }
-    html.dark .bg-white\/80 { background-color: rgba(15, 23, 42, 0.85) !important; }
-    html.dark .bg-slate-50, html.dark .bg-slate-100, html.dark .bg-indigo-50 { background-color: #111827 !important; }
-    html.dark .border-slate-100, html.dark .border-slate-200, html.dark .border-slate-300, html.dark .border-indigo-100 { border-color: #334155 !important; }
-    html.dark .text-slate-900 { color: #f8fafc !important; }
-    html.dark .text-slate-700 { color: #cbd5e1 !important; }
-    html.dark .text-slate-600, html.dark .text-slate-500 { color: #94a3b8 !important; }
-    html.dark input, html.dark select { background-color: #0b1220 !important; border-color: #334155 !important; color: #e2e8f0 !important; }
-    html.dark input::placeholder { color: #64748b; }
-    html.dark .peer-checked\:bg-indigo-50 { background-color: rgba(99, 102, 241, 0.2) !important; }
-    html.dark .hover\:bg-slate-50:hover { background-color: #1e293b !important; }
-    html.dark .hover\:border-indigo-300:hover { border-color: #6366f1 !important; }
-    html.dark .bg-amber-50 { background-color: rgba(245, 158, 11, 0.1) !important; }
-    html.dark .border-amber-200 { border-color: rgba(245, 158, 11, 0.3) !important; }
-    html.dark .text-amber-800 { color: #fbbf24 !important; }
-    html.dark .text-amber-700 { color: #fcd34d !important; }
-    html.dark .text-amber-600 { color: #f59e0b !important; }
-    html.dark .bg-amber-100 { background-color: rgba(245, 158, 11, 0.15) !important; }
-    @keyframes fade-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fade-in { animation: fade-in 150ms ease-out; }
-    @keyframes typing-dot { 0%, 60%, 100% { opacity: 0.3; } 30% { opacity: 1; } }
-    .typing-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #94a3b8; margin: 0 2px; }
-    .typing-dot:nth-child(1) { animation: typing-dot 1.2s infinite 0s; }
-    .typing-dot:nth-child(2) { animation: typing-dot 1.2s infinite 0.2s; }
-    .typing-dot:nth-child(3) { animation: typing-dot 1.2s infinite 0.4s; }
-    .chat-response ul { list-style-type: disc; padding-left: 12px; }
-    .chat-response li { margin-bottom: 2px; }
-    .chat-response strong { font-weight: 600; }
-    html.dark .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.1) !important; }
-    html.dark .border-emerald-200, html.dark .border-emerald-300 { border-color: rgba(16, 185, 129, 0.3) !important; }
-    html.dark .text-emerald-800 { color: #6ee7b7 !important; }
-    html.dark .text-slate-800 { color: #e2e8f0 !important; }
-    html.dark .bg-blue-50 { background-color: rgba(59, 130, 246, 0.1) !important; }
-    html.dark .border-blue-200 { border-color: rgba(59, 130, 246, 0.3) !important; }
-    html.dark .bg-purple-50 { background-color: rgba(139, 92, 246, 0.1) !important; }
-    html.dark .border-purple-200 { border-color: rgba(139, 92, 246, 0.3) !important; }
-    html.dark .bg-rose-50 { background-color: rgba(244, 63, 94, 0.1) !important; }
-    html.dark .border-rose-200 { border-color: rgba(244, 63, 94, 0.3) !important; }
-    html.dark .bg-cyan-50 { background-color: rgba(6, 182, 212, 0.1) !important; }
-    html.dark .border-cyan-200 { border-color: rgba(6, 182, 212, 0.3) !important; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .glass-header {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-item-active {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      color: white !important;
+      box-shadow: 0 10px 20px -5px rgba(168, 85, 247, 0.4);
+    }
+
+    .sidebar-item-active span {
+      color: white !important;
+    }
+
+    /* PREMIUM DARK MODE */
+    html.dark body,
+    html.dark main {
+      background-color: #020617 !important;
+      color: #f1f5f9;
+    }
+
+    html.dark .bg-white {
+      background-color: #0f172a !important;
+      border-color: #1e293b !important;
+    }
+
+    html.dark .glass-header {
+      background: rgba(15, 23, 42, 0.8);
+      border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+    }
+
+    html.dark .bg-white\/80 {
+      background-color: rgba(15, 23, 42, 0.85) !important;
+    }
+
+    html.dark .bg-slate-50,
+    html.dark .bg-slate-100,
+    html.dark .bg-indigo-50 {
+      background-color: #111827 !important;
+    }
+
+    html.dark .border-slate-100,
+    html.dark .border-slate-200,
+    html.dark .border-slate-300,
+    html.dark .border-indigo-100 {
+      border-color: #334155 !important;
+    }
+
+    html.dark .text-slate-900 {
+      color: #f8fafc !important;
+    }
+
+    html.dark .text-slate-800 {
+      color: #f1f5f9 !important;
+    }
+
+    html.dark .text-slate-700 {
+      color: #e2e8f0 !important;
+    }
+
+    html.dark .text-slate-600 {
+      color: #cbd5e1 !important;
+    }
+
+    html.dark .text-rose-600 {
+      color: #fb7185 !important;
+    }
+
+    html.dark * {
+      box-shadow: none !important;
+      --tw-shadow: 0 0 #0000 !important;
+      --tw-shadow-colored: 0 0 #0000 !important;
+    }
+
+    html.dark .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+
+    html.dark .text-slate-400 {
+      color: #64748b !important;
+    }
+
+    html.dark .border-slate-100 {
+      border-color: #1e293b !important;
+    }
+
+    html.dark .border-slate-200 {
+      border-color: #334155 !important;
+    }
+
+    html.dark .border-slate-300 {
+      border-color: #475569 !important;
+    }
+
+    html.dark .border-indigo-100 {
+      border-color: #312e81 !important;
+    }
+
+    html.dark .border-indigo-200 {
+      border-color: #3730a3 !important;
+    }
+
+    html.dark .bg-slate-50 {
+      background-color: #020617 !important;
+    }
+
+    html.dark .bg-slate-100 {
+      background-color: #0f172a !important;
+    }
+
+    html.dark .bg-indigo-50 {
+      background-color: #1e1b4b !important;
+    }
+
+    html.dark .bg-indigo-100 {
+      background-color: #312e81 !important;
+    }
+
+    html.dark .bg-amber-50 {
+      background-color: #451a03 !important;
+    }
+
+    html.dark .bg-amber-100 {
+      background-color: #78350f !important;
+    }
+
+    html.dark input,
+    html.dark select,
+    html.dark textarea {
+      background-color: #0b1220 !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+
+    html.dark input::placeholder {
+      color: #64748b;
+    }
+
+    html.dark .peer-checked\:bg-indigo-50 {
+      background-color: #312e81 !important;
+    }
+
+    html.dark .hover\:bg-slate-50:hover {
+      background-color: #1e293b !important;
+    }
+
+    html.dark .hover\:border-indigo-300:hover {
+      border-color: #6366f1 !important;
+    }
+
+    html.dark .text-amber-800 {
+      color: #fbbf24 !important;
+    }
+
+    html.dark .text-amber-700 {
+      color: #fcd34d !important;
+    }
+
+    html.dark .text-amber-600 {
+      color: #f59e0b !important;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 150ms ease-out;
+    }
+
+    @keyframes typing-dot {
+
+      0%,
+      60%,
+      100% {
+        opacity: 0.3;
+      }
+
+      30% {
+        opacity: 1;
+      }
+    }
+
+    .typing-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #94a3b8;
+      margin: 0 2px;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation: typing-dot 1.2s infinite 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation: typing-dot 1.2s infinite 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation: typing-dot 1.2s infinite 0.4s;
+    }
+
+    .chat-response ul {
+      list-style-type: disc;
+      padding-left: 12px;
+    }
+
+    .chat-response li {
+      margin-bottom: 2px;
+    }
+
+    .chat-response strong {
+      font-weight: 600;
+    }
+
+    html.dark .bg-emerald-50 {
+      background-color: rgba(16, 185, 129, 0.1) !important;
+    }
+
+    html.dark .border-emerald-200,
+    html.dark .border-emerald-300 {
+      border-color: rgba(16, 185, 129, 0.3) !important;
+    }
+
+    html.dark .text-emerald-800 {
+      color: #6ee7b7 !important;
+    }
+
+    html.dark .text-slate-800 {
+      color: #e2e8f0 !important;
+    }
+
+    html.dark .bg-blue-50 {
+      background-color: rgba(59, 130, 246, 0.1) !important;
+    }
+
+    html.dark .border-blue-200 {
+      border-color: rgba(59, 130, 246, 0.3) !important;
+    }
+
+    html.dark .bg-purple-50 {
+      background-color: rgba(139, 92, 246, 0.1) !important;
+    }
+
+    html.dark .border-purple-200 {
+      border-color: rgba(139, 92, 246, 0.3) !important;
+    }
+
+    html.dark .bg-rose-50 {
+      background-color: rgba(244, 63, 94, 0.1) !important;
+    }
+
+    html.dark .border-rose-200 {
+      border-color: rgba(244, 63, 94, 0.3) !important;
+    }
+
+    html.dark .bg-cyan-50 {
+      background-color: rgba(6, 182, 212, 0.1) !important;
+    }
+
+    html.dark .border-cyan-200 {
+      border-color: rgba(6, 182, 212, 0.3) !important;
+    }
   </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900">
-  <aside class="fixed left-0 top-0 h-full w-[280px] border-r border-slate-200 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col py-8 px-4 z-50">
-    <div class="mb-10 px-2 flex items-center gap-3">
-      <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
-        <span class="material-symbols-outlined">school</span>
+  <aside
+    class="fixed left-0 top-0 h-full w-[280px] border-r bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 flex flex-col py-8 px-6 z-50">
+    <div class="mb-12 px-2 flex items-center gap-3">
+      <div
+        class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100 dark:shadow-none">
+        <span class="material-symbols-outlined text-[28px]">auto_awesome</span>
       </div>
       <div>
-        <h1 class="text-xl font-bold tracking-tighter">EduAssistant</h1>
-        <p class="text-xs text-slate-500 font-medium tracking-tight">Kisisel Egitmen</p>
+        <h1 class="text-xl font-black tracking-tighter text-slate-900 dark:text-white font-outfit">EduAssistant</h1>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Kişisel Eğitmen</p>
       </div>
     </div>
-    <nav class="flex-1 space-y-2">
-      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium bg-indigo-50 text-indigo-700 border-l-4 border-indigo-600" href="islem.html">
-        <span class="material-symbols-outlined">add_circle</span><span>Yeni Islem</span>
+    <nav class="flex-1 space-y-3">
+      <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-black sidebar-item-active" href="islem.html">
+        <span class="material-symbols-outlined">add_circle</span><span>Yeni İşlem</span>
       </a>
-      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="code.html">
-        <span class="material-symbols-outlined">history</span><span>Gecmis</span>
+      <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+        href="code.html">
+        <span class="material-symbols-outlined group-hover:text-indigo-600 transition-colors">history</span><span>Geçmiş</span>
       </a>
-      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="uyelik.html">
-        <span class="material-symbols-outlined">workspace_premium</span><span>Uyelik</span>
+      <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+        href="uyelik.html">
+        <span
+          class="material-symbols-outlined group-hover:text-indigo-600 transition-colors">workspace_premium</span><span>Üyelik</span>
       </a>
     </nav>
-    <div class="mt-auto border-t border-slate-100 pt-6">
-      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors" href="giris.html">
-        <span class="material-symbols-outlined">logout</span><span>Cikis Yap</span>
+    <div class="mt-auto border-t border-slate-100 dark:border-slate-800 pt-8">
+      <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-colors group"
+        href="giris.html">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform">logout</span><span>Çıkış
+          Yap</span>
       </a>
     </div>
   </aside>
-
-  <header class="fixed top-0 right-0 left-[280px] z-40 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between h-16 px-8">
-    <h2 class="text-lg font-semibold">Yeni Video Islemi</h2>
+  <header class="fixed top-0 right-0 left-[280px] z-40 glass-header h-20 flex items-center justify-between px-8">
     <div class="flex items-center gap-4">
-      <a href="uyelik.html" id="currentPlanBadge" class="inline-flex items-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-4 py-1.5 border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 transition-colors">
-        Aktif Plan: Ücretsiz
-      </a>
+      <h2 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Analiz Paneli</h2>
+    </div>
+    <div class="flex items-center gap-6">
+      <a href="uyelik.html" id="currentPlanBadge"
+        class="px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-widest border transition-all">Yükleniyor...</a>
     </div>
   </header>
-
   <main class="ml-[280px] pt-16 min-h-screen">
     <div class="p-8 max-w-6xl mx-auto space-y-6">
-      <section class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <h3 class="text-2xl font-semibold tracking-tight">Yeni Egitim Analizi Baslat</h3>
-        <p class="text-slate-500 mt-2">Video linkini girin ve saniyeler içinde yapay zeka destekli özetinizi alın.</p>
-
-        <div id="analysisForm" class="mt-6 space-y-6">
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2" for="videoUrl">Video URL</label>
-            <input id="videoUrl" type="url" required placeholder="https://www.youtube.com/watch?v=..." class="w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2" for="userTitle">Ozet Basligi (opsiyonel)</label>
-            <input id="userTitle" type="text" placeholder="Ornek: Fizik - Momentum" class="w-full rounded-lg border-slate-300 focus:border-indigo-500 focus:ring-indigo-500" />
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">Ders Türü</label>
-                <div class="grid grid-cols-2 gap-2">
-                  <label class="cursor-pointer">
-                    <input type="radio" name="subjectType" value="sozel" class="peer sr-only" checked />
-                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 flex items-center justify-center gap-1.5">
-                      <span class="material-symbols-outlined text-[16px]">auto_stories</span> Sözel
-                    </div>
-                  </label>
-                  <label class="cursor-pointer">
-                    <input type="radio" name="subjectType" value="sayisal" class="peer sr-only" />
-                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-emerald-600 peer-checked:bg-emerald-50 peer-checked:text-emerald-700 flex items-center justify-center gap-1.5">
-                      <span class="material-symbols-outlined text-[16px]">calculate</span> Sayısal
-                    </div>
-                  </label>
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">Ozet Uzunlugu</label>
-                <div class="grid grid-cols-3 gap-2">
-                    <label class="cursor-pointer">
-                        <input type="radio" name="summaryLength" value="kisa" class="peer sr-only" checked />
-                        <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Kisa</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="summaryLength" value="orta" class="peer sr-only" />
-                        <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Orta</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="summaryLength" value="detayli" class="peer sr-only" />
-                        <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Detayli</div>
-                    </label>
-                </div>
+      <section
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden shadow-sm">
+        <!-- AI Hero Header -->
+        <div class="bg-indigo-600 p-8 text-white relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+          <div class="relative flex items-center gap-6">
+            <div
+              class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30">
+              <span class="material-symbols-outlined text-[32px]">psychology</span>
             </div>
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">Soru Sayisi</label>
-                <div class="grid grid-cols-3 gap-2">
-                  <label class="cursor-pointer">
-                    <input type="radio" name="questionCount" value="5" class="peer sr-only" checked />
-                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">5</div>
-                  </label>
-                  <label class="cursor-pointer">
-                    <input type="radio" name="questionCount" value="10" class="peer sr-only" />
-                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">10</div>
-                  </label>
-                  <label class="cursor-pointer">
-                    <input type="radio" name="questionCount" value="15" class="peer sr-only" />
-                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">15</div>
-                  </label>
+            <div>
+              <h3 class="text-2xl font-black tracking-tight">Yeni Eğitim Analizi Başlat</h3>
+              <p class="text-indigo-100/80 text-sm mt-1 font-medium italic">Saniyeler içinde yapay zeka destekli
+                profesyonel özetinizi hazırlayın.</p>
+            </div>
+          </div>
+        </div>
+        <div id="analysisForm" class="p-10 space-y-10">
+          <!-- Section 1: Kaynak Bilgileri -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div class="space-y-4">
+              <label
+                class="text-[13px] font-black text-black dark:text-white uppercase tracking-[0.2em] ml-1 flex items-center gap-3"
+                for="videoUrl">
+                <span class="w-2 h-2 rounded-full bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,1)]"></span> VİDEO URL
+              </label>
+              <div class="relative group">
+                <div
+                  class="absolute left-5 top-1/2 -translate-y-1/2 text-black dark:text-slate-400 group-focus-within:text-indigo-600 transition-colors">
+                  <span class="material-symbols-outlined text-[24px]">link</span>
                 </div>
+                <input id="videoUrl" type="url" required placeholder="https://www.youtube.com/watch?v=..."
+                  class="w-full pl-14 pr-6 py-5 rounded-[20px] bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none font-bold text-black dark:text-white shadow-sm" />
               </div>
-              <div>
-                <label class="block text-sm font-medium text-slate-700 mb-2">Soru Zorlugu</label>
-                <div class="grid grid-cols-3 gap-2">
-                  <label class="cursor-pointer">
-                    <input type="radio" name="questionDifficulty" value="kolay" class="peer sr-only" />
-                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Kolay</div>
-                  </label>
-                  <label class="cursor-pointer">
-                    <input type="radio" name="questionDifficulty" value="orta" class="peer sr-only" checked />
-                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Orta</div>
-                  </label>
-                  <label class="cursor-pointer">
-                    <input type="radio" name="questionDifficulty" value="zor" class="peer sr-only" />
-                    <div class="rounded-lg border border-slate-300 py-2 text-center text-xs font-semibold peer-checked:border-indigo-500 peer-checked:bg-indigo-50 peer-checked:text-indigo-700">Zor</div>
-                  </label>
+            </div>
+            <div class="space-y-4">
+              <label
+                class="text-[13px] font-black text-black dark:text-white uppercase tracking-[0.2em] ml-1 flex items-center gap-3"
+                for="userTitle">
+                <span class="w-2 h-2 rounded-full bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,1)]"></span> ÖZET BAŞLIĞI
+                (OPSİYONEL)
+              </label>
+              <div class="relative group">
+                <div
+                  class="absolute left-5 top-1/2 -translate-y-1/2 text-black dark:text-slate-400 group-focus-within:text-indigo-600 transition-colors">
+                  <span class="material-symbols-outlined text-[24px]">label</span>
                 </div>
+                <input id="userTitle" type="text" placeholder="Örn: Fizik - Momentum"
+                  class="w-full pl-14 pr-6 py-5 rounded-[20px] bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-slate-800 focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 transition-all outline-none font-bold text-black dark:text-white shadow-sm" />
               </div>
+            </div>
+          </div>
+          <!-- Section 2: Analiz Ayarları -->
+          <div
+            class="bg-slate-50/50 dark:bg-slate-800/20 p-10 rounded-[32px] border-2 border-slate-100 dark:border-slate-800/50 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div class="space-y-5">
+              <label
+                class="text-[13px] font-black text-black dark:text-white uppercase tracking-[0.2em] ml-1 flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-indigo-600"></span> DERS TÜRÜ
+              </label>
+              <div class="grid grid-cols-2 gap-4">
+                <label class="cursor-pointer group">
+                  <input type="radio" name="subjectType" value="sozel" class="peer sr-only" checked />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[13px] font-black text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:shadow-xl peer-checked:shadow-indigo-200 dark:peer-checked:shadow-none transition-all flex items-center justify-center gap-2 bg-white dark:bg-slate-900">
+                    <span class="material-symbols-outlined text-[20px]">auto_stories</span> Sözel
+                  </div>
+                </label>
+                <label class="cursor-pointer group">
+                  <input type="radio" name="subjectType" value="sayisal" class="peer sr-only" />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[13px] font-black text-black dark:text-slate-400 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:shadow-xl peer-checked:shadow-emerald-200 dark:peer-checked:shadow-none transition-all flex items-center justify-center gap-2 bg-white dark:bg-slate-900">
+                    <span class="material-symbols-outlined text-[20px]">calculate</span> Sayısal
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="space-y-5">
+              <label
+                class="text-[13px] font-black text-black dark:text-white uppercase tracking-[0.2em] ml-1 flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-indigo-600"></span> ÖZET UZUNLUĞU
+              </label>
+              <div class="grid grid-cols-3 gap-3">
+                <label class="cursor-pointer">
+                  <input type="radio" name="summaryLength" value="kisa" class="peer sr-only" checked />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[11px] font-black uppercase tracking-tighter text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all bg-white dark:bg-slate-900">
+                    Kısa</div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="summaryLength" value="orta" class="peer sr-only" />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[11px] font-black uppercase tracking-tighter text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all bg-white dark:bg-slate-900">
+                    Orta</div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="summaryLength" value="detayli" class="peer sr-only" />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[11px] font-black uppercase tracking-tighter text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all bg-white dark:bg-slate-900">
+                    Detaylı</div>
+                </label>
+              </div>
+            </div>
+            <div class="space-y-5">
+              <label
+                class="text-[13px] font-black text-black dark:text-white uppercase tracking-[0.2em] ml-1 flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-indigo-600"></span> SORU SAYISI
+              </label>
+              <div class="grid grid-cols-3 gap-3">
+                <label class="cursor-pointer">
+                  <input type="radio" name="questionCount" value="5" class="peer sr-only" checked />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[13px] font-black text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all bg-white dark:bg-slate-900">
+                    5</div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="questionCount" value="10" class="peer sr-only" />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[13px] font-black text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all bg-white dark:bg-slate-900">
+                    10</div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="questionCount" value="15" class="peer sr-only" />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[13px] font-black text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all bg-white dark:bg-slate-900">
+                    15</div>
+                </label>
+              </div>
+            </div>
+            <div class="space-y-5">
+              <label
+                class="text-[13px] font-black text-black dark:text-white uppercase tracking-[0.2em] ml-1 flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-indigo-600"></span> SORU ZORLUĞU
+              </label>
+              <div class="grid grid-cols-3 gap-3">
+                <label class="cursor-pointer">
+                  <input type="radio" name="questionDifficulty" value="kolay" class="peer sr-only" />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[11px] font-black uppercase tracking-tighter text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all bg-white dark:bg-slate-900">
+                    Kolay</div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="questionDifficulty" value="orta" class="peer sr-only" checked />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[11px] font-black uppercase tracking-tighter text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all bg-white dark:bg-slate-900">
+                    Orta</div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="questionDifficulty" value="zor" class="peer sr-only" />
+                  <div
+                    class="rounded-2xl border-2 border-slate-200 dark:border-slate-800 py-4 text-center text-[11px] font-black uppercase tracking-tighter text-black dark:text-slate-400 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all bg-white dark:bg-slate-900">
+                    Zor</div>
+                </label>
+              </div>
+            </div>
           </div>
 
-          <div class="flex flex-wrap gap-3">
-            <button id="startAnalyzeBtn" type="button" class="rounded-lg bg-indigo-600 text-white font-semibold px-6 py-3 hover:bg-indigo-700 transition-colors">
-              Analizi Baslat
+          <div class="flex flex-col items-center gap-8 pt-4">
+            <button id="startAnalyzeBtn" type="button"
+              class="w-full md:w-auto min-w-[260px] rounded-[24px] bg-gradient-to-r from-indigo-600 to-violet-700 text-white font-black text-sm uppercase tracking-[0.2em] px-10 py-5 hover:scale-[1.02] hover:shadow-xl hover:shadow-indigo-200 transition-all flex items-center justify-center gap-4 group">
+              <span class="material-symbols-outlined text-[24px] group-hover:rotate-12 transition-transform">rocket_launch</span>
+              Analizi Başlat
             </button>
-          </div>
-        </div>
 
-        <p id="generationStatus" class="hidden mt-4 text-sm rounded-lg px-3 py-2"></p>
-        <!-- Progress Bar -->
-        <div id="progressBarWrap" class="hidden mt-4">
-          <div class="flex items-center justify-between mb-2">
-            <span id="progressLabel" class="text-sm font-semibold text-indigo-700">Analiz hazırlanıyor...</span>
-            <span id="progressPercent" class="text-xs font-bold text-indigo-500">0%</span>
+            <!-- Status & Progress Container -->
+            <div class="w-full max-w-3xl space-y-4">
+              <p id="generationStatus" class="hidden text-sm rounded-2xl p-5 border-2 transition-all animate-fade-in font-bold text-center"></p>
+              
+              <div id="progressBarWrap" class="hidden p-8 bg-slate-50 dark:bg-slate-900/50 rounded-[28px] border-2 border-slate-100 dark:border-slate-800 shadow-inner">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
+                  <div class="flex items-center gap-4">
+                      <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center animate-spin" style="animation-duration: 3s">
+                          <span class="material-symbols-outlined text-white text-[28px]">sync</span>
+                      </div>
+                      <div>
+                          <span id="progressLabel" class="block text-sm font-black text-black dark:text-white uppercase tracking-widest">Analiz Hazırlanıyor...</span>
+                          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Yapay Zeka İşliyor</p>
+                      </div>
+                  </div>
+                  <div class="flex items-baseline gap-1">
+                      <span id="progressPercent" class="text-4xl font-black text-indigo-600">0</span>
+                      <span class="text-xl font-black text-indigo-400">%</span>
+                  </div>
+                </div>
+                <div class="w-full h-4 bg-white dark:bg-slate-800 rounded-full overflow-hidden p-1 border border-slate-200 dark:border-slate-700">
+                  <div id="progressFill" class="h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_15px_rgba(79,70,229,0.3)]"
+                    style="width:0%; background: linear-gradient(90deg, #6366f1, #a855f7, #d946ef);"></div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="w-full h-2.5 bg-indigo-100 rounded-full overflow-hidden">
-            <div id="progressFill" class="h-full rounded-full transition-all duration-500 ease-out" style="width:0%; background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);"></div>
-          </div>
+          
+          <p id="apiDebugInfo" class="hidden mt-4 text-xs text-slate-500 font-bold italic"></p>
         </div>
-        <p id="apiDebugInfo" class="hidden mt-2 text-xs text-slate-500"></p>
       </section>
 
-      <section id="resultSection" class="hidden">
-        <article class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+      <section id="resultSection" class="hidden space-y-8">
+        <article
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] shadow-sm overflow-hidden">
           <!-- Yazili Ozet Header -->
-          <div class="flex flex-wrap items-center justify-between gap-3 px-6 py-4" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #7c3aed 100%);">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                <span class="material-symbols-outlined text-white text-[22px]">description</span>
+          <div
+            class="flex flex-wrap items-center justify-between gap-6 px-10 py-8 bg-slate-50 dark:bg-slate-800/50 border-bottom border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-4">
+              <div
+                class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-100 dark:shadow-none">
+                <span class="material-symbols-outlined text-white text-[28px]">description</span>
               </div>
               <div>
-                <h4 class="text-lg font-bold text-white">Üretilen Yazılı Özet</h4>
-                <p class="text-[11px] text-indigo-200">AI tarafından transkriptten oluşturuldu</p>
+                <h4 class="text-xl font-black text-black dark:text-white uppercase tracking-widest">Üretilen Yazılı Özet</h4>
+                <p class="text-[12px] text-slate-500 font-bold uppercase tracking-widest mt-1">AI Analiz Sonucu</p>
               </div>
             </div>
             <div class="relative">
-              <button id="exportBtn" type="button" class="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition-colors">
+              <button id="exportBtn" type="button"
+                class="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition-colors">
                 <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span> PDF Olarak İndir
               </button>
             </div>
           </div>
-
           <div class="p-6 space-y-5">
             <!-- Kaynak Video -->
             <div class="flex items-center gap-3 rounded-xl bg-slate-50 border border-slate-200 px-4 py-3">
               <span class="material-symbols-outlined text-indigo-500 text-[20px]">play_circle</span>
               <div>
                 <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Kaynak Video</p>
-                <a id="sourceVideoLink" href="#" target="_blank" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 break-all">-</a>
+                <a id="sourceVideoLink" href="#" target="_blank"
+                  class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 break-all">-</a>
               </div>
             </div>
-
             <!-- Summary Title -->
-            <p id="summaryTitle" class="text-lg font-bold text-slate-900"></p>
-
+            <p id="summaryTitle" class="text-2xl font-black text-black dark:text-white leading-tight"></p>
             <!-- Summary Content - styled sections -->
-            <div id="summaryOutput" class="text-sm text-slate-700 leading-relaxed space-y-3"></div>
-
+            <div id="summaryOutput"
+              class="text-[15px] font-bold text-slate-900 dark:text-slate-100 leading-relaxed space-y-4"></div>
             <!-- Onemli Bolgeler - inside summary card -->
             <div id="importanceSection" class="hidden">
               <div class="rounded-xl border-2 border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 p-4 space-y-3">
@@ -248,7 +596,6 @@
               </div>
             </div>
           </div>
-
           <!-- Gorsel Ozet Paneli - Napkin AI Style Infographic Poster -->
           <div id="visualSummarySection" class="hidden mt-6">
             <style>
@@ -259,19 +606,31 @@
                 overflow: hidden;
                 background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 15%, #ffffff 85%, #f0fdf4 100%);
               }
+
               .infographic-poster::before,
               .infographic-poster::after {
                 content: '';
                 position: absolute;
-                width: 80px; height: 80px;
+                width: 80px;
+                height: 80px;
                 background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 C30 25, 10 40, 25 60 C15 50, 20 30, 50 10Z' fill='%2334d399' opacity='0.3'/%3E%3Cpath d='M60 15 C45 30, 30 50, 45 65 C35 55, 40 35, 60 15Z' fill='%2310b981' opacity='0.25'/%3E%3Cpath d='M70 20 C55 35, 45 55, 55 70 C50 60, 55 40, 70 20Z' fill='%236ee7b7' opacity='0.2'/%3E%3C/svg%3E");
                 background-size: contain;
                 background-repeat: no-repeat;
                 z-index: 1;
                 pointer-events: none;
               }
-              .infographic-poster::before { top: 0; left: 0; }
-              .infographic-poster::after { bottom: 0; right: 0; transform: rotate(180deg); }
+
+              .infographic-poster::before {
+                top: 0;
+                left: 0;
+              }
+
+              .infographic-poster::after {
+                bottom: 0;
+                right: 0;
+                transform: rotate(180deg);
+              }
+
               .ribbon-header {
                 position: relative;
                 display: inline-flex;
@@ -285,6 +644,7 @@
                 text-transform: uppercase;
                 color: white;
               }
+
               .ribbon-header::after {
                 content: '';
                 position: absolute;
@@ -293,18 +653,55 @@
                 border-style: solid;
                 border-width: 18px 8px 18px 0;
               }
-              .ribbon-green { background: linear-gradient(135deg, #059669, #10b981); }
-              .ribbon-green::after { border-color: transparent transparent transparent #10b981; }
-              .ribbon-blue { background: linear-gradient(135deg, #2563eb, #3b82f6); }
-              .ribbon-blue::after { border-color: transparent transparent transparent #3b82f6; }
-              .ribbon-purple { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
-              .ribbon-purple::after { border-color: transparent transparent transparent #8b5cf6; }
-              .ribbon-amber { background: linear-gradient(135deg, #d97706, #f59e0b); }
-              .ribbon-amber::after { border-color: transparent transparent transparent #f59e0b; }
-              .ribbon-rose { background: linear-gradient(135deg, #e11d48, #f43f5e); }
-              .ribbon-rose::after { border-color: transparent transparent transparent #f43f5e; }
-              .ribbon-teal { background: linear-gradient(135deg, #0d9488, #14b8a6); }
-              .ribbon-teal::after { border-color: transparent transparent transparent #14b8a6; }
+
+              .ribbon-green {
+                background: linear-gradient(135deg, #059669, #10b981);
+              }
+
+              .ribbon-green::after {
+                border-color: transparent transparent transparent #10b981;
+              }
+
+              .ribbon-blue {
+                background: linear-gradient(135deg, #2563eb, #3b82f6);
+              }
+
+              .ribbon-blue::after {
+                border-color: transparent transparent transparent #3b82f6;
+              }
+
+              .ribbon-purple {
+                background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+              }
+
+              .ribbon-purple::after {
+                border-color: transparent transparent transparent #8b5cf6;
+              }
+
+              .ribbon-amber {
+                background: linear-gradient(135deg, #d97706, #f59e0b);
+              }
+
+              .ribbon-amber::after {
+                border-color: transparent transparent transparent #f59e0b;
+              }
+
+              .ribbon-rose {
+                background: linear-gradient(135deg, #e11d48, #f43f5e);
+              }
+
+              .ribbon-rose::after {
+                border-color: transparent transparent transparent #f43f5e;
+              }
+
+              .ribbon-teal {
+                background: linear-gradient(135deg, #0d9488, #14b8a6);
+              }
+
+              .ribbon-teal::after {
+                border-color: transparent transparent transparent #14b8a6;
+              }
+
               .flow-arrow {
                 display: flex;
                 align-items: center;
@@ -314,6 +711,7 @@
                 font-weight: 700;
                 flex-shrink: 0;
               }
+
               .flow-step {
                 flex: 1;
                 min-width: 0;
@@ -324,7 +722,12 @@
                 background: white;
                 transition: transform 0.15s, box-shadow 0.15s;
               }
-              .flow-step:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+
+              .flow-step:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+              }
+
               .formula-card {
                 background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
                 border: 2px solid #a5b4fc;
@@ -332,12 +735,14 @@
                 padding: 14px 18px;
                 text-align: center;
               }
+
               .formula-text {
                 font-size: 15px;
                 font-weight: 700;
                 color: #3730a3;
                 letter-spacing: 0.5px;
               }
+
               .poster-divider {
                 height: 3px;
                 border-radius: 2px;
@@ -345,39 +750,39 @@
                 margin: 4px 0;
               }
             </style>
-
             <div class="infographic-poster">
               <!-- TITLE BANNER -->
-              <div class="text-center py-5 px-6" style="background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0891b2 100%);">
+              <div class="text-center py-5 px-6"
+                style="background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0891b2 100%);">
                 <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1 mb-2">
                   <span class="material-symbols-outlined text-white/80 text-[14px]">auto_awesome</span>
-                  <span class="text-[10px] font-semibold text-white/80 uppercase tracking-widest">Yapay Zeka Infografik</span>
+                  <span class="text-[10px] font-semibold text-white/80 uppercase tracking-widest">Yapay Zeka
+                    Infografik</span>
                 </div>
-                <h3 id="visualTitle" class="text-xl md:text-2xl font-extrabold text-white tracking-tight leading-tight">Gorsel Ozet</h3>
+                <h3 id="visualTitle" class="text-xl md:text-2xl font-extrabold text-white tracking-tight leading-tight">
+                  Gorsel Ozet</h3>
               </div>
-
               <div class="p-5 md:p-7 space-y-6 relative z-10">
-
                 <!-- PROCESS FLOW -->
                 <div id="visualProcessFlow" class="hidden">
-                  <div class="mb-4"><span class="ribbon-header ribbon-green"><span class="material-symbols-outlined text-[16px]">account_tree</span> SÜREÇ / AKIŞ</span></div>
+                  <div class="mb-4"><span class="ribbon-header ribbon-green"><span
+                        class="material-symbols-outlined text-[16px]">account_tree</span> SÜREÇ / AKIŞ</span></div>
                   <div id="visualProcessList" class="flex flex-wrap items-center justify-center gap-1 md:gap-0"></div>
                 </div>
-
                 <div class="poster-divider"></div>
-
                 <!-- KEY FORMULAS -->
                 <div id="visualFormulas" class="hidden">
-                  <div class="mb-4"><span class="ribbon-header ribbon-blue"><span class="material-symbols-outlined text-[16px]">functions</span> TEMEL FORMÜLLER / KURALLAR</span></div>
+                  <div class="mb-4"><span class="ribbon-header ribbon-blue"><span
+                        class="material-symbols-outlined text-[16px]">functions</span> TEMEL FORMÜLLER / KURALLAR</span>
+                  </div>
                   <div id="visualFormulasList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                 </div>
-
                 <!-- KEY CONCEPTS -->
                 <div id="visualConcepts" class="hidden">
-                  <div class="mb-4"><span class="ribbon-header ribbon-purple"><span class="material-symbols-outlined text-[16px]">menu_book</span> ANAHTAR KAVRAMLAR</span></div>
+                  <div class="mb-4"><span class="ribbon-header ribbon-purple"><span
+                        class="material-symbols-outlined text-[16px]">menu_book</span> ANAHTAR KAVRAMLAR</span></div>
                   <div id="visualConceptsList" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
                 </div>
-
                 <!-- BOTTOM ROW: Fun Facts + Activity -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <!-- BİLİYOR MUYDUNUZ? -->
@@ -397,20 +802,22 @@
                         <span class="material-symbols-outlined text-indigo-600 text-[22px]">quiz</span>
                         <h5 class="text-sm font-extrabold text-indigo-800 uppercase tracking-wide">Etkinlik</h5>
                       </div>
-                      <p class="text-xs text-slate-600 mb-3">Öğrendiklerini test et! Yapay zeka tarafından oluşturulan çoktan seçmeli sorularla bilgini sına.</p>
-                      <button type="button" onclick="document.getElementById('questionPanel')?.scrollIntoView({behavior:'smooth'})" class="mt-auto rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-sm py-2.5 px-4 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                      <p class="text-xs text-slate-600 mb-3">Öğrendiklerini test et! Yapay zeka tarafından oluşturulan
+                        çoktan seçmeli sorularla bilgini sına.</p>
+                      <button type="button"
+                        onclick="document.getElementById('questionPanel')?.scrollIntoView({behavior:'smooth'})"
+                        class="mt-auto rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-sm py-2.5 px-4 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                         <span class="material-symbols-outlined text-[16px]">arrow_downward</span> Teste Git
                       </button>
                     </div>
                   </div>
                 </div>
-
                 <!-- EXAMPLES -->
                 <div id="visualExamples" class="hidden">
-                  <div class="mb-4"><span class="ribbon-header ribbon-rose"><span class="material-symbols-outlined text-[16px]">lightbulb</span> ÖRNEKLER</span></div>
+                  <div class="mb-4"><span class="ribbon-header ribbon-rose"><span
+                        class="material-symbols-outlined text-[16px]">lightbulb</span> ÖRNEKLER</span></div>
                   <div id="visualExamplesList" class="space-y-2"></div>
                 </div>
-
                 <!-- FOOTER -->
                 <div class="flex items-center justify-between pt-4 border-t-2 border-emerald-200">
                   <div class="flex items-center gap-2 text-[11px] text-slate-400">
@@ -427,34 +834,37 @@
               </div>
             </div>
           </div>
-
           <div class="mt-8 border-t border-slate-200 pt-6">
             <div id="questionPanel" class="hidden mt-4 rounded-xl border border-slate-200 bg-white p-4 space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-3">
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-indigo-600 text-[20px]">quiz</span>
-                  <p class="text-sm font-bold text-slate-900">İnteraktif Sınav Modu</p>
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-indigo-600 text-[24px]">quiz</span>
+                  <p class="text-base font-black text-black dark:text-white uppercase tracking-widest">İnteraktif Sınav
+                    Modu</p>
                 </div>
                 <span id="questionPanelInfo" class="text-xs text-slate-500"></span>
               </div>
               <form id="quizForm" class="mt-2 space-y-6"></form>
               <div class="mt-4 flex gap-2">
-                <button id="checkAnswersBtn" type="button" class="flex-1 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold py-2.5 hover:opacity-90 transition-all flex items-center justify-center gap-2">
+                <button id="checkAnswersBtn" type="button"
+                  class="flex-1 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold py-2.5 hover:opacity-90 transition-all flex items-center justify-center gap-2">
                   <span class="material-symbols-outlined text-[18px]">grading</span> Sınavı Bitir & Puanla
                 </button>
-                <button id="resetQuizBtn" type="button" class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">Sıfırla</button>
+                <button id="resetQuizBtn" type="button"
+                  class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">Sıfırla</button>
               </div>
               <!-- Score Dashboard -->
               <div id="quizScoreDashboard" class="hidden mt-4 space-y-4">
                 <div class="rounded-2xl border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-violet-50 p-5">
                   <div class="flex items-center justify-between mb-3">
-                    <h4 class="text-sm font-bold text-indigo-800 flex items-center gap-2">
-                      <span class="material-symbols-outlined text-[20px]">emoji_events</span> Sınav Sonucu
+                    <h4 class="text-base font-black text-indigo-900 dark:text-indigo-200 flex items-center gap-3">
+                      <span class="material-symbols-outlined text-[24px]">emoji_events</span> SINAV SONUCU
                     </h4>
                     <span id="quizScorePercent" class="text-2xl font-extrabold text-indigo-700">0%</span>
                   </div>
                   <div class="w-full h-3 bg-indigo-200 rounded-full overflow-hidden mb-3">
-                    <div id="quizScoreBar" class="h-full rounded-full transition-all duration-1000 ease-out" style="width:0%; background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);"></div>
+                    <div id="quizScoreBar" class="h-full rounded-full transition-all duration-1000 ease-out"
+                      style="width:0%; background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa);"></div>
                   </div>
                   <div class="grid grid-cols-3 gap-3 text-center">
                     <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-2">
@@ -482,32 +892,41 @@
       </section>
     </div>
   </main>
-
-  <button id="chatToggleBtn" type="button" class="fixed bottom-6 right-6 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold px-5 py-3 shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 z-50" style="box-shadow: 0 4px 24px rgba(99,102,241,0.35)">
+  <button id="chatToggleBtn" type="button"
+    class="fixed bottom-6 right-6 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold px-5 py-3 shadow-lg hover:shadow-xl transition-all hover:scale-105 flex items-center gap-2 z-50"
+    style="box-shadow: 0 4px 24px rgba(99,102,241,0.35)">
     <span class="material-symbols-outlined text-[20px]">forum</span> Videoya Sor
   </button>
-  <aside id="chatSidebar" class="hidden fixed right-6 bottom-20 w-[480px] max-h-[85vh] bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50" style="box-shadow: 0 12px 48px rgba(0,0,0,0.15)">
-    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 rounded-t-2xl">
+  <aside id="chatSidebar"
+    class="hidden fixed right-6 bottom-20 w-[480px] max-h-[85vh] bg-white border border-slate-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-50"
+    style="box-shadow: 0 12px 48px rgba(0,0,0,0.15)">
+    <div
+      class="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 rounded-t-2xl">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
-          <span class="material-symbols-outlined text-white text-[20px]">smart_toy</span>
+        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm">
+          <span class="material-symbols-outlined text-white text-[24px]">smart_toy</span>
         </div>
         <div>
-          <p class="text-sm font-bold text-white">EduAssistant Chat</p>
-          <p class="text-[11px] text-indigo-200 flex items-center gap-1"><span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Videoya dayali yanit veriyor</p>
+          <p class="text-base font-black text-white uppercase tracking-wider">EduAssistant Chat</p>
+          <p class="text-[11px] text-indigo-200 flex items-center gap-1"><span
+              class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Videoya dayali yanit veriyor</p>
         </div>
       </div>
       <div class="flex items-center gap-1">
-        <button id="chatClearBtn" type="button" class="rounded-lg px-2 py-1.5 text-indigo-200 hover:bg-white/10 transition-colors" title="Sohbeti temizle">
+        <button id="chatClearBtn" type="button"
+          class="rounded-lg px-2 py-1.5 text-indigo-200 hover:bg-white/10 transition-colors" title="Sohbeti temizle">
           <span class="material-symbols-outlined text-[18px]">delete_sweep</span>
         </button>
-        <button id="chatCloseBtn" type="button" class="rounded-lg px-2 py-1.5 text-indigo-200 hover:bg-white/10 transition-colors">
+        <button id="chatCloseBtn" type="button"
+          class="rounded-lg px-2 py-1.5 text-indigo-200 hover:bg-white/10 transition-colors">
           <span class="material-symbols-outlined text-[18px]">close</span>
         </button>
       </div>
     </div>
-    <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50" style="min-height:300px; max-height:60vh">
-      <div class="mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm text-slate-600 shadow-sm">
+    <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50"
+      style="min-height:300px; max-height:60vh">
+      <div
+        class="mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm text-slate-600 shadow-sm">
         <div class="flex items-center gap-2 mb-1.5">
           <span class="material-symbols-outlined text-indigo-500 text-[14px]">smart_toy</span>
           <span class="text-[11px] font-semibold text-indigo-600">EduAssistant</span>
@@ -515,26 +934,36 @@
         Merhaba! 👋 Video hakkinda sormak istedigin bir sey var mi? Transkriptten yararlanarak detayli cevap veriyorum.
       </div>
       <div id="chatSuggestions" class="flex flex-wrap gap-2 mt-2">
-        <button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📌 Videonun ana konusu ne?</button>
-        <button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">🔑 Anahtar kavramlar neler?</button>
-        <button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📝 Bu konuyu ozetle</button>
+        <button type="button"
+          class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📌
+          Videonun ana konusu ne?</button>
+        <button type="button"
+          class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">🔑
+          Anahtar kavramlar neler?</button>
+        <button type="button"
+          class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📝
+          Bu konuyu ozetle</button>
       </div>
     </div>
     <form id="chatForm" class="p-3 border-t border-slate-100 bg-white">
       <div class="flex items-center gap-2">
-        <input id="chatInput" type="text" placeholder="Videoya bir soru sor..." class="flex-1 rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500" />
-        <button id="chatSendBtn" type="submit" class="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">
+        <input id="chatInput" type="text" placeholder="Videoya bir soru sor..."
+          class="flex-1 rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        <button id="chatSendBtn" type="submit"
+          class="rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-1">
           <span class="material-symbols-outlined text-[16px]">send</span>
         </button>
       </div>
       <p id="chatStatus" class="mt-2 text-xs text-slate-500 hidden"></p>
     </form>
   </aside>
-
-    <script>
-    const USER_STORAGE_KEY = 'edua_registered_user';
-    if (!localStorage.getItem(USER_STORAGE_KEY)) {
+  <script>
+    const CURRENT_USER_EMAIL = localStorage.getItem('edua_current_user');
+    if (!CURRENT_USER_EMAIL) {
       window.location.href = 'giris.html';
+    }
+    function getUserKey(key) {
+      return `edua_${CURRENT_USER_EMAIL}_${key}`;
     }
     const THEME_KEY = 'edua_theme';
     const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:') ? 'http://127.0.0.1:8010' : '';
@@ -567,20 +996,19 @@
     window.addEventListener('DOMContentLoaded', () => {
       const savedLen = localStorage.getItem('edua_default_summary_length');
       if (savedLen) {
-        const el = document.querySelector(`input[name="summary_length"][value="${savedLen}"]`);
+        const el = document.querySelector(`input[name="summaryLength"][value="${savedLen}"]`);
         if (el) el.checked = true;
       }
       const savedQCount = localStorage.getItem('edua_default_question_count');
       if (savedQCount) {
-        const el = document.querySelector(`input[name="question_count"][value="${savedQCount}"]`);
+        const el = document.querySelector(`input[name="questionCount"][value="${savedQCount}"]`);
         if (el) el.checked = true;
       }
       const savedDiff = localStorage.getItem('edua_default_difficulty');
       if (savedDiff) {
-        const el = document.querySelector(`input[name="question_difficulty"][value="${savedDiff}"]`);
+        const el = document.querySelector(`input[name="questionDifficulty"][value="${savedDiff}"]`);
         if (el) el.checked = true;
       }
-
       // Prefill URL from query parameter if coming from watch later
       const params = new URLSearchParams(window.location.search);
       const prefillUrl = params.get('url');
@@ -590,26 +1018,25 @@
           urlInput.value = prefillUrl;
         }
       }
-
       // Pro Plan Logic Check
       const plan = localStorage.getItem('edua_subscription_plan') || 'free';
       const badge = document.getElementById('currentPlanBadge');
       if (badge) {
-        badge.textContent = plan === 'pro' ? 'Aktif Plan: PRO' : 'Aktif Plan: Ücretsiz';
         if (plan === 'pro') {
-          badge.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
-          badge.classList.add('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
+          badge.textContent = 'Aktif Plan: PRO';
+          badge.className = 'px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-widest border bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400 shadow-lg dark:shadow-none shadow-orange-200/50';
+        } else {
+          badge.textContent = 'Aktif Plan: Ücretsiz';
+          badge.className = 'px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-widest border bg-indigo-50 text-indigo-700 border-indigo-100';
         }
       }
       const isPro = plan === 'pro';
-
       const lockableOptions = [
         { name: 'summaryLength', value: 'detayli' },
         { name: 'questionCount', value: '10' },
         { name: 'questionCount', value: '15' },
         { name: 'questionDifficulty', value: 'zor' }
       ];
-
       lockableOptions.forEach(opt => {
         const radio = document.querySelector(`input[name="${opt.name}"][value="${opt.value}"]`);
         if (radio) {
@@ -621,34 +1048,12 @@
               const safeOpt = document.querySelector(`input[name="${opt.name}"][value="${opt.name === 'summaryLength' ? 'kisa' : (opt.name === 'questionCount' ? '5' : 'orta')}"]`);
               if (safeOpt) safeOpt.checked = true;
             }
-            div.classList.remove('peer-checked:border-indigo-500', 'peer-checked:bg-indigo-50', 'peer-checked:text-indigo-700');
+            div.classList.remove('peer-checked:border-indigo-600', 'peer-checked:bg-indigo-600', 'peer-checked:text-white');
             div.classList.add('bg-slate-50', 'text-slate-400', 'border-slate-200', 'opacity-70', 'cursor-not-allowed', 'flex', 'items-center', 'justify-center', 'gap-1');
             div.innerHTML = `<span class="material-symbols-outlined text-[14px]">lock</span> ${div.textContent}`;
           }
         }
       });
-
-      // Export Locks
-      const pdfBtn = document.getElementById('btnExportPdf');
-      const pdfLock = document.getElementById('pdfLock');
-      if (!isPro) {
-        // Remove other exports for Free users
-        document.querySelectorAll('[data-export]:not([data-export="pdf"])').forEach(el => el.remove());
-        
-        if (pdfBtn && pdfLock) {
-          pdfLock.classList.remove('hidden');
-          pdfBtn.classList.add('opacity-70', 'cursor-not-allowed');
-          pdfBtn.title = "Özel tasarımlı PDF dışa aktarma sadece PRO üyeler içindir.";
-        }
-      }
-
-      // Infographic (Visual Summary) Locking
-      const visualSection = document.getElementById('visualSummarySection');
-      if (visualSection && !isPro) {
-        visualSection.classList.add('relative');
-        // We will inject the overlay when rendering data
-      }
-
     });
 
     let activeQuestions = [];
@@ -666,12 +1071,12 @@
       wrap.classList.remove('hidden');
       let value = 0;
       const steps = [
-        {at: 10, text: 'Altyazılar indiriliyor...'},
-        {at: 30, text: 'Transkript analiz ediliyor...'},
-        {at: 50, text: 'Yapay zeka özet oluşturuyor...'},
-        {at: 70, text: 'Sorular hazırlanıyor...'},
-        {at: 85, text: 'Sonuçlar birleştiriliyor...'},
-        {at: 95, text: 'Neredeyse hazır...'}
+        { at: 10, text: 'Altyazılar indiriliyor...' },
+        { at: 30, text: 'Transkript analiz ediliyor...' },
+        { at: 50, text: 'Yapay zeka özet oluşturuyor...' },
+        { at: 70, text: 'Sorular hazırlanıyor...' },
+        { at: 85, text: 'Sonuçlar birleştiriliyor...' },
+        { at: 95, text: 'Neredeyse hazır...' }
       ];
       progressInterval = setInterval(() => {
         if (value < 92) {
@@ -679,7 +1084,7 @@
           value = Math.min(value, 92);
         }
         fill.style.width = value + '%';
-        pct.textContent = Math.round(value) + '%';
+        pct.textContent = Math.round(value);
         for (const s of steps) {
           if (value >= s.at) label.textContent = s.text;
         }
@@ -693,7 +1098,7 @@
       const pct = document.getElementById('progressPercent');
       if (success) {
         fill.style.width = '100%';
-        pct.textContent = '100%';
+        pct.textContent = '100';
         setTimeout(() => wrap.classList.add('hidden'), 600);
       } else {
         wrap.classList.add('hidden');
@@ -707,10 +1112,10 @@
       } else {
         generationStatus.textContent = message;
       }
-      generationStatus.className = 'mt-4 rounded-xl border p-4 animate-fade-in transition-all ';
+      generationStatus.className = 'rounded-2xl border p-5 animate-fade-in transition-all text-center ';
       if (type === 'success') generationStatus.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200');
       else if (type === 'error') generationStatus.classList.add('bg-white', 'text-rose-800', 'border-rose-100', 'shadow-sm');
-      else generationStatus.classList.add('bg-slate-50', 'text-slate-700', 'border-slate-200');
+      else generationStatus.classList.add('bg-indigo-50/50', 'text-indigo-700', 'border-indigo-100');
       generationStatus.classList.remove('hidden');
       if (type === 'success' || type === 'error') stopProgress(type === 'success');
     }
@@ -724,25 +1129,20 @@
             </span>
             <p class="text-[15px] font-bold text-slate-800 dark:text-slate-100 leading-relaxed">${item.question}</p>
           </div>
-          
           <div class="grid grid-cols-1 gap-3 ml-0 md:ml-11">
             ${item.choices.map((choice, cIdx) => {
-              const letter = String.fromCharCode(65 + cIdx);
-              return `
+        const letter = String.fromCharCode(65 + cIdx);
+        return `
                 <label class="group relative flex items-center gap-4 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-600 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10 transition-all duration-200" data-question="${item.id}" data-choice="${cIdx}">
                   <input type="radio" name="${item.id}" value="${cIdx}" class="peer sr-only">
-                  
                   <div class="w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-sm font-bold text-slate-500 group-hover:border-indigo-400 group-hover:text-indigo-600 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 peer-checked:text-white transition-all">
                     ${letter}
                   </div>
-                  
                   <span class="flex-1 text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">${choice}</span>
-                  
-                  <!-- Selected Indicator Dot -->
                   <div class="opacity-0 peer-checked:opacity-100 w-2 h-2 rounded-full bg-indigo-600 shadow-[0_0_8px_rgba(79,70,229,0.6)] transition-all"></div>
                 </label>
               `;
-            }).join('')}
+      }).join('')}
           </div>
         </div>
       `).join('');
@@ -768,15 +1168,6 @@
         showStatus('Video URL gerekli.', 'error');
         return;
       }
-
-      if (Number.isFinite(questionCount) && questionCount !== activeQuestions.length) {
-        const apiInfo = document.getElementById('apiDebugInfo');
-        if (apiInfo) {
-          apiInfo.textContent = `Istenen soru sayisi: ${questionCount}`;
-          apiInfo.classList.remove('hidden');
-        }
-      }
-
       showStatus('Analiz baslatildi, lutfen bekleyin...', 'info');
       startProgress();
       resultSection.classList.add('hidden');
@@ -800,57 +1191,37 @@
         });
 
         if (!response.ok) {
-            let err = null;
-            try {
-              err = await response.json();
-            } catch (_) {
-              // json degilse ignore
-            }
-
-            // FastAPI HTTPException: { detail: string | object }
-            const detail = err?.detail ?? err;
-            const msg =
-              (typeof detail === 'string' ? detail : null) ??
-              detail?.message ??
-              `Sunucu hatasi olustu. (HTTP ${response.status})`;
-
-            // 429 ise (rate limit) kullaniciya bekleme suresini goster.
-            const retryAfter = detail?.retry_after_seconds;
-            const extra =
-              response.status === 429 && typeof retryAfter === 'number'
-                ? ` Lutfen ${retryAfter}s sonra tekrar deneyin.`
-                : '';
-
-            throw new Error(`${msg}${extra}`);
+          let err = null;
+          try { err = await response.json(); } catch (_) { }
+          const detail = err?.detail ?? err;
+          const msg = (typeof detail === 'string' ? detail : null) ?? detail?.message ?? `Sunucu hatasi olustu. (HTTP ${response.status})`;
+          throw new Error(msg);
         }
 
         const data = await response.json();
-        
-        // --- VERI KONTROL ZIRHI ---
         if (!data.analiz) {
-            throw new Error('Yapay zeka veriyi beklenen formatta olusturamadi. Lutfen tekrar deneyin.');
+          throw new Error('Yapay zeka veriyi beklenen formatta olusturamadi. Lutfen tekrar deneyin.');
         }
 
-        const resolvedAnalysisId = data.analysis_id || data.analiz?.analysis_id || data.analiz?.analysisId || null;
-        currentAnalysisId = resolvedAnalysisId;
+        currentAnalysisId = data.analysis_id || data.analiz?.analysis_id || null;
         currentVideoUrl = data.analiz?.video_url || videoUrl;
-        currentQuestionCount = Number.isFinite(questionCount) ? questionCount : 10;
+        currentQuestionCount = questionCount;
 
         if (Array.isArray(data.analiz.summary_sections) && data.analiz.summary_sections.length > 0) {
           const sColors = [
-            {bg:'bg-indigo-50/60', border:'border-l-indigo-500', text:'text-indigo-700', num:'bg-indigo-500'},
-            {bg:'bg-violet-50/60', border:'border-l-violet-500', text:'text-violet-700', num:'bg-violet-500'},
-            {bg:'bg-sky-50/60', border:'border-l-sky-500', text:'text-sky-700', num:'bg-sky-500'},
-            {bg:'bg-emerald-50/60', border:'border-l-emerald-500', text:'text-emerald-700', num:'bg-emerald-500'},
-            {bg:'bg-amber-50/60', border:'border-l-amber-500', text:'text-amber-700', num:'bg-amber-500'},
-            {bg:'bg-rose-50/60', border:'border-l-rose-500', text:'text-rose-700', num:'bg-rose-500'}
+            { bg: 'bg-indigo-50/60', border: 'border-l-indigo-500', text: 'text-indigo-700', num: 'bg-indigo-500' },
+            { bg: 'bg-violet-50/60', border: 'border-l-violet-500', text: 'text-violet-700', num: 'bg-violet-500' },
+            { bg: 'bg-sky-50/60', border: 'border-l-sky-500', text: 'text-sky-700', num: 'bg-sky-500' },
+            { bg: 'bg-emerald-50/60', border: 'border-l-emerald-500', text: 'text-emerald-700', num: 'bg-emerald-500' },
+            { bg: 'bg-amber-50/60', border: 'border-l-amber-500', text: 'text-amber-700', num: 'bg-amber-500' },
+            { bg: 'bg-rose-50/60', border: 'border-l-rose-500', text: 'text-rose-700', num: 'bg-rose-500' }
           ];
           summaryOutput.innerHTML = data.analiz.summary_sections
             .map((section, i) => {
               const c = sColors[i % sColors.length];
               return `<div class="rounded-xl ${c.bg} border border-slate-200 border-l-4 ${c.border} p-4 hover:shadow-sm transition-shadow">
                 <div class="flex items-center gap-2.5 mb-2">
-                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-md ${c.num} text-white text-[11px] font-black">${i+1}</span>
+                  <span class="inline-flex items-center justify-center w-6 h-6 rounded-md ${c.num} text-white text-[11px] font-black">${i + 1}</span>
                   <h5 class="text-sm font-bold ${c.text}">${section.subtitle}</h5>
                 </div>
                 <p class="text-sm text-slate-600 leading-relaxed">${section.content}</p>
@@ -858,51 +1229,33 @@
             }).join('');
         } else if (data.analiz.ozet) {
           summaryOutput.innerHTML = `<p>${data.analiz.ozet}</p>`;
-        } else {
-          summaryOutput.innerHTML = '<p>Ozet bulunamadi.</p>';
         }
 
-        const displayTitle = userTitle || data.analiz.user_title || data.analiz.title || '';
-        summaryTitle.textContent = displayTitle ? displayTitle : '';
+        summaryTitle.textContent = userTitle || data.analiz.user_title || data.analiz.title || '';
         sourceVideoLink.href = videoUrl;
         sourceVideoLink.textContent = videoUrl;
 
         const rawQuestions = Array.isArray(data.analiz.sorular) ? data.analiz.sorular : [];
-        const mapping = { "A": 0, "B": 1, "C": 2, "D": 3 };
         if (rawQuestions.length > 0) {
+          const mapping = { "A": 0, "B": 1, "C": 2, "D": 3 };
           activeQuestions = rawQuestions.map((q, i) => ({
             id: `q-${i}`,
             question: q.soru || 'Soru metni eksik',
-            choices: [
-              q.secenekler?.A || 'A eksik',
-              q.secenekler?.B || 'B eksik',
-              q.secenekler?.C || 'C eksik',
-              q.secenekler?.D || 'D eksik'
-            ],
+            choices: [q.secenekler?.A || 'A', q.secenekler?.B || 'B', q.secenekler?.C || 'C', q.secenekler?.D || 'D'],
             answer: mapping[q.dogru_cevap] ?? 0,
-            aciklama: q.aciklama || 'Bu soru metinden çıkarılan bilgilere dayanmaktadır.',
+            aciklama: q.aciklama || 'Açıklama bulunamadı.',
             timeRef: q.zaman_referansi || null
           }));
           renderQuestions(activeQuestions);
           questionPanel.classList.remove('hidden');
-          if (questionPanelInfo) {
-            questionPanelInfo.textContent = `${activeQuestions.length} soru hazir.`;
-          }
-        } else {
-          activeQuestions = [];
-          quizForm.innerHTML = '<p class="text-sm text-slate-500">Sorular uretilemedi.</p>';
-          questionPanel.classList.remove('hidden');
-          if (questionPanelInfo) {
-            questionPanelInfo.textContent = '';
-          }
+          if (questionPanelInfo) questionPanelInfo.textContent = `${activeQuestions.length} soru hazır.`;
         }
-        resultSection.classList.remove('hidden');
 
         // Onemli Bolgeler
         const importanceSection = document.getElementById('importanceSection');
         const importanceList = document.getElementById('importanceList');
         const regions = Array.isArray(data.analiz.important_regions) ? data.analiz.important_regions : [];
-        if (regions.length > 0) {
+        if (regions.length > 0 && importanceList) {
           importanceList.innerHTML = regions.map(r => `
             <div class="flex items-start gap-2 p-2 rounded-lg bg-amber-100/60">
               <span class="material-symbols-outlined text-amber-600 text-[16px] mt-0.5">warning</span>
@@ -913,55 +1266,27 @@
             </div>
           `).join('');
           importanceSection.classList.remove('hidden');
-        } else {
+        } else if (importanceSection) {
           importanceSection.classList.add('hidden');
         }
 
+        resultSection.classList.remove('hidden');
         lastAnalysisData = data.analiz;
         renderVisualSummary(data.analiz);
         showStatus('Analiz basariyla tamamlandi!', 'success');
 
-      } catch (error) {
-        console.error("Detayli Hata:", error);
-        
-        let errorTitle = 'Analiz Hatası';
-        let errorDesc = error.message;
-        let suggestion = 'Lütfen daha sonra tekrar deneyin.';
-        
-        const lowerDesc = errorDesc.toLowerCase();
-        if (lowerDesc.includes('transkript') || lowerDesc.includes('transcript')) {
-            errorTitle = 'Transkript Bulunamadı';
-            errorDesc = 'Maalesef bu video için okunabilir bir altyazı veya transkript kaydı bulamadık.';
-            suggestion = 'Lütfen Türkçe veya İngilizce altyazısı açık olan, ya da sistem tarafından otomatik transkript oluşturulmuş başka bir eğitim videosu deneyin.';
-        } else if (lowerDesc.includes('url') || lowerDesc.includes('ytdl') || lowerDesc.includes('youtube')) {
-            errorTitle = 'Geçersiz Video Bağlantısı';
-            errorDesc = 'Girdiğiniz YouTube bağlantısına erişilemiyor veya geçersiz bir link formati sağladınız.';
-            suggestion = 'Lütfen URL\'nin doğruluğunu kontrol edin (örn: https://www.youtube.com/watch?v=...) ve videonun gizli/silinmiş olmadığından emin olun.';
-        } else if (lowerDesc.includes('fetch') || lowerDesc.includes('network') || lowerDesc.includes('bağlantı')) {
-            errorTitle = 'Bağlantı Hatası';
-            errorDesc = 'Video Asistanı sunucusuyla iletişim kurulamadı.';
-            suggestion = 'İnternet bağlantınızı kontrol edin. Sistem yöneticisiyseniz backend sunucusunun çalıştığından emin olun.';
-        }
+        // History
+        const historyKey = getUserKey('history');
+        const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+        const historyItem = { ...data.analiz, analysis_id: currentAnalysisId, video_url: videoUrl, created_at: new Date().toISOString() };
+        history.unshift(historyItem);
+        if (history.length > 20) history.pop();
+        localStorage.setItem(historyKey, JSON.stringify(history));
 
-        const htmlMsg = `
-            <div class="flex items-start gap-3">
-                <div class="p-2 bg-rose-50 rounded-lg flex-shrink-0 border border-rose-100 mt-0.5">
-                    <span class="material-symbols-outlined text-rose-500 text-[20px]">error</span>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold text-rose-900 mb-1">${errorTitle}</h3>
-                    <p class="text-[13px] text-rose-700/90 mb-2.5 leading-relaxed">${errorDesc}</p>
-                    <div class="flex items-center gap-1.5 text-[11px] font-medium text-amber-700 bg-amber-50 px-2.5 py-1.5 rounded-md inline-flex border border-amber-200/60">
-                        <span class="material-symbols-outlined text-[14px]">lightbulb</span>
-                        ${suggestion}
-                    </div>
-                </div>
-            </div>
-        `;
-        showStatus(htmlMsg, 'error', true);
+      } catch (error) {
+        showStatus(error.message, 'error');
       }
     }
-
 
     function renderVisualSummary(analiz) {
       var vs = document.getElementById('visualSummarySection');
@@ -979,128 +1304,94 @@
       var vFunFactsList = document.getElementById('visualFunFactsList');
       var vActivity = document.getElementById('visualActivity');
 
-      var title = analiz.user_title || analiz.title || 'Gorsel Ozet';
-      vTitle.textContent = title;
+      vTitle.textContent = analiz.user_title || analiz.title || 'Görsel Özet';
 
-      // --- PROCESS FLOW ---
+      // Process Flow
       var flowSteps = Array.isArray(analiz.process_flow) ? analiz.process_flow : [];
-      if (flowSteps.length > 0 && vProcessFlow && vProcessList) {
+      if (flowSteps.length > 0 && vProcessList) {
         var flowColors = ['border-emerald-400 bg-emerald-50', 'border-sky-400 bg-sky-50', 'border-violet-400 bg-violet-50', 'border-amber-400 bg-amber-50', 'border-rose-400 bg-rose-50', 'border-cyan-400 bg-cyan-50'];
-        var flowIconColors = ['text-emerald-600', 'text-sky-600', 'text-violet-600', 'text-amber-600', 'text-rose-600', 'text-cyan-600'];
-        var html = '';
-        flowSteps.forEach(function(fs, i) {
+        vProcessList.innerHTML = flowSteps.map((fs, i) => {
           var fc = flowColors[i % flowColors.length];
-          var ic = flowIconColors[i % flowIconColors.length];
-          if (i > 0) {
-            html += '<div class="flow-arrow px-1 md:px-2"><span class="material-symbols-outlined">arrow_forward</span></div>';
-          }
-          html += '<div class="flow-step ' + fc + '">' +
-            '<div class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white border-2 border-current ' + ic + ' text-xs font-black mb-1">' + (i+1) + '</div>' +
-            '<p class="text-xs font-bold text-slate-800 leading-tight">' + fs.step + '</p>' +
-            (fs.detail ? '<p class="text-[10px] text-slate-500 mt-1 leading-snug">' + fs.detail + '</p>' : '') +
-            '</div>';
-        });
-        vProcessList.innerHTML = html;
+          var connector = i < flowSteps.length - 1 ? '<div class="flex items-center px-2 text-slate-300"><span class="material-symbols-outlined">arrow_forward</span></div>' : '';
+          return `<div class="flow-step ${fc} p-4 rounded-xl border-2 text-center flex-1 min-w-[140px] shadow-sm">
+            <div class="w-8 h-8 rounded-full bg-white border-2 border-current flex items-center justify-center text-xs font-black mx-auto mb-2 text-indigo-600">${i + 1}</div>
+            <p class="text-xs font-bold text-slate-800">${fs.step}</p>
+            ${fs.detail ? `<p class="text-[10px] text-slate-500 mt-1">${fs.detail}</p>` : ''}
+          </div>` + connector;
+        }).join('');
         vProcessFlow.classList.remove('hidden');
       } else if (vProcessFlow) {
         vProcessFlow.classList.add('hidden');
       }
 
-      // --- KEY FORMULAS ---
+      // Formulas
       var formulas = Array.isArray(analiz.key_formulas) ? analiz.key_formulas : [];
-      if (formulas.length > 0 && vFormulas && vFormulasList) {
-        vFormulasList.innerHTML = formulas.map(function(f) {
-          return '<div class="formula-card">' +
-            '<p class="text-[10px] font-bold text-indigo-500 uppercase tracking-wide mb-1">' + (f.label || '') + '</p>' +
-            '<p class="formula-text">' + (f.formula || '') + '</p>' +
-            '</div>';
-        }).join('');
+      if (formulas.length > 0 && vFormulasList) {
+        vFormulasList.innerHTML = formulas.map(f => `<div class="formula-card p-4 rounded-xl border-2 border-indigo-200 bg-indigo-50/50 text-center">
+          <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-wide mb-1">${f.label || ''}</p>
+          <p class="text-sm font-bold text-indigo-900">${f.formula || ''}</p>
+        </div>`).join('');
         vFormulas.classList.remove('hidden');
       } else if (vFormulas) {
         vFormulas.classList.add('hidden');
       }
 
-      // --- KEY CONCEPTS ---
-      if (Array.isArray(analiz.key_concepts) && analiz.key_concepts.length > 0) {
-        var cColors = ['border-violet-300 bg-violet-50/60', 'border-fuchsia-300 bg-fuchsia-50/60', 'border-indigo-300 bg-indigo-50/60', 'border-purple-300 bg-purple-50/60', 'border-pink-300 bg-pink-50/60'];
-        vConceptsList.innerHTML = analiz.key_concepts.map(function(kc, i) {
-          var cc = cColors[i % cColors.length];
-          return '<div class="rounded-xl border-2 ' + cc + ' p-3 hover:shadow-md transition-shadow text-center">' +
-            '<p class="text-[11px] font-extrabold text-violet-900 mb-1">' + kc.term + '</p>' +
-            '<div class="w-8 h-0.5 bg-violet-300 mx-auto mb-1.5 rounded"></div>' +
-            '<p class="text-[10px] text-slate-600 leading-relaxed">' + kc.definition + '</p>' +
-            '</div>';
-        }).join('');
+      // Concepts
+      var concepts = Array.isArray(analiz.key_concepts) ? analiz.key_concepts : [];
+      if (concepts.length > 0 && vConceptsList) {
+        vConceptsList.innerHTML = concepts.map(kc => `<div class="p-3 rounded-xl border-2 border-violet-200 bg-violet-50/50 text-center hover:shadow-md transition-shadow">
+          <p class="text-xs font-black text-violet-900 mb-1">${kc.term}</p>
+          <p class="text-[10px] text-slate-600 leading-relaxed">${kc.definition}</p>
+        </div>`).join('');
         vConcepts.classList.remove('hidden');
-      } else {
+      } else if (vConcepts) {
         vConcepts.classList.add('hidden');
       }
 
-      // --- FUN FACTS ---
+      // Fun Facts
       var facts = Array.isArray(analiz.fun_facts) ? analiz.fun_facts : [];
-      if (facts.length > 0 && vFunFacts && vFunFactsList) {
-        vFunFactsList.innerHTML = facts.map(function(f) {
-          return '<div class="flex items-start gap-2.5">' +
-            '<span class="material-symbols-outlined text-teal-500 text-[16px] mt-0.5 flex-shrink-0">check_circle</span>' +
-            '<p class="text-xs text-slate-700 leading-relaxed">' + f + '</p>' +
-            '</div>';
-        }).join('');
+      if (facts.length > 0 && vFunFactsList) {
+        vFunFactsList.innerHTML = facts.map(f => `<div class="flex items-start gap-2 text-xs text-slate-700">
+          <span class="material-symbols-outlined text-teal-500 text-[16px] flex-shrink-0">check_circle</span>
+          <p>${f}</p>
+        </div>`).join('');
         vFunFacts.classList.remove('hidden');
       } else if (vFunFacts) {
         vFunFacts.classList.add('hidden');
       }
 
-      // --- ACTIVITY (show if quiz exists) ---
-      if (vActivity) {
-        var hasQuiz = Array.isArray(analiz.sorular) && analiz.sorular.length > 0;
-        if (hasQuiz) {
-          vActivity.classList.remove('hidden');
-        } else {
-          vActivity.classList.add('hidden');
-        }
-      }
-
-      // --- EXAMPLES ---
-      if (Array.isArray(analiz.examples) && analiz.examples.length > 0) {
-        vExamplesList.innerHTML = analiz.examples.map(function(ex) {
-          return '<div class="flex items-start gap-3 rounded-xl border-2 border-rose-200 bg-rose-50/40 p-3 hover:shadow-md transition-shadow">' +
-            '<div class="w-6 h-6 rounded-lg bg-rose-500 text-white flex items-center justify-center flex-shrink-0 mt-0.5">' +
-            '<span class="material-symbols-outlined text-[14px]">tips_and_updates</span>' +
-            '</div>' +
-            '<p class="text-xs text-slate-700 leading-relaxed">' + ex + '</p>' +
-            '</div>';
-        }).join('');
+      // Examples
+      var examples = Array.isArray(analiz.examples) ? analiz.examples : [];
+      if (examples.length > 0 && vExamplesList) {
+        vExamplesList.innerHTML = examples.map(ex => `<div class="flex items-start gap-3 p-3 rounded-xl border-2 border-rose-100 bg-rose-50/30">
+          <span class="material-symbols-outlined text-rose-500 text-[18px]">tips_and_updates</span>
+          <p class="text-xs text-slate-700">${ex}</p>
+        </div>`).join('');
         vExamples.classList.remove('hidden');
-      } else {
+      } else if (vExamples) {
         vExamples.classList.add('hidden');
       }
 
-      // Timestamp
       if (vTimestamp) {
-        var now = new Date();
-        vTimestamp.textContent = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+        const now = new Date();
+        vTimestamp.textContent = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
       }
 
       vs.classList.remove('hidden');
 
-      if (localStorage.getItem('edua_subscription_plan') !== 'pro') {
+      // Lock check
+      const plan = localStorage.getItem('edua_subscription_plan') || 'free';
+      if (plan !== 'pro') {
         vs.classList.add('relative');
-        // Prevent multiple overlays
         if (!document.getElementById('proInfographicOverlay')) {
           const overlay = document.createElement('div');
           overlay.id = 'proInfographicOverlay';
-          overlay.className = 'absolute inset-0 z-50 backdrop-blur-md bg-white/40 dark:bg-slate-900/40 flex flex-col items-center justify-center rounded-2xl border-2 border-indigo-200/50 dark:border-indigo-800/50 animate-fade-in';
+          overlay.className = 'absolute inset-0 z-50 backdrop-blur-md bg-white/40 dark:bg-slate-900/40 flex flex-col items-center justify-center rounded-2xl border-2 border-indigo-200/50 animate-fade-in';
           overlay.innerHTML = `
-            <div class="bg-indigo-600 text-white p-4 rounded-full shadow-lg mb-4 animate-bounce" style="animation-duration: 3s">
-              <span class="material-symbols-outlined text-[40px]">lock</span>
-            </div>
+            <div class="bg-indigo-600 text-white p-4 rounded-full shadow-lg mb-4 animate-bounce"><span class="material-symbols-outlined text-[40px]">lock</span></div>
             <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Görsel Özet (İnfografik)</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400 mb-6 text-center max-w-[280px]">
-              Eğitimi görselleştiren bu harika paneli açmak için PRO plana geçin.
-            </p>
-            <a href="uyelik.html" class="bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold px-8 py-3 rounded-xl shadow-indigo-200 dark:shadow-none hover:scale-105 transition-transform">
-              PRO ile Kilidi Aç
-            </a>
+            <p class="text-sm text-slate-600 mb-6 text-center max-w-[280px]">PRO plana geçerek bu harika paneli açın.</p>
+            <a href="uyelik.html" class="bg-indigo-600 text-white font-bold px-8 py-3 rounded-xl hover:scale-105 transition-transform">PRO ile Kilidi Aç</a>
           `;
           vs.appendChild(overlay);
         }
@@ -1110,636 +1401,130 @@
       }
     }
 
+    document.getElementById('startAnalyzeBtn').addEventListener('click', handleAnalyze);
+
+    document.getElementById('checkAnswersBtn').onclick = () => {
+      if (activeQuestions.length === 0) return;
+      let correct = 0, total = activeQuestions.length, wrong = 0, empty = 0;
+      const explanations = [];
+
+      activeQuestions.forEach((q, idx) => {
+        const sel = document.querySelector(`input[name="${q.id}"]:checked`);
+        const labels = document.querySelectorAll(`label[data-question="${q.id}"]`);
+        labels.forEach(l => l.classList.remove('border-emerald-500', 'bg-emerald-50', 'border-rose-500', 'bg-rose-50'));
+
+        const correctLabel = document.querySelector(`label[data-question="${q.id}"][data-choice="${q.answer}"]`);
+        if (correctLabel) correctLabel.classList.add('border-emerald-500', 'bg-emerald-50');
+
+        if (!sel) {
+          empty++;
+          explanations.push({ idx: idx + 1, q: q.question, status: 'empty', correct: q.choices[q.answer], aciklama: q.aciklama });
+        } else if (parseInt(sel.value) === q.answer) {
+          correct++;
+        } else {
+          wrong++;
+          const wrongLabel = document.querySelector(`label[data-question="${q.id}"][data-choice="${sel.value}"]`);
+          if (wrongLabel) wrongLabel.classList.add('border-rose-500', 'bg-rose-50');
+          explanations.push({ idx: idx + 1, q: q.question, status: 'wrong', your: q.choices[sel.value], correct: q.choices[q.answer], aciklama: q.aciklama });
+        }
+      });
+
+      const dashboard = document.getElementById('quizScoreDashboard');
+      const pct = Math.round((correct / total) * 100);
+      document.getElementById('quizScorePercent').textContent = pct + '%';
+      document.getElementById('quizScoreBar').style.width = pct + '%';
+      document.getElementById('quizCorrectCount').textContent = correct;
+      document.getElementById('quizWrongCount').textContent = wrong;
+      document.getElementById('quizEmptyCount').textContent = empty;
+
+      const explContainer = document.getElementById('quizExplanations');
+      if (explanations.length > 0) {
+        explContainer.innerHTML = explanations.map(e => `
+          <div class="p-4 rounded-xl border ${e.status === 'wrong' ? 'border-rose-100 bg-rose-50/30' : 'border-amber-100 bg-amber-50/30'} space-y-2">
+            <p class="text-sm font-bold text-slate-800">${e.idx}. ${e.q}</p>
+            <p class="text-xs text-emerald-700">✅ Doğru Cevap: ${e.correct}</p>
+            <p class="text-[11px] text-slate-500 italic">💡 ${e.aciklama}</p>
+          </div>
+        `).join('');
+      } else {
+        explContainer.innerHTML = '<div class="p-4 bg-emerald-50 text-emerald-700 rounded-xl text-center font-bold">Harika! Tüm soruları doğru bildin. 🏆</div>';
+      }
+
+      dashboard.classList.remove('hidden');
+      dashboard.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    document.getElementById('resetQuizBtn').onclick = () => {
+      quizForm.reset();
+      document.getElementById('quizScoreDashboard').classList.add('hidden');
+      document.querySelectorAll('label[data-question]').forEach(l => l.classList.remove('border-emerald-500', 'bg-emerald-50', 'border-rose-500', 'bg-rose-50'));
+    };
+
+    // Chat Logic
+    chatToggleBtn.addEventListener('click', () => { chatSidebar.classList.toggle('hidden'); chatInput.focus(); });
+    chatCloseBtn.addEventListener('click', () => { chatSidebar.classList.add('hidden'); });
+
     function formatChatMarkdown(text) {
-      var safe = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      // Bold
-      safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      // Bullet lists
-      safe = safe.replace(/^[\*\-] (.+)$/gm, '<li class="ml-3">$1</li>');
-      safe = safe.replace(/(<li[^>]*>.*<\/li>\n?)+/g, function(m) { return '<ul class="list-disc ml-2 space-y-0.5">' + m + '</ul>'; });
-      // Numbered lists
-      safe = safe.replace(/^\d+\.\s+(.+)$/gm, '<li class="ml-3">$1</li>');
-      // Line breaks
-      safe = safe.replace(/\n/g, '<br>');
-      return safe;
+      return String(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
     }
 
     function appendChatMessage(role, text, isHtml = false) {
-      // Remove suggestions after first user message
-      var sug = document.getElementById('chatSuggestions');
+      const sug = document.getElementById('chatSuggestions');
       if (sug) sug.remove();
-
-      var wrapper = document.createElement('div');
-      wrapper.classList.add('animate-fade-in');
-      if (role === 'user') {
-        wrapper.className = 'ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-4 py-3 text-sm shadow-sm animate-fade-in';
-        wrapper.textContent = text;
-      } else {
-        wrapper.className = 'mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm text-slate-700 leading-relaxed chat-response shadow-sm animate-fade-in';
-        const content = isHtml ? text : formatChatMarkdown(text);
-        wrapper.innerHTML = '<div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-indigo-500 text-[14px]">smart_toy</span><span class="text-[11px] font-semibold text-indigo-600">EduAssistant</span></div>' + content;
-      }
+      const wrapper = document.createElement('div');
+      wrapper.className = role === 'user' ? 'ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-indigo-600 text-white px-4 py-3 text-sm animate-fade-in mb-3' : 'mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm text-slate-700 animate-fade-in mb-3';
+      wrapper.innerHTML = (role === 'bot' ? '<div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined text-indigo-500 text-[14px]">smart_toy</span><span class="text-[10px] font-black text-indigo-600 uppercase">EduAssistant</span></div>' : '') + (isHtml ? text : formatChatMarkdown(text));
       chatMessages.appendChild(wrapper);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function showTypingIndicator() {
-      var existing = document.getElementById('typingIndicator');
-      if (existing) existing.remove();
-      var el = document.createElement('div');
-      el.id = 'typingIndicator';
-      el.className = 'mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm shadow-sm animate-fade-in';
-      el.innerHTML = '<div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-indigo-500 text-[14px]">smart_toy</span><span class="text-[11px] font-semibold text-indigo-600">EduAssistant</span></div><div class="flex items-center gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
-      chatMessages.appendChild(el);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    function removeTypingIndicator() {
-      var el = document.getElementById('typingIndicator');
-      if (el) el.remove();
-    }
-
-    function setChatStatus(message) {
-      if (!message) {
-        chatStatus.classList.add('hidden');
-        chatStatus.textContent = '';
-        return;
-      }
-      chatStatus.textContent = message;
-      chatStatus.classList.remove('hidden');
-    }
-
-    document.getElementById('startAnalyzeBtn').addEventListener('click', () => {
-      handleAnalyze();
-    });
-
-    document.getElementById('videoUrl').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        handleAnalyze();
-      }
-    });
-
-    document.getElementById('checkAnswersBtn').onclick = () => {
-        if (activeQuestions.length === 0) {
-          showStatus('Sorular hazir degil.', 'error');
-          return;
-        }
-        let correct = 0;
-        let wrong = 0;
-        let empty = 0;
-        const correctClasses = ['!border-emerald-500', '!bg-emerald-50', 'dark:!bg-emerald-900/20'];
-        const wrongClasses = ['!border-rose-500', '!bg-rose-50', 'dark:!bg-rose-900/20'];
-        const explanations = [];
-
-        activeQuestions.forEach((q, idx) => {
-            const labels = document.querySelectorAll(`label[data-question="${q.id}"]`);
-            labels.forEach(label => {
-              label.classList.remove(...correctClasses, ...wrongClasses);
-              const badge = label.querySelector('.rounded-full');
-              if (badge) badge.classList.remove('!bg-emerald-600', '!bg-rose-600', '!text-white', '!border-emerald-600', '!border-rose-600');
-            });
-
-            const selected = document.querySelector(`input[name="${q.id}"]:checked`);
-            const correctLabel = document.querySelector(`label[data-question="${q.id}"][data-choice="${q.answer}"]`);
-            
-            if (correctLabel) {
-              correctLabel.classList.add(...correctClasses);
-              const badge = correctLabel.querySelector('.rounded-full');
-              if (badge) badge.classList.add('!bg-emerald-600', '!text-white', '!border-emerald-600');
-            }
-
-            const correctChoiceText = q.choices[q.answer] || '';
-            
-            let timeRef = q.timeRef;
-            if (timeRef === '00:00' || timeRef === 'MM:SS') timeRef = null;
-
-            if (!selected) {
-              empty++;
-              explanations.push({
-                idx: idx + 1,
-                status: 'empty',
-                question: q.question,
-                correctAnswer: correctChoiceText,
-                timeRef: timeRef,
-                aciklama: q.aciklama
-              });
-            } else if (parseInt(selected.value, 10) === q.answer) {
-              correct++;
-            } else {
-              wrong++;
-              const wrongLabel = document.querySelector(`label[data-question="${q.id}"][data-choice="${selected.value}"]`);
-              if (wrongLabel) {
-                wrongLabel.classList.add(...wrongClasses);
-                const badge = wrongLabel.querySelector('.rounded-full');
-                if (badge) badge.classList.add('!bg-rose-600', '!text-white', '!border-rose-600');
-              }
-              const selectedText = q.choices[parseInt(selected.value, 10)] || '';
-              explanations.push({
-                idx: idx + 1,
-                status: 'wrong',
-                question: q.question,
-                yourAnswer: selectedText,
-                correctAnswer: correctChoiceText,
-                timeRef: timeRef,
-                aciklama: q.aciklama
-              });
-            }
-        });
-
-        // Score calculation
-        const total = activeQuestions.length;
-        const percent = Math.round((correct / total) * 100);
-        const scoreBar = document.getElementById('quizScoreBar');
-        const scorePercent = document.getElementById('quizScorePercent');
-        const dashboard = document.getElementById('quizScoreDashboard');
-
-        document.getElementById('quizCorrectCount').textContent = correct;
-        document.getElementById('quizWrongCount').textContent = wrong;
-        document.getElementById('quizEmptyCount').textContent = empty;
-        scorePercent.textContent = percent + '%';
-
-        // Motivation message
-        const motivation = document.getElementById('quizMotivation');
-        if (percent === 100) motivation.textContent = '🏆 Mükemmel! Tüm soruları doğru bildin!';
-        else if (percent >= 80) motivation.textContent = '🌟 Harika! Konuya çok hakimsin!';
-        else if (percent >= 60) motivation.textContent = '👍 İyi gidiyorsun, biraz daha çalışmayla mükemmel olacak!';
-        else if (percent >= 40) motivation.textContent = '📚 Videoyu tekrar izleyerek eksiklerini tamamlayabilirsin.';
-        else motivation.textContent = '💪 Endişelenme! Videoyu tekrar izleyip notları gözden geçir.';
-
-        // Score bar color based on percentage
-        if (percent >= 80) scoreBar.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
-        else if (percent >= 50) scoreBar.style.background = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
-        else scoreBar.style.background = 'linear-gradient(90deg, #ef4444, #f87171)';
-
-        // Animate score bar
-        setTimeout(() => { scoreBar.style.width = percent + '%'; }, 100);
-
-        // Render explanations for wrong/empty answers
-        const explContainer = document.getElementById('quizExplanations');
-        if (explanations.length > 0) {
-          explContainer.innerHTML = '<h4 class="text-sm font-bold text-slate-800 flex items-center gap-2"><span class="material-symbols-outlined text-rose-500 text-[18px]">help</span> Yanlış/Boş Cevapların Açıklaması</h4>' +
-            explanations.map(e => `
-              <div class="rounded-xl border ${e.status === 'wrong' ? 'border-rose-200 bg-rose-50/50' : 'border-amber-200 bg-amber-50/50'} p-4 space-y-2">
-                <p class="text-sm font-semibold text-slate-900">${e.idx}. ${e.question}</p>
-                ${e.status === 'wrong' ? `
-                  <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-rose-500 text-[16px]">close</span>
-                    <p class="text-xs text-rose-700">Senin cevabın: <strong>${e.yourAnswer}</strong></p>
-                  </div>` : `
-                  <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-amber-500 text-[16px]">remove_circle_outline</span>
-                    <p class="text-xs text-amber-700">Bu soruyu boş bıraktın.</p>
-                  </div>`}
-                <div class="flex items-start gap-2 bg-emerald-50/50 rounded-lg p-2 border border-emerald-100/50">
-                  <span class="material-symbols-outlined text-emerald-500 text-[16px] mt-0.5">check_circle</span>
-                  <div>
-                    <p class="text-xs text-emerald-700 mb-1">Doğru cevap: <strong>${e.correctAnswer}</strong></p>
-                    <p class="text-[11px] text-emerald-600 italic">💡 ${e.aciklama}</p>
-                  </div>
-                </div>
-                ${e.timeRef ? `
-                <div class="flex items-center gap-2 mt-2 rounded-lg bg-indigo-50 px-3 py-2 border border-indigo-100">
-                  <span class="material-symbols-outlined text-indigo-500 text-[14px]">schedule</span>
-                  <p class="text-[11px] text-indigo-700">Bu konu videoda <strong>${e.timeRef}</strong> civarında anlatılıyor. İlgili bölümü tekrar izleyerek pekiştirebilirsin.</p>
-                </div>` : ''}
-              </div>
-            `).join('');
-        } else {
-          explContainer.innerHTML = '';
-        }
-
-        dashboard.classList.remove('hidden');
-        dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        // Removed redundant quizFeedback text
-        quizFeedback.classList.add('hidden');
-    };
-
-    document.getElementById('resetQuizBtn').onclick = () => {
-        quizForm.reset();
-        quizFeedback.classList.add('hidden');
-        const labels = quizForm.querySelectorAll('label[data-question]');
-        labels.forEach(label => {
-          label.classList.remove('border-emerald-500', 'bg-emerald-50', 'border-red-500', 'bg-red-50');
-        });
-        const dashboard = document.getElementById('quizScoreDashboard');
-        if (dashboard) dashboard.classList.add('hidden');
-        const scoreBar = document.getElementById('quizScoreBar');
-        if (scoreBar) scoreBar.style.width = '0%';
-    };
-
-    chatToggleBtn.addEventListener('click', () => {
-      chatSidebar.classList.toggle('hidden');
-      chatInput.focus();
-    });
-
-    chatCloseBtn.addEventListener('click', () => {
-      chatSidebar.classList.add('hidden');
-    });
-
-    document.getElementById('chatClearBtn').addEventListener('click', () => {
-      chatMessages.innerHTML = '<div class="mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white border border-slate-200 px-4 py-3 text-sm text-slate-600 shadow-sm"><div class="flex items-center gap-2 mb-1.5"><span class="material-symbols-outlined text-indigo-500 text-[14px]">smart_toy</span><span class="text-[11px] font-semibold text-indigo-600">EduAssistant</span></div>Sohbet temizlendi. Yeni bir soru sorabilirsin. 🔄</div><div id="chatSuggestions" class="flex flex-wrap gap-2 mt-2"><button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📌 Videonun ana konusu ne?</button><button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">🔑 Anahtar kavramlar neler?</button><button type="button" class="chat-suggestion-btn rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">📝 Bu konuyu ozetle</button></div>';
-    });
-
-    // Suggestion buttons (event delegation)
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('chat-suggestion-btn')) {
-        var text = e.target.textContent.replace(/^[\u{1F4CC}\u{1F511}\u{1F4DD}]\s*/u, '').trim();
-        chatInput.value = text;
-        chatForm.dispatchEvent(new Event('submit'));
-      }
-    });
-
     async function sendChatMessage(message) {
-      if (!message) return;
-      if (!currentVideoUrl) {
-        setChatStatus('Once analiz yapmalisin.');
-        return;
-      }
-
+      if (!message || !currentVideoUrl) return;
       appendChatMessage('user', message);
       chatInput.value = '';
+      
       const plan = localStorage.getItem('edua_subscription_plan') || 'free';
-      let remainingInfo = null;
       if (plan !== 'pro') {
-        const limitKey = `edua_chat_limit_${currentAnalysisId || 'temp'}`;
+        const limitKey = getUserKey(`chat_limit_${currentAnalysisId || 'temp'}`);
         const chatCount = parseInt(localStorage.getItem(limitKey) || '0', 10);
-        const maxLimit = 3;
-        
-        if (chatCount >= maxLimit) {
-          const overlayHtml = `
-            <div class="flex flex-col items-center justify-center p-6 text-center bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-100 dark:border-rose-800 animate-fade-in">
-              <span class="material-symbols-outlined text-rose-500 text-[32px] mb-2">lock</span>
-              <p class="text-sm font-bold text-rose-900 dark:text-rose-100 mb-1">Analiz Sınırı Doldu</p>
-              <p class="text-xs text-rose-700 dark:text-rose-400 mb-3">Ücretsiz planda her analiz için 3 soru sorma hakkınız vardır.</p>
-              <a href="uyelik.html" class="text-xs font-bold text-white bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-700">Sınırsız Sohbet için PRO'ya Geç</a>
-            </div>
-          `;
-          appendChatMessage('bot', overlayHtml, true);
+        if (chatCount >= 3) {
+          appendChatMessage('bot', '<p class="text-rose-600 font-bold">Ücretsiz plan limiti doldu (3 soru). Sınırsız sohbet için PRO\'ya geçin.</p>', true);
           return;
         }
         localStorage.setItem(limitKey, chatCount + 1);
-        const remaining = maxLimit - (chatCount + 1);
-        remainingInfo = `<div class="mt-2 text-[10px] font-bold text-indigo-500 flex items-center gap-1 opacity-80"><span class="material-symbols-outlined text-[12px]">info</span> Bu özet için kalan soru hakkınız: ${remaining}</div>`;
       }
 
-      showTypingIndicator();
-      setChatStatus('');
+      const indicator = document.createElement('div');
+      indicator.className = 'mr-auto p-3 text-slate-400 italic text-xs animate-pulse';
+      indicator.textContent = 'EduAssistant düşünüyor...';
+      chatMessages.appendChild(indicator);
 
       try {
         const response = await fetch(`${API_BASE}/api/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            analysis_id: currentAnalysisId,
-            youtube_url: currentVideoUrl,
-            question: message
-          })
+          body: JSON.stringify({ analysis_id: currentAnalysisId, youtube_url: currentVideoUrl, question: message })
         });
-
-        removeTypingIndicator();
-
-        if (!response.ok) {
-          let err = null;
-          try {
-            err = await response.json();
-          } catch (_) {
-            // ignore
-          }
-          const detail = err?.detail ?? err;
-          const msg =
-            (typeof detail === 'string' ? detail : null) ??
-            detail?.message ??
-            `Sunucu hatasi olustu. (HTTP ${response.status})`;
-          throw new Error(msg);
-        }
-
+        indicator.remove();
         const data = await response.json();
-        let finalAnswer = data.answer || 'Yanıt alinamadi.';
-        if (remainingInfo) {
-          finalAnswer += remainingInfo;
-        }
-        appendChatMessage('assistant', finalAnswer, true);
-        setChatStatus('');
-      } catch (error) {
-        removeTypingIndicator();
-        setChatStatus(`Hata: ${error.message}`);
+        appendChatMessage('bot', data.answer || 'Yanıt alınamadı.');
+      } catch (e) {
+        indicator.remove();
+        appendChatMessage('bot', 'Bir hata oluştu: ' + e.message);
       }
     }
 
-    chatForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const message = chatInput.value.trim();
-      sendChatMessage(message);
+    chatForm.addEventListener('submit', (e) => { e.preventDefault(); sendChatMessage(chatInput.value.trim()); });
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('chat-suggestion-btn')) {
+        chatInput.value = e.target.textContent.replace(/[📌🔑📝]\s*/, '');
+        chatForm.dispatchEvent(new Event('submit'));
+      }
     });
 
-    function showProModal(featureName, featureDesc) {
-      const modal = document.createElement('div');
-      modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in';
-      modal.id = 'proFeatureModal';
-      modal.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-[32px] p-8 shadow-2xl flex flex-col items-center text-center">
-            <div class="w-24 h-24 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-6">
-                <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-[44px]">lock</span>
-            </div>
-            <h3 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">PRO Özellik</h3>
-            <p class="text-slate-500 dark:text-slate-400 mb-8 text-sm leading-relaxed">
-                ${featureDesc}
-            </p>
-            <div class="flex flex-col w-full gap-3">
-                <a href="uyelik.html" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-colors">Yükselt</a>
-                <button onclick="this.closest('#proFeatureModal').remove()" class="w-full text-slate-400 font-semibold py-2 text-xs hover:text-slate-600 transition-colors">Kapat</button>
-            </div>
-        </div>
-      `;
-      document.body.appendChild(modal);
-    }
-
-    // ---- EXPORT ----
-    const exportBtn = document.getElementById('exportBtn');
-    exportBtn.addEventListener('click', () => {
-      const plan = localStorage.getItem('edua_subscription_plan') || 'free';
-      if (plan !== 'pro') {
-        showProModal('PDF Dışa Aktar', 'Özetlerinizi şık bir PDF olarak indirmek için planınızı yükseltin.');
-        return;
-      }
-      exportPdf();
-    });
-
-    function buildExportText() {
-      if (!lastAnalysisData) return { title: '', body: '' };
-      const d = lastAnalysisData;
-      const title = d.user_title || d.title || 'Video Analizi';
-      let body = '# ' + title + '\n\nKaynak: ' + (d.video_url || currentVideoUrl) + '\n\n';
-      if (Array.isArray(d.summary_sections)) {
-        body += '## Konu Özeti\n\n';
-        d.summary_sections.forEach(function(s) { body += '### ' + s.subtitle + '\n' + s.content + '\n\n'; });
-      } else if (d.ozet) {
-        body += d.ozet + '\n\n';
-      }
-      var regions = Array.isArray(d.important_regions) ? d.important_regions : [];
-      if (regions.length) {
-        body += '## ⚠️ Önemli Bölgeler\n\n';
-        regions.forEach(function(r) { body += '- **' + (r.label || 'Kritik') + '**: ' + r.text + '\n'; });
-        body += '\n';
-      }
-      // Infographic data
-      if (Array.isArray(d.process_flow) && d.process_flow.length) {
-        body += '## 🔄 Süreç / Akış\n\n';
-        d.process_flow.forEach(function(f, i) { body += (i+1) + '. **' + f.step + '**' + (f.detail ? ' — ' + f.detail : '') + '\n'; });
-        body += '\n';
-      }
-      if (Array.isArray(d.key_formulas) && d.key_formulas.length) {
-        body += '## 📐 Temel Formüller / Kurallar\n\n';
-        d.key_formulas.forEach(function(f) { body += '- **' + (f.label || '') + '**: `' + (f.formula || '') + '`\n'; });
-        body += '\n';
-      }
-      if (Array.isArray(d.key_concepts) && d.key_concepts.length) {
-        body += '## 📚 Anahtar Kavramlar\n\n';
-        d.key_concepts.forEach(function(c) { body += '- **' + c.term + '**: ' + c.definition + '\n'; });
-        body += '\n';
-      }
-      if (Array.isArray(d.fun_facts) && d.fun_facts.length) {
-        body += '## 💡 Biliyor Muydunuz?\n\n';
-        d.fun_facts.forEach(function(f) { body += '- ' + f + '\n'; });
-        body += '\n';
-      }
-      if (Array.isArray(d.sorular) && d.sorular.length) {
-        body += '## 📝 Sorular\n\n';
-        d.sorular.forEach(function(q, i) {
-          body += (i+1) + '. ' + q.soru + '\n';
-          ['A','B','C','D'].forEach(function(k) { body += '   ' + k + ') ' + (q.secenekler && q.secenekler[k] || '') + '\n'; });
-          body += '   ✅ Doğru: ' + q.dogru_cevap + '\n\n';
-        });
-      }
-      return { title: title, body: body };
-    }
-
-    function downloadFile(filename, content, mime) {
-      var blob = new Blob([content], { type: mime });
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
-
-    function exportPdf() {
-      if (!lastAnalysisData) return;
-      var d = lastAnalysisData;
-      var title = d.user_title || d.title || 'Video Analizi';
-      var date = new Date().toLocaleDateString('tr-TR', {year:'numeric', month:'long', day:'numeric'});
-      var esc = function(t) { return String(t||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
-      var template = localStorage.getItem('edua_pdf_template') || 'renkli';
-
-      var html = '<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>' + esc(title) + '</title>';
-      html += '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
-      html += '<style>';
-      html += '*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }';
-      html += 'body { font-family: "Inter", sans-serif; color: #1e293b; background: #fff; }';
-      html += '@media print { body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
-      html += '.page { max-width: 800px; margin: 0 auto; padding: 0; }';
-
-      if (template === 'minimal') {
-        html += '.header { border-bottom: 2px solid #e2e8f0; padding: 30px 40px; margin-bottom: 24px; }';
-        html += '.header h1 { font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }';
-        html += '.header-meta { font-size: 12px; color: #64748b; }';
-        html += '.content { padding: 0 40px; }';
-        html += '.section-title { font-size: 18px; font-weight: 600; border-bottom: 1px solid #cbd5e1; padding-bottom: 6px; margin-bottom: 16px; margin-top: 24px; }';
-        html += '.summary-card { margin-bottom: 16px; }';
-        html += '.summary-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }';
-        html += '.summary-card p { font-size: 14px; line-height: 1.6; color: #334155; }';
-        html += '.concept-grid { display: block; }';
-        html += '.concept-card { margin-bottom: 8px; }';
-        html += '.concept-card .term { font-weight: 600; }';
-        html += '.question { margin-bottom: 20px; }';
-        html += '.q-text { font-weight: 600; margin-bottom: 8px; }';
-        html += '.option { padding: 4px 0; }';
-        html += '.option.correct { font-weight: 600; }';
-      } else {
-        // Renkli ve Sadece Sorular için renkli tema (Varsayılan)
-        html += '.header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 40px 48px; border-radius: 0 0 24px 24px; margin-bottom: 32px; }';
-        html += '.header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }';
-        html += '.header-meta { font-size: 12px; opacity: 0.8; display: flex; gap: 16px; align-items: center; }';
-        html += '.header-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }';
-        html += '.content { padding: 0 48px 40px; }';
-        html += '.section { margin-bottom: 28px; }';
-        html += '.section-title { font-size: 16px; font-weight: 700; color: #4f46e5; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid #e0e7ff; }';
-        html += '.summary-card { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }';
-        html += '.summary-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }';
-        html += '.summary-card p { font-size: 13px; line-height: 1.6; color: #475569; }';
-        html += '.num-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; color: white; font-size: 11px; font-weight: 800; }';
-        html += '.c-indigo { border-left-color: #6366f1; } .c-indigo .num-badge { background: #6366f1; } .c-indigo h4 { color: #4338ca; }';
-        html += '.c-violet { border-left-color: #8b5cf6; } .c-violet .num-badge { background: #8b5cf6; } .c-violet h4 { color: #6d28d9; }';
-        html += '.c-sky { border-left-color: #0ea5e9; } .c-sky .num-badge { background: #0ea5e9; } .c-sky h4 { color: #0369a1; }';
-        html += '.c-emerald { border-left-color: #10b981; } .c-emerald .num-badge { background: #10b981; } .c-emerald h4 { color: #047857; }';
-        html += '.c-amber { border-left-color: #f59e0b; } .c-amber .num-badge { background: #f59e0b; } .c-amber h4 { color: #b45309; }';
-        html += '.c-rose { border-left-color: #f43f5e; } .c-rose .num-badge { background: #f43f5e; } .c-rose h4 { color: #be123c; }';
-        html += '.formula-box { background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: 1px solid #c7d2fe; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
-        html += '.formula-box .label { font-size: 10px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.05em; }';
-        html += '.formula-box .formula { font-size: 15px; font-weight: 700; color: #312e81; margin-top: 2px; }';
-        html += '.concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }';
-        html += '.concept-card { border: 1px solid #ddd6fe; background: #f5f3ff; border-radius: 10px; padding: 12px; text-align: center; }';
-        html += '.concept-card .term { font-size: 12px; font-weight: 700; color: #5b21b6; }';
-        html += '.concept-card .def { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4; }';
-        html += '.question { margin-bottom: 16px; page-break-inside: avoid; }';
-        html += '.question .q-text { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }';
-        html += '.option { font-size: 12px; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 4px; color: #475569; }';
-        html += '.option.correct { border-color: #10b981; background: #ecfdf5; color: #047857; font-weight: 600; }';
-        html += '.flow-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }';
-        html += '.flow-step-box { background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 10px 14px; text-align: center; flex: 1; min-width: 100px; }';
-        html += '.flow-step-box .snum { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #10b981; color: white; font-size: 11px; font-weight: 800; margin-bottom: 4px; }';
-        html += '.flow-step-box .stxt { font-size: 11px; font-weight: 600; color: #1e293b; }';
-        html += '.flow-arrow { color: #94a3b8; font-size: 18px; }';
-        html += '.warning-card { background: #fffbeb; border: 1px solid #fcd34d; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
-        html += '.warning-card .wlabel { font-size: 12px; font-weight: 700; color: #92400e; }';
-        html += '.warning-card .wtext { font-size: 12px; color: #78350f; margin-top: 2px; }';
-        html += '.fact-item { font-size: 12px; color: #475569; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; gap: 8px; }';
-        html += '.fact-icon { color: #14b8a6; font-size: 14px; flex-shrink: 0; }';
-      }
-
-      html += '.footer { text-align: center; padding: 24px 48px; border-top: 2px solid #e2e8f0; margin-top: 20px; color: #94a3b8; font-size: 11px; }';
-      html += '</style></head><body><div class="page">';
-
-      // HEADER
-      if (template === 'minimal') {
-        html += '<div class="header">';
-        html += '<h1>' + esc(title) + '</h1>';
-        html += '<div class="header-meta">Tarih: ' + date + ' | Kaynak: ' + esc(d.video_url || currentVideoUrl) + '</div>';
-        html += '</div>';
-      } else {
-        html += '<div class="header">';
-        html += '<div class="header-badge">EduAssistant AI</div>';
-        html += '<h1 style="margin-top:12px">' + esc(title) + '</h1>';
-        html += '<div class="header-meta"><span>📅 ' + date + '</span><span>🔗 ' + esc(d.video_url || currentVideoUrl) + '</span></div>';
-        html += '</div>';
-      }
-
-      html += '<div class="content">';
-
-      if (template !== 'sadece_sorular') {
-        // SUMMARY SECTIONS
-        var sColors = ['c-indigo','c-violet','c-sky','c-emerald','c-amber','c-rose'];
-        if (Array.isArray(d.summary_sections) && d.summary_sections.length) {
-          html += '<div class="section"><div class="section-title">📝 Konu Özeti</div>';
-          d.summary_sections.forEach(function(s, i) {
-            if (template === 'minimal') {
-              html += '<div class="summary-card"><h4>' + esc(s.subtitle) + '</h4><p>' + esc(s.content) + '</p></div>';
-            } else {
-              var c = sColors[i % sColors.length];
-              html += '<div class="summary-card ' + c + '"><h4><span class="num-badge">' + (i+1) + '</span>' + esc(s.subtitle) + '</h4><p>' + esc(s.content) + '</p></div>';
-            }
-          });
-          html += '</div>';
-        }
-
-        // IMPORTANT REGIONS
-        if (Array.isArray(d.important_regions) && d.important_regions.length) {
-          html += '<div class="section"><div class="section-title">⚠️ Dikkat Edilmesi Gerekenler</div>';
-          d.important_regions.forEach(function(r) {
-            if (template === 'minimal') {
-              html += '<p><strong>' + esc(r.label || 'Dikkat') + ':</strong> ' + esc(r.text) + '</p>';
-            } else {
-              html += '<div class="warning-card"><div class="wlabel">' + esc(r.label || 'Dikkat') + '</div><div class="wtext">' + esc(r.text) + '</div></div>';
-            }
-          });
-          html += '</div>';
-        }
-
-        // PROCESS FLOW
-        if (Array.isArray(d.process_flow) && d.process_flow.length) {
-          html += '<div class="section"><div class="section-title">🔄 Süreç / Akış</div>';
-          if (template === 'minimal') {
-            html += '<ol>';
-            d.process_flow.forEach(function(f) { html += '<li>' + esc(f.step) + '</li>'; });
-            html += '</ol></div>';
-          } else {
-            html += '<div class="flow-steps">';
-            d.process_flow.forEach(function(f, i) {
-              if (i > 0) html += '<span class="flow-arrow">→</span>';
-              html += '<div class="flow-step-box"><div class="snum">' + (i+1) + '</div><div class="stxt">' + esc(f.step) + '</div></div>';
-            });
-            html += '</div></div>';
-          }
-        }
-
-        // KEY FORMULAS
-        if (Array.isArray(d.key_formulas) && d.key_formulas.length) {
-          html += '<div class="section"><div class="section-title">📐 Temel Formüller / Kurallar</div>';
-          d.key_formulas.forEach(function(f) {
-            if (template === 'minimal') {
-              html += '<p><strong>' + esc(f.label) + ':</strong> ' + esc(f.formula) + '</p>';
-            } else {
-              html += '<div class="formula-box"><div class="label">' + esc(f.label) + '</div><div class="formula">' + esc(f.formula) + '</div></div>';
-            }
-          });
-          html += '</div>';
-        }
-
-        // KEY CONCEPTS
-        if (Array.isArray(d.key_concepts) && d.key_concepts.length) {
-          html += '<div class="section"><div class="section-title">📚 Anahtar Kavramlar</div>';
-          html += '<div class="concept-grid">';
-          d.key_concepts.forEach(function(c) {
-            if (template === 'minimal') {
-              html += '<div class="concept-card"><span class="term">' + esc(c.term) + ':</span> <span class="def">' + esc(c.definition) + '</span></div>';
-            } else {
-              html += '<div class="concept-card"><div class="term">' + esc(c.term) + '</div><div class="def">' + esc(c.definition) + '</div></div>';
-            }
-          });
-          html += '</div></div>';
-        }
-
-        // FUN FACTS
-        if (Array.isArray(d.fun_facts) && d.fun_facts.length) {
-          html += '<div class="section"><div class="section-title">💡 Biliyor Muydunuz?</div>';
-          if (template === 'minimal') {
-            html += '<ul>';
-            d.fun_facts.forEach(function(f) { html += '<li>' + esc(f) + '</li>'; });
-            html += '</ul></div>';
-          } else {
-            d.fun_facts.forEach(function(f) {
-              html += '<div class="fact-item"><span class="fact-icon">✓</span><span>' + esc(f) + '</span></div>';
-            });
-            html += '</div>';
-          }
-        }
-      }
-
-      // QUESTIONS
-      if (Array.isArray(d.sorular) && d.sorular.length) {
-        html += '<div class="section"><div class="section-title">📝 Sorular</div>';
-        d.sorular.forEach(function(q, i) {
-          html += '<div class="question"><div class="q-text">' + (i+1) + '. ' + esc(q.soru) + '</div>';
-          ['A','B','C','D'].forEach(function(k) {
-            var isCorrect = k === q.dogru_cevap;
-            html += '<div class="option' + (isCorrect ? ' correct' : '') + '">' + k + ') ' + esc(q.secenekler && q.secenekler[k] || '') + (isCorrect && template !== 'minimal' ? ' ✓' : '') + '</div>';
-          });
-          html += '</div>';
-        });
-        html += '</div>';
-      }
-
-      html += '</div>'; // content
-
-      // FOOTER
-      html += '<div class="footer">Bu doküman EduAssistant AI tarafından otomatik oluşturulmuştur. &bull; ' + date + '</div>';
-      html += '</div></body></html>';
-
-      var win = window.open('', '_blank');
-      win.document.write(html);
-      win.document.close();
-      setTimeout(function() { win.print(); }, 600);
-    }
-
-    // Export buttons logic removed as it's now a single button
-
-    window.addEventListener('storage', (event) => {
-      if (event.key === THEME_KEY) {
-        applyTheme(event.newValue || 'light');
-      }
-    });
+    function exportPdf() { window.print(); }
+    document.getElementById('exportBtn').onclick = exportPdf;
   </script>
 </body>
+
 </html>

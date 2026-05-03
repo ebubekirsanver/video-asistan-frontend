@@ -1,119 +1,165 @@
--<!DOCTYPE html>
+-
+<!DOCTYPE html>
 <html class="light" lang="tr">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduAssistant | Uyelik</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <style>
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      transition: background-color 220ms ease, color 220ms ease;
-    }
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
 
-    html.dark body,
-    html.dark main {
-      background-color: #020617 !important;
-      color: #e2e8f0;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-    html.dark .bg-white {
-      background-color: #0f172a !important;
-      border-color: #334155 !important;
-    }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s ease;
+        }
 
-    html.dark .bg-white\/80 {
-      background-color: rgba(15, 23, 42, 0.85) !important;
-    }
+        .sidebar-item-active {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white !important;
+            box-shadow: 0 10px 20px -5px rgba(168, 85, 247, 0.4);
+        }
 
-    html.dark .bg-slate-50,
-    html.dark .bg-slate-100,
-    html.dark .bg-indigo-50,
-    html.dark .bg-indigo-100 {
-      background-color: #111827 !important;
-    }
+        .sidebar-item-active span {
+            color: white !important;
+        }
 
-    html.dark .border-slate-100,
-    html.dark .border-slate-200,
-    html.dark .border-slate-300,
-    html.dark .border-indigo-100,
-    html.dark .border-indigo-200 {
-      border-color: #334155 !important;
-    }
+        /* PREMIUM DARK MODE */
+        html.dark body {
+            background-color: #020617;
+            color: #f1f5f9;
+        }
 
-    html.dark .text-slate-900 { color: #f8fafc !important; }
-    html.dark .text-slate-800 { color: #e2e8f0 !important; }
-    html.dark .text-slate-700 { color: #cbd5e1 !important; }
-    html.dark .text-slate-600,
-    html.dark .text-slate-500,
-    html.dark .text-slate-400 { color: #94a3b8 !important; }
+        html.dark * {
+            box-shadow: none !important;
+            --tw-shadow: 0 0 #0000 !important;
+            --tw-shadow-colored: 0 0 #0000 !important;
+        }
 
-    html.dark .hover\:bg-slate-50:hover {
-      background-color: #1e293b !important;
-    }
+        html.dark .bg-white {
+            background-color: #0f172a !important;
+            border-color: #1e293b !important;
+        }
 
-    html.dark .hover\:bg-slate-100:hover {
-      background-color: #1f2937 !important;
-    }
+        html.dark .glass-header {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+        }
 
-    html.dark table,
-    html.dark th,
-    html.dark td {
-      border-color: #334155 !important;
-    }
-  </style>
+        html.dark .text-slate-900 { color: #f8fafc !important; }
+        html.dark .text-slate-800 { color: #f1f5f9 !important; }
+        html.dark .text-slate-700 { color: #e2e8f0 !important; }
+        html.dark .text-slate-600 { color: #cbd5e1 !important; }
+        html.dark .text-slate-500 { color: #94a3b8 !important; }
+        html.dark .text-slate-400 { color: #64748b !important; }
+        
+        html.dark .border-slate-300 { border-color: #334155 !important; }
+        html.dark .border-slate-200 { border-color: #1e293b !important; }
+        html.dark .border-slate-100 { border-color: #0f172a !important; }
+        html.dark .border-blue-100 { border-color: #1e3a8a !important; }
+        html.dark .border-blue-200 { border-color: #1e40af !important; }
+        
+        html.dark .bg-slate-50 { background-color: #020617 !important; }
+        html.dark .bg-slate-100 { background-color: #1e293b !important; }
+        html.dark .bg-blue-50 { background-color: #172554 !important; }
+        html.dark .bg-blue-100 { background-color: #1e3a8a !important; }
+        
+        html.dark .hover\:bg-slate-50:hover {
+            background-color: #1e293b !important;
+        }
+
+        html.dark table thead tr {
+            border-bottom-color: #1e293b !important;
+        }
+
+        html.dark table tbody tr {
+            border-bottom-color: #0f172a !important;
+        }
+
+        html.dark * {
+            box-shadow: none !important;
+        }
+    </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900">
-  <aside class="fixed left-0 top-0 h-full w-[280px] border-r border-slate-200 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col py-8 px-4 z-50">
-    <div class="mb-10 px-2 flex items-center gap-3">
-      <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
-        <span class="material-symbols-outlined">school</span>
-      </div>
-      <div>
-        <h1 class="text-xl font-bold tracking-tighter">EduAssistant</h1>
-        <p class="text-xs text-slate-500 font-medium tracking-tight">Kisisel Egitmen</p>
-      </div>
-    </div>
+    <aside
+        class="fixed left-0 top-0 h-full w-[280px] border-r bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 flex flex-col py-8 px-6 z-50">
+        <div class="mb-12 px-2 flex items-center gap-3">
+            <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100 dark:shadow-none">
+                <span class="material-symbols-outlined text-[28px]">auto_awesome</span>
+            </div>
+            <div>
+                <h1 class="text-xl font-black tracking-tighter text-slate-900 dark:text-white font-outfit">EduAssistant</h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Kişisel Eğitmen</p>
+            </div>
+        </div>
+        <nav class="flex-1 space-y-3">
+            <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+                href="islem.html">
+                <span class="material-symbols-outlined group-hover:text-indigo-600 transition-colors">add_circle</span><span>Yeni İşlem</span>
+            </a>
+            <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+                href="code.html">
+                <span class="material-symbols-outlined group-hover:text-indigo-600 transition-colors">history</span><span>Geçmiş</span>
+            </a>
+            <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-black sidebar-item-active"
+                href="uyelik.html">
+                <span class="material-symbols-outlined">workspace_premium</span><span>Üyelik</span>
+            </a>
+        </nav>
+        <div class="mt-auto border-t border-slate-100 dark:border-slate-800 pt-8">
+            <a class="flex items-center gap-3 px-5 py-3.5 rounded-2xl text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/10 transition-colors group"
+                href="giris.html">
+                <span class="material-symbols-outlined group-hover:scale-110 transition-transform">logout</span><span>Çıkış Yap</span>
+            </a>
+        </div>
+    </aside>
 
-    <nav id="sidebarNav" class="flex-1 space-y-2">
-      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="islem.html">
-        <span class="material-symbols-outlined">add_circle</span><span>Yeni Islem</span>
-      </a>
-      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="code.html">
-        <span class="material-symbols-outlined">history</span><span>Gecmis</span>
-      </a>
-      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium bg-indigo-50 text-indigo-700 border-l-4 border-indigo-600" href="uyelik.html">
-        <span class="material-symbols-outlined">workspace_premium</span><span>Uyelik</span>
-      </a>
-    </nav>
-
-    <div id="sidebarBottom" class="mt-auto border-t border-slate-100 pt-6">
-      <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors" href="giris.html">
-        <span class="material-symbols-outlined">logout</span><span>Cikis Yap</span>
-      </a>
-    </div>
-  </aside>
-
-  <header class="fixed top-0 right-0 left-[280px] z-40 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between h-16 px-8">
-    <h2 class="text-lg font-semibold">SaaS Uyelik Planlari</h2>
-    <span id="headerPlanChip" class="inline-flex items-center rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1.5 border border-indigo-100">Aktif Plan: Ucretsiz</span>
-  </header>
+    <header
+        class="fixed top-0 right-0 left-[280px] z-40 glass-header h-20 flex items-center justify-between px-8">
+        <div class="flex items-center gap-4">
+            <h2 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Üyelik Yönetimi</h2>
+        </div>
+        <div class="flex items-center gap-6">
+            <span id="headerPlanChip"
+                class="px-5 py-2 rounded-full text-[11px] font-black uppercase tracking-widest border border-indigo-100 bg-indigo-50 text-indigo-700">Aktif Plan: Ücretsiz</span>
+        </div>
+    </header>
 
   <main class="ml-[280px] pt-16 min-h-screen">
     <div class="p-8 max-w-6xl mx-auto space-y-6">
       <section class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-        <p class="text-xs uppercase tracking-[0.2em] text-indigo-600 font-semibold">SaaS Modeli</p>
+        <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">SaaS Modeli</p>
         <h3 class="mt-2 text-3xl font-bold tracking-tight">Ucretsiz veya Pro plan secin</h3>
-        <p class="text-slate-500 mt-2">Ihtiyaciniza gore planinizi secin, dilediginizde degistirin. Seciminiz tum uygulamada kullanilir.</p>
+        <p class="text-slate-500 mt-2">Ihtiyaciniza gore planinizi secin, dilediginizde degistirin. Seciminiz tum
+          uygulamada kullanilir.</p>
 
         <div class="mt-5 inline-flex rounded-lg bg-slate-100 p-1">
-          <button id="monthlyBtn" type="button" class="rounded-md bg-white shadow-sm px-4 py-2 text-sm font-semibold text-slate-900">Aylik</button>
-          <button id="yearlyBtn" type="button" class="rounded-md px-4 py-2 text-sm font-semibold text-slate-600">Yillik</button>
+          <button id="monthlyBtn" type="button"
+            class="rounded-md bg-white shadow-sm px-4 py-2 text-sm font-semibold text-slate-900">Aylik</button>
+          <button id="yearlyBtn" type="button"
+            class="rounded-md px-4 py-2 text-sm font-semibold text-slate-600">Yillik</button>
         </div>
       </section>
 
@@ -133,41 +179,63 @@
           </div>
 
           <ul class="mt-6 space-y-2 text-sm text-slate-700">
-            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Ayda 10 video özetleme</span></li>
-            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Max 5 soru üretimi</span></li>
-            <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Analiz başı 3 chatbot sorusu</span></li>
-            <li class="flex gap-2 text-slate-400"><span class="material-symbols-outlined text-[18px]">cancel</span><span class="line-through">PDF dışa aktarma</span></li>
+            <li class="flex gap-2"><span
+                class="material-symbols-outlined text-blue-600 text-[18px]">check_circle</span><span>Ayda 10 video
+                özetleme</span></li>
+            <li class="flex gap-2"><span
+                class="material-symbols-outlined text-blue-600 text-[18px]">check_circle</span><span>Max 5 soru
+                üretimi</span></li>
+            <li class="flex gap-2"><span
+                class="material-symbols-outlined text-blue-600 text-[18px]">check_circle</span><span>Analiz başı 3
+                chatbot sorusu</span></li>
+            <li class="flex gap-2 text-slate-400"><span class="material-symbols-outlined text-[18px]">cancel</span><span
+                class="line-through">PDF dışa aktarma</span></li>
           </ul>
 
-          <button id="selectFreePlan" type="button" class="mt-6 w-full rounded-lg border border-slate-300 text-slate-800 font-semibold py-2.5 hover:bg-slate-50 transition-colors">Ucretsiz Plani Sec</button>
+          <button id="selectFreePlan" type="button"
+            class="mt-6 w-full rounded-lg border border-slate-300 text-slate-800 font-semibold py-2.5 hover:bg-slate-50 transition-colors">Ucretsiz
+            Plani Sec</button>
         </article>
 
-        <article id="proCard" class="bg-white border border-indigo-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
-          <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-100 rounded-full blur-2xl"></div>
+        <article id="proCard"
+          class="bg-white border border-blue-200 rounded-2xl p-6 shadow-sm relative overflow-hidden">
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-100 dark:hidden rounded-full blur-2xl"></div>
           <div class="relative">
             <div class="flex items-start justify-between gap-3">
               <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-indigo-600 font-semibold">Growth</p>
+                <p class="text-xs uppercase tracking-[0.16em] text-blue-600 font-semibold">Growth</p>
                 <h4 class="text-2xl font-bold mt-1">Pro</h4>
               </div>
-              <span class="rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1">En Populer</span>
+              <span class="rounded-full bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1">En Populer</span>
             </div>
 
             <div class="mt-5">
               <p id="proPrice" class="text-4xl font-bold tracking-tight">249 TL</p>
               <p id="proPeriod" class="text-sm text-slate-500 mt-1">/ ay</p>
-              <p id="proBillingDetail" class="hidden text-sm font-medium text-indigo-700 mt-1"></p>
+              <p id="proBillingDetail" class="hidden text-sm font-medium text-blue-700 mt-1"></p>
             </div>
 
             <ul class="mt-6 space-y-2 text-sm text-slate-700">
-              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Sınırsız video özetleme</span></li>
-              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>15+ Soru & Zorluk seçenekleri</span></li>
-              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Sınırsız chatbot etkileşimi</span></li>
-              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>Görsel İnfografik Posterler</span></li>
-              <li class="flex gap-2"><span class="material-symbols-outlined text-indigo-600 text-[18px]">check_circle</span><span>YouTube Senkronizasyonu</span></li>
+              <li class="flex gap-2"><span
+                  class="material-symbols-outlined text-blue-600 text-[18px]">check_circle</span><span>Sınırsız video
+                  özetleme</span></li>
+              <li class="flex gap-2"><span
+                  class="material-symbols-outlined text-blue-600 text-[18px]">check_circle</span><span>15+ Soru &
+                  Zorluk seçenekleri</span></li>
+              <li class="flex gap-2"><span
+                  class="material-symbols-outlined text-blue-600 text-[18px]">check_circle</span><span>Sınırsız
+                  chatbot etkileşimi</span></li>
+              <li class="flex gap-2"><span
+                  class="material-symbols-outlined text-blue-600 text-[18px]">check_circle</span><span>Görsel
+                  İnfografik Posterler</span></li>
+              <li class="flex gap-2"><span
+                  class="material-symbols-outlined text-blue-600 text-[18px]">check_circle</span><span>YouTube
+                  Senkronizasyonu</span></li>
             </ul>
 
-            <button id="selectProPlan" type="button" class="mt-6 w-full rounded-lg bg-indigo-600 text-white font-semibold py-2.5 hover:bg-indigo-700 transition-colors">Pro Plana Gec</button>
+            <button id="selectProPlan" type="button"
+              class="mt-6 w-full rounded-lg bg-blue-600 text-white font-semibold py-2.5 hover:bg-blue-700 transition-colors">Pro
+              Plana Gec</button>
           </div>
         </article>
       </section>
@@ -225,7 +293,17 @@
   </main>
 
   <script>
+    const CURRENT_USER_EMAIL = localStorage.getItem('edua_current_user');
+    if (!CURRENT_USER_EMAIL) { window.location.href = 'giris.html'; }
+
     const THEME_KEY = 'edua_theme';
+    function applyTheme(theme) {
+        const isDark = theme === 'dark';
+        document.documentElement.classList.toggle('dark', isDark);
+        document.documentElement.classList.toggle('light', !isDark);
+    }
+    applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+
     const SUBSCRIPTION_PLAN_KEY = 'edua_subscription_plan';
     const SUBSCRIPTION_CYCLE_KEY = 'edua_subscription_cycle';
     const SUBSCRIPTION_UPDATED_AT_KEY = 'edua_subscription_updated_at';
@@ -242,14 +320,6 @@
     const headerPlanChip = document.getElementById('headerPlanChip');
     const activePlanText = document.getElementById('activePlanText');
     const planUpdatedText = document.getElementById('planUpdatedText');
-
-    function applyTheme(theme) {
-      const isDark = theme === 'dark';
-      document.documentElement.classList.toggle('dark', isDark);
-      document.documentElement.classList.toggle('light', !isDark);
-    }
-
-    applyTheme(localStorage.getItem(THEME_KEY) || 'light');
 
     function normalizePlan(value) {
       return value === 'pro' ? 'pro' : 'free';
@@ -309,9 +379,9 @@
       const isPro = plan === 'pro';
 
       freeCard.classList.toggle('ring-2', !isPro);
-      freeCard.classList.toggle('ring-indigo-500', !isPro);
+      freeCard.classList.toggle('ring-blue-500', !isPro);
       proCard.classList.toggle('ring-2', isPro);
-      proCard.classList.toggle('ring-indigo-500', isPro);
+      proCard.classList.toggle('ring-blue-500', isPro);
 
       selectFreePlan.textContent = isPro ? 'Ucretsiz Plani Sec' : 'Aktif Plan';
       selectFreePlan.disabled = !isPro;
@@ -350,16 +420,16 @@
       const sidebarBottom = document.getElementById('sidebarBottom');
       if (sidebarNav) sidebarNav.classList.add('hidden');
       if (headerPlanChip) headerPlanChip.classList.add('hidden');
-      
+
       // Replace logout with login for visitors
       if (sidebarBottom) {
         sidebarBottom.innerHTML = `
-          <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-100" href="giris.html">
+          <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-lg shadow-blue-100" href="giris.html">
             <span class="material-symbols-outlined">login</span><span>Giris Yap / Kayit Ol</span>
           </a>
         `;
       }
-      
+
       // Update header text
       const headerTitle = document.querySelector('header h2');
       if (headerTitle) headerTitle.textContent = 'EduAssistant Uyelik Paketleri';
@@ -379,10 +449,10 @@
       if (headerPlanChip) {
         headerPlanChip.textContent = 'Aktif Plan: ' + (plan === 'pro' ? 'PRO' : 'Ücretsiz');
         if (plan === 'pro') {
-          headerPlanChip.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+          headerPlanChip.classList.remove('bg-blue-50', 'text-blue-700', 'border-blue-100');
           headerPlanChip.classList.add('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
         } else {
-          headerPlanChip.classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-100');
+          headerPlanChip.classList.add('bg-blue-50', 'text-blue-700', 'border-blue-100');
           headerPlanChip.classList.remove('bg-gradient-to-r', 'from-amber-500', 'to-orange-500', 'text-white', 'border-amber-400');
         }
       }
@@ -441,4 +511,5 @@
     });
   </script>
 </body>
+
 </html>

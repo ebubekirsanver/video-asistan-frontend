@@ -253,13 +253,13 @@ function selectRelevantChunks(fullText, query, maxChunks = 10, chunkSize = 2500)
 
   const sorted = scored.sort((a, b) => b.score - a.score);
   const selected = sorted.slice(0, Math.min(maxChunks, sorted.length));
-  
+
   // Ensure first chunk is included for topic context
   if (chunks.length > 0 && !selected.find(s => s.idx === 0)) {
     selected.pop();
     selected.push(scored.find(s => s.idx === 0));
   }
-  
+
   // Sort by original order for coherent reading
   selected.sort((a, b) => a.idx - b.idx);
   return selected.map((item) => item.chunk);
@@ -537,10 +537,10 @@ function validateSummaryOutput(data) {
 
 function cleanSubtitles(raw) {
   let cleaned = raw.replace(/WEBVTT.*?\n\n/s, '');
-  
+
   // Format timestamps to [MM:SS] to help AI reference time accurately
   cleaned = cleaned.replace(/(\d{2}):(\d{2}):(\d{2})\.\d{3}\s*-->\s*\d{2}:\d{2}:\d{2}\.\d{3}/g, ' [$2:$3] ');
-  
+
   cleaned = cleaned.replace(/<[^>]+>/g, '');
 
   const lines = cleaned
@@ -773,21 +773,21 @@ async function enforceQuestionCount(questions, fullText, options, reqId) {
 function repairAndParseJSON(raw) {
   // Try to extract JSON object from the raw string
   let text = raw.trim();
-  
+
   // Remove markdown code fences if present
   text = text.replace(/^```json\s*/i, '').replace(/```\s*$/i, '');
-  
+
   // Find the first { 
   const start = text.indexOf('{');
   if (start === -1) return {};
   text = text.slice(start);
-  
+
   // Try parsing as-is first
   try { return JSON.parse(text); } catch (_) { /* continue */ }
-  
+
   // Attempt to close unclosed strings and brackets
   let repaired = text;
-  
+
   // Check if we're inside an unclosed string
   let inString = false;
   let escaped = false;
@@ -800,7 +800,7 @@ function repairAndParseJSON(raw) {
   if (inString) {
     repaired += '"';
   }
-  
+
   // Count brackets and close them
   let braces = 0, brackets = 0;
   inString = false;
@@ -816,22 +816,22 @@ function repairAndParseJSON(raw) {
     else if (ch === '[') brackets++;
     else if (ch === ']') brackets--;
   }
-  
+
   // Remove trailing comma before closing
   repaired = repaired.replace(/,\s*$/, '');
-  
+
   while (brackets > 0) { repaired += ']'; brackets--; }
   while (braces > 0) { repaired += '}'; braces--; }
-  
+
   try { return JSON.parse(repaired); } catch (_) { /* continue */ }
-  
+
   // Last resort: try to cut at the last valid closing brace
   for (let i = repaired.length - 1; i > 0; i--) {
     if (repaired[i] === '}') {
       try { return JSON.parse(repaired.slice(0, i + 1)); } catch (_) { /* continue */ }
     }
   }
-  
+
   return {};
 }
 
@@ -1193,7 +1193,7 @@ app.post('/api/chat', async (req, res) => {
       const chunks = selectRelevantChunks(transcript, question, 10, 2500);
       contextText = chunks.map((chunk, index) => `[Bolum ${index + 1}]\n${chunk}`).join('\n\n---\n\n');
     }
-    
+
     // Build summary + key concepts context from the analysis record
     let summaryContext = '';
     if (Array.isArray(record.summary_sections) && record.summary_sections.length > 0) {
@@ -1201,7 +1201,7 @@ app.post('/api/chat', async (req, res) => {
     } else if (record.ozet) {
       summaryContext = `\n\n--- VIDEO OZETI ---\n${record.ozet}`;
     }
-    
+
     let conceptsContext = '';
     if (Array.isArray(record.key_concepts) && record.key_concepts.length > 0) {
       conceptsContext = '\n\n--- ANAHTAR KAVRAMLAR ---\n' + record.key_concepts.map(kc => `- **${kc.term}**: ${kc.definition}`).join('\n');
@@ -1243,14 +1243,14 @@ Uzman egitim bilginle bu soruyu detayli bir sekilde cevapla.`;
     const messages = [
       { role: 'system', content: systemPrompt }
     ];
-    
+
     // Add recent chat history (keep last 10 exchanges)
     const recentHistory = chatHistory.slice(-10);
     for (const turn of recentHistory) {
       messages.push({ role: 'user', content: turn.question });
       messages.push({ role: 'assistant', content: turn.answer });
     }
-    
+
     messages.push({ role: 'user', content: userPrompt });
 
     const response = await callOpenRouterWithRetry({
@@ -1260,7 +1260,7 @@ Uzman egitim bilginle bu soruyu detayli bir sekilde cevapla.`;
     }, 3, { reqId });
 
     const answer = response.choices?.[0]?.message?.content || '';
-    
+
     // Store in chat history
     chatHistory.push({ question, answer });
     // Keep history bounded
@@ -1353,10 +1353,10 @@ Kurallar:
     const interests = Array.isArray(data.interests) ? data.interests : [];
     const recommendations = Array.isArray(data.recommendations)
       ? data.recommendations.map(r => ({
-          title: r.title || '',
-          reason: r.reason || '',
-          search_url: 'https://www.youtube.com/results?search_query=' + encodeURIComponent(r.search_query || r.title || '')
-        }))
+        title: r.title || '',
+        reason: r.reason || '',
+        search_url: 'https://www.youtube.com/results?search_query=' + encodeURIComponent(r.search_query || r.title || '')
+      }))
       : [];
 
     log('recommendations generated', { reqId, interests: interests.length, recs: recommendations.length });
@@ -1428,4 +1428,5 @@ if (EXTRA_PORT && EXTRA_PORT !== PORT) {
   app.listen(EXTRA_PORT, () => {
     log(`api also listening on http://127.0.0.1:${EXTRA_PORT}`);
   });
+}
 }
