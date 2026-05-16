@@ -68,23 +68,65 @@
             border-bottom: 1px solid rgba(30, 41, 59, 0.8);
         }
 
-        html.dark .text-slate-900 { color: #f8fafc !important; }
-        html.dark .text-slate-800 { color: #f1f5f9 !important; }
-        html.dark .text-slate-700 { color: #e2e8f0 !important; }
-        html.dark .text-slate-600 { color: #cbd5e1 !important; }
-        html.dark .text-slate-600 { color: #cbd5e1 !important; }
-    html.dark .text-slate-500 { color: #94a3b8 !important; }
-        html.dark .text-slate-400 { color: #64748b !important; }
+        html.dark .text-slate-900 {
+            color: #f8fafc !important;
+        }
 
-        html.dark .border-slate-100 { border-color: #0f172a !important; }
-        html.dark .border-slate-200 { border-color: #1e293b !important; }
-        html.dark .border-slate-300 { border-color: #334155 !important; }
-        html.dark .border-indigo-100 { border-color: #312e81 !important; }
+        html.dark .text-slate-800 {
+            color: #f1f5f9 !important;
+        }
 
-        html.dark .bg-slate-50 { background-color: #020617 !important; }
-        html.dark .bg-slate-100 { background-color: #0f172a !important; }
-        html.dark .bg-indigo-50 { background-color: #1e1b4b !important; }
-        html.dark .bg-surface { background-color: #020617 !important; }
+        html.dark .text-slate-700 {
+            color: #e2e8f0 !important;
+        }
+
+        html.dark .text-slate-600 {
+            color: #cbd5e1 !important;
+        }
+
+        html.dark .text-slate-600 {
+            color: #cbd5e1 !important;
+        }
+
+        html.dark .text-slate-500 {
+            color: #94a3b8 !important;
+        }
+
+        html.dark .text-slate-400 {
+            color: #64748b !important;
+        }
+
+        html.dark .border-slate-100 {
+            border-color: #0f172a !important;
+        }
+
+        html.dark .border-slate-200 {
+            border-color: #1e293b !important;
+        }
+
+        html.dark .border-slate-300 {
+            border-color: #334155 !important;
+        }
+
+        html.dark .border-indigo-100 {
+            border-color: #312e81 !important;
+        }
+
+        html.dark .bg-slate-50 {
+            background-color: #020617 !important;
+        }
+
+        html.dark .bg-slate-100 {
+            background-color: #0f172a !important;
+        }
+
+        html.dark .bg-indigo-50 {
+            background-color: #1e1b4b !important;
+        }
+
+        html.dark .bg-surface {
+            background-color: #020617 !important;
+        }
 
         html.dark .hover\:bg-slate-50:hover {
             background-color: #1e293b !important;
@@ -136,6 +178,12 @@
             border-style: solid;
             border-width: 18px 8px 18px 0;
         }
+
+        .badge-advanced { background: #fee2e2 !important; color: #dc2626 !important; }
+        .badge-practice { background: #fef3c7 !important; color: #d97706 !important; }
+        .badge-theory { background: #dcfce7 !important; color: #16a34a !important; }
+        .badge-strategy { background: #e0e7ff !important; color: #4f46e5 !important; }
+        .badge-comprehensive { background: #f3e8ff !important; color: #9333ea !important; }
 
         .ribbon-green {
             background: linear-gradient(135deg, #059669, #10b981);
@@ -239,7 +287,8 @@
                     class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all relative">
                     <span class="material-symbols-outlined text-[22px]">notifications</span>
                     <span id="notifyBadge"
-                        class="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-rose-500 text-white text-[10px] font-black rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center hidden scale-in shadow-lg shadow-rose-200 dark:shadow-none animate-bounce" style="animation-duration: 3s">0</span>
+                        class="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-rose-500 text-white text-[10px] font-black rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center hidden scale-in shadow-lg shadow-rose-200 dark:shadow-none animate-bounce"
+                        style="animation-duration: 3s">0</span>
                 </button>
                 <button id="settingsBtn"
                     class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
@@ -259,12 +308,15 @@
         <div class="px-8 max-w-7xl mx-auto pb-12">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none">
                         <span class="material-symbols-outlined text-[28px]">history</span>
                     </div>
                     <div>
-                        <h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Geçmiş Eğitimleriniz</h2>
-                        <p class="text-slate-500 mt-1 max-w-xl text-base font-bold">Daha önce analiz ettiğiniz videoların özetlerine ve sınav sorularına buradan ulaşabilirsiniz.</p>
+                        <h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Geçmiş
+                            Eğitimleriniz</h2>
+                        <p class="text-slate-500 mt-1 max-w-xl text-base font-bold">Daha önce analiz ettiğiniz
+                            videoların özetlerine ve sınav sorularına buradan ulaşabilirsiniz.</p>
                     </div>
                 </div>
                 <div
@@ -309,12 +361,15 @@
             <section
                 class="mt-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] p-8 shadow-sm relative overflow-hidden">
                 <div class="flex items-center gap-4 mb-8">
-                    <div class="w-12 h-12 bg-amber-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-amber-200 dark:shadow-none">
+                    <div
+                        class="w-12 h-12 bg-amber-500 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-amber-200 dark:shadow-none">
                         <span class="material-symbols-outlined text-[28px]">auto_awesome</span>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Size Özel Tavsiyeler</h3>
-                        <p class="text-base text-slate-500 mt-1 font-bold">İlgi alanlarınıza göre yapay zeka tarafından önerilen videolar.</p>
+                        <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Size Özel
+                            Tavsiyeler</h3>
+                        <p class="text-base text-slate-500 mt-1 font-bold">İlgi alanlarınıza göre yapay zeka tarafından
+                            önerilen videolar.</p>
                     </div>
                 </div>
                 <div id="recommendationList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -533,101 +588,240 @@
 
             let html = `<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>${esc(title)}</title>`;
             html += '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
-            html += '<style>body { font-family: "Inter", sans-serif; color: #1e293b; padding: 50px; background: #fff; line-height: 1.6; } .header { border-bottom: 2px solid #4f46e5; padding-bottom: 20px; margin-bottom: 40px; } .title { color: #4f46e5; font-size: 28px; font-weight: 800; margin: 0; } .meta { font-size: 12px; color: #64748b; margin-top: 10px; font-weight: 600; } .section { margin-bottom: 40px; } .section-title { font-size: 18px; font-weight: 800; color: #1e293b; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid #4f46e5; padding-left: 15px; } .card { background: #f8fafc; padding: 25px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #e2e8f0; } .card-title { font-weight: 700; font-size: 15px; color: #4f46e5; margin-bottom: 10px; } .card-content { font-size: 14px; color: #334155; } .footer { margin-top: 60px; pt-20; border-top: 1px solid #e2e8f0; font-size: 10px; color: #94a3b8; text-align: center; }</style>';
-            html += `</head><body><div class="header"><h1 class="title">${esc(title)}</h1><div class="meta">Tarih: ${date} &bull; Kaynak: ${item.video_url}</div></div>`;
+            html += '<style>';
+            html += '*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }';
+            html += 'body { font-family: "Inter", sans-serif; color: #1e293b; background: #fff; }';
+            html += '@media print { body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
+            html += '.page { max-width: 800px; margin: 0 auto; padding: 0; }';
+            html += '.header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 40px 48px; border-radius: 0 0 24px 24px; margin-bottom: 32px; }';
+            html += '.header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }';
+            html += '.header-meta { font-size: 12px; opacity: 0.8; display: flex; gap: 16px; align-items: center; }';
+            html += '.header-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }';
+            html += '.content { padding: 0 48px 40px; }';
+            html += '.section { margin-bottom: 28px; }';
+            html += '.section-title { font-size: 16px; font-weight: 700; color: #4f46e5; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 2px solid #e0e7ff; }';
+            html += '.summary-card { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }';
+            html += '.summary-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }';
+            html += '.summary-card p { font-size: 13px; line-height: 1.6; color: #475569; }';
+            html += '.num-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; color: white; font-size: 11px; font-weight: 800; }';
+            html += '.c-indigo { border-left-color: #6366f1; } .c-indigo .num-badge { background: #6366f1; } .c-indigo h4 { color: #4338ca; }';
+            html += '.c-violet { border-left-color: #8b5cf6; } .c-violet .num-badge { background: #8b5cf6; } .c-violet h4 { color: #6d28d9; }';
+            html += '.c-sky { border-left-color: #0ea5e9; } .c-sky .num-badge { background: #0ea5e9; } .c-sky h4 { color: #0369a1; }';
+            html += '.c-emerald { border-left-color: #10b981; } .c-emerald .num-badge { background: #10b981; } .c-emerald h4 { color: #047857; }';
+            html += '.c-amber { border-left-color: #f59e0b; } .c-amber .num-badge { background: #f59e0b; } .c-amber h4 { color: #b45309; }';
+            html += '.c-rose { border-left-color: #f43f5e; } .c-rose .num-badge { background: #f43f5e; } .c-rose h4 { color: #be123c; }';
+            html += '.formula-box { background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: 1px solid #c7d2fe; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
+            html += '.formula-box .label { font-size: 10px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.05em; }';
+            html += '.formula-box .formula { font-size: 15px; font-weight: 700; color: #312e81; margin-top: 2px; }';
+            html += '.concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }';
+            html += '.concept-card { border: 1px solid #ddd6fe; background: #f5f3ff; border-radius: 10px; padding: 12px; text-align: center; }';
+            html += '.concept-card .term { font-size: 12px; font-weight: 700; color: #5b21b6; }';
+            html += '.concept-card .def { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4; }';
+            html += '.question { margin-bottom: 16px; page-break-inside: avoid; }';
+            html += '.question .q-text { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }';
+            html += '.option { font-size: 12px; padding: 6px 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 4px; color: #475569; }';
+            html += '.option.correct { border-color: #10b981; background: #ecfdf5; color: #047857; font-weight: 600; }';
+            html += '.flow-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }';
+            html += '.flow-step-box { background: #f0fdf4; border: 1px solid #86efac; border-radius: 10px; padding: 10px 14px; text-align: center; flex: 1; min-width: 100px; }';
+            html += '.flow-step-box .snum { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #10b981; color: white; font-size: 11px; font-weight: 800; margin-bottom: 4px; }';
+            html += '.flow-step-box .stxt { font-size: 11px; font-weight: 600; color: #1e293b; }';
+            html += '.flow-arrow { color: #94a3b8; font-size: 18px; }';
+            html += '.warning-card { background: #fffbeb; border: 1px solid #fcd34d; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }';
+            html += '.warning-card .wlabel { font-size: 12px; font-weight: 700; color: #92400e; }';
+            html += '.warning-card .wtext { font-size: 12px; color: #78350f; margin-top: 2px; }';
+            html += '.fact-item { font-size: 12px; color: #475569; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; gap: 8px; }';
+            html += '.fact-icon { color: #14b8a6; font-size: 14px; flex-shrink: 0; }';
+            html += '.example-card { background: #fff1f2; border: 1px solid #fecdd3; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; display: flex; gap: 10px; }';
+            html += '.example-icon { color: #f43f5e; font-size: 14px; flex-shrink: 0; }';
+            html += '.example-text { font-size: 12px; color: #9f1239; line-height: 1.5; }';
+            html += '.footer { text-align: center; padding: 24px 48px; border-top: 2px solid #e2e8f0; margin-top: 20px; color: #94a3b8; font-size: 11px; }';
+            html += '</style></head><body><div class="page">';
 
-            if (item.summary_sections && item.summary_sections.length) {
-                html += '<div class="section"><h2 class="section-title">Yazılı Özet</h2>';
+            // HEADER
+            html += '<div class="header">';
+            html += '<div class="header-badge">EduAssistant AI</div>';
+            html += '<h1 style="margin-top:12px">' + esc(title) + '</h1>';
+            html += '<div class="header-meta"><span>📅 ' + date + '</span><span>🔗 ' + esc(item.video_url) + '</span></div>';
+            html += '</div>';
+
+            html += '<div class="content">';
+
+            // SUMMARY SECTIONS
+            const sColors = ['c-indigo', 'c-violet', 'c-sky', 'c-emerald', 'c-amber', 'c-rose'];
+            if (Array.isArray(item.summary_sections) && item.summary_sections.length) {
+                html += '<div class="section"><div class="section-title">📝 Konu Özeti</div>';
                 item.summary_sections.forEach((s, i) => {
-                    html += `<div class="card"><div class="card-title">${i + 1}. ${esc(s.subtitle)}</div><div class="card-content">${esc(s.content)}</div></div>`;
+                    const c = sColors[i % sColors.length];
+                    html += '<div class="summary-card ' + c + '"><h4><span class="num-badge">' + (i + 1) + '</span>' + esc(s.subtitle) + '</h4><p>' + esc(s.content) + '</p></div>';
+                });
+                html += '</div>';
+            } else if (item.ozet) {
+                html += '<div class="section"><div class="section-title">📝 Konu Özeti</div><div class="summary-card c-indigo"><p>' + esc(item.ozet) + '</p></div></div>';
+            }
+
+            // IMPORTANT REGIONS
+            if (Array.isArray(item.important_regions) && item.important_regions.length) {
+                html += '<div class="section"><div class="section-title">⚠️ Dikkat Edilmesi Gerekenler</div>';
+                item.important_regions.forEach((r) => {
+                    html += '<div class="warning-card"><div class="wlabel">' + esc(r.label || 'Dikkat') + '</div><div class="wtext">' + esc(r.text || r.description) + '</div></div>';
                 });
                 html += '</div>';
             }
 
-            if (item.important_regions && item.important_regions.length) {
-                html += '<div class="section"><h2 class="section-title">Kritik Anlar</h2>';
-                item.important_regions.forEach(r => {
-                    html += `<div class="card"><div class="card-title">${esc(r.time || '00:00')}</div><div class="card-content">${esc(r.description || r.text)}</div></div>`;
+            // PROCESS FLOW
+            if (Array.isArray(item.process_flow) && item.process_flow.length) {
+                html += '<div class="section"><div class="section-title">🔄 Süreç / Akış</div>';
+                html += '<div class="flow-steps">';
+                item.process_flow.forEach((f, i) => {
+                    if (i > 0) html += '<span class="flow-arrow">→</span>';
+                    html += '<div class="flow-step-box"><div class="snum">' + (i + 1) + '</div><div class="stxt">' + esc(f.step) + '</div></div>';
+                });
+                html += '</div></div>';
+            }
+
+            // KEY FORMULAS
+            if (Array.isArray(item.key_formulas) && item.key_formulas.length) {
+                html += '<div class="section"><div class="section-title">📐 Temel Formüller / Kurallar</div>';
+                item.key_formulas.forEach((f) => {
+                    html += '<div class="formula-box"><div class="label">' + esc(f.label) + '</div><div class="formula">' + esc(f.formula) + '</div></div>';
                 });
                 html += '</div>';
             }
 
-            if (item.key_concepts && item.key_concepts.length) {
-                html += '<div class="section"><h2 class="section-title">Kavram Sözlüğü</h2>';
-                item.key_concepts.forEach(c => {
-                    html += `<div class="card"><div class="card-title">${esc(c.term)}</div><div class="card-content">${esc(c.definition)}</div></div>`;
+            // KEY CONCEPTS
+            if (Array.isArray(item.key_concepts) && item.key_concepts.length) {
+                html += '<div class="section"><div class="section-title">📚 Anahtar Kavramlar</div>';
+                html += '<div class="concept-grid">';
+                item.key_concepts.forEach((c) => {
+                    html += '<div class="concept-card"><div class="term">' + esc(c.term) + '</div><div class="def">' + esc(c.definition) + '</div></div>';
+                });
+                html += '</div></div>';
+            }
+
+            // FUN FACTS
+            if (Array.isArray(item.fun_facts) && item.fun_facts.length) {
+                html += '<div class="section"><div class="section-title">💡 Biliyor Muydunuz?</div>';
+                item.fun_facts.forEach((f) => {
+                    html += '<div class="fact-item"><span class="fact-icon">✓</span><span>' + esc(f) + '</span></div>';
                 });
                 html += '</div>';
             }
 
-            if (item.key_formulas && item.key_formulas.length) {
-                html += '<div class="section"><h2 class="section-title">Ders Notları</h2>';
-                item.key_formulas.forEach(f => {
-                    html += `<div class="card"><div class="card-title">${esc(f.label)}</div><div class="card-content">${esc(f.formula)}</div></div>`;
+            // EXAMPLES
+            if (Array.isArray(item.examples) && item.examples.length) {
+                html += '<div class="section"><div class="section-title">💡 Örnekler & Senaryolar</div>';
+                item.examples.forEach((ex) => {
+                    html += '<div class="example-card"><span class="example-icon">★</span><span class="example-text">' + esc(ex) + '</span></div>';
                 });
                 html += '</div>';
             }
 
-            if (item.sorular) {
-                html += '<div class="section"><h2 class="section-title">Sınav Soruları</h2>';
+            // QUESTIONS
+            if (Array.isArray(item.sorular) && item.sorular.length) {
+                html += '<div class="section"><div class="section-title">📝 Sorular</div>';
                 item.sorular.forEach((q, i) => {
-                    html += `<div class="card"><div class="card-title">Soru ${i + 1}: ${esc(q.soru || q.question)}</div><div class="card-content">`;
-                    ['A', 'B', 'C', 'D'].forEach(l => {
+                    html += '<div class="question"><div class="q-text">' + (i + 1) + '. ' + esc(q.soru || q.question) + '</div>';
+                    ['A', 'B', 'C', 'D'].forEach((l) => {
                         const text = q.secenekler ? q.secenekler[l] : (q.choices ? q.choices[l.charCodeAt(0) - 65] : '');
-                        html += `<div style="margin-bottom:5px;"><strong>${l}:</strong> ${esc(text)}</div>`;
+                        const isCorrect = q.dogru_cevap === l || q.answer === (l.charCodeAt(0) - 65);
+                        html += '<div class="option' + (isCorrect ? ' correct' : '') + '">' + l + ') ' + esc(text) + (isCorrect ? ' ✓' : '') + '</div>';
                     });
-                    const dogru = q.dogru_cevap || (q.answer !== undefined ? ['A', 'B', 'C', 'D'][q.answer] : '');
-                    html += `<div style="margin-top:10px; color:#059669; font-weight:bold;">Doğru Cevap: ${dogru}</div>`;
-                    html += `</div></div>`;
+                    html += '</div>';
                 });
                 html += '</div>';
             }
 
-            html += '<div class="footer">Bu belge EduAssistant AI tarafından profesyonel olarak oluşturulmuştur.</div></body></html>';
+            html += '</div>'; // content
+            html += '<div class="footer">Bu doküman EduAssistant AI tarafından profesyonel olarak oluşturulmuştur. &bull; ' + date + '</div>';
+            html += '</div></body></html>';
 
             const win = window.open('', '_blank');
             win.document.write(html);
             win.document.close();
-            setTimeout(() => {
-                win.print();
-            }, 500);
+            setTimeout(() => { win.print(); }, 600);
         }
 
         function getWeightedKeywords(history) {
             const weights = JSON.parse(localStorage.getItem('edua_topic_weights') || '{}');
-            const stopWords = ['video', 'nedir', 'nasıl', 'dersi', 'eğitimi', 'hakkında', 'bölüm', 'analizi', 'özeti'];
+            
+            const stopWords = [
+                'video', 'nedir', 'nasıl', 'dersi', 'eğitimi', 'hakkında', 'bölüm', 'analizi', 'özeti', 
+                'ders', 'konu', 'anlatımı', 'yapısı', 'sistemi', 'teknikleri', 'temelleri', 'kavramlar', 
+                'yaklaşımları', 'yöntemleri', 'özellikleri', 'giriş', 'uygulama', 'örnekleri', 'genel', 
+                'temel', 'ileri', 'seviye', 'hazırlık', 'sınavı', 'soruları', 'çözümü', 'dersler', 'konular',
+                'üni', 'ünite', 'bölümü', 'dersleri', 'hızlı', 'tekrar', 'full', 'izle', 'kaydı'
+            ];
 
-            const keywords = history.flatMap(h =>
-                (h.user_title || h.title || '').toLowerCase()
+            const topicData = [];
+            
+            history.forEach(h => {
+                // 1. Key Concepts (Highest Priority - keep full terms)
+                if (Array.isArray(h.key_concepts)) {
+                    h.key_concepts.forEach(c => {
+                        const term = c.term.trim().toLowerCase();
+                        if (term.length > 3 && !stopWords.includes(term)) {
+                            topicData.push({ text: term, weight: 6 }); 
+                        }
+                    });
+                }
+                
+                // 2. Summary Subtitles (Split but filter strictly)
+                if (Array.isArray(h.summary_sections)) {
+                    h.summary_sections.forEach(s => {
+                        const words = s.subtitle.toLowerCase().split(/[\s,.-]+/).filter(w => 
+                            w.length > 3 && !stopWords.includes(w) && !w.match(/^\d+$/)
+                        );
+                        words.forEach(w => topicData.push({ text: w, weight: 1.5 }));
+                    });
+                }
+
+                // 3. Title (Lower Priority)
+                const titleWords = (h.user_title || h.title || '').toLowerCase()
                     .split(/[\s,.-]+/)
-                    .filter(k => k.length > 3 && !stopWords.includes(k))
-            );
-
-            const counts = {};
-            keywords.forEach(k => {
-                const weight = weights[k] || 0;
-                counts[k] = Math.max(0.1, (counts[k] || 0) + 1 + weight);
+                    .filter(w => w.length > 3 && !stopWords.includes(w) && !w.match(/^\d+$/));
+                titleWords.forEach(w => topicData.push({ text: w, weight: 1 }));
             });
 
-            return Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+            const counts = {};
+            topicData.forEach(item => {
+                const manualWeight = weights[item.text] || 0;
+                counts[item.text] = (counts[item.text] || 0) + item.weight + manualWeight;
+            });
+
+            return Object.keys(counts)
+                .filter(k => !stopWords.some(sw => k.includes(sw) && k.length < sw.length + 3))
+                .sort((a, b) => counts[b] - counts[a]);
         }
 
-        function generateSuggestion(keyword, index) {
+        function generateSuggestion(keyword, index, history) {
             const templates = [
-                (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} Teknolojileri ve Gelecek`,
-                (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} Eğitiminde Yeni Yaklaşımlar`,
-                (k) => `İleri Seviye ${k.charAt(0).toUpperCase() + k.slice(1)} Teknikleri`,
-                (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} ile Problem Çözme`,
-                (k) => `Akademik ${k.charAt(0).toUpperCase() + k.slice(1)} Analizi`,
-                (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} Temelleri ve Uygulama`
+                { cat: 'Uygulama', class: 'badge-practice', fn: (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} Alanında Pratik Uygulamalar` },
+                { cat: 'Teori', class: 'badge-theory', fn: (k) => `${k.charAt(0).toUpperCase() + k.slice(1)}: Akademik Temeller ve Kavramlar` },
+                { cat: 'İleri Seviye', class: 'badge-advanced', fn: (k) => `İleri Seviye ${k.charAt(0).toUpperCase() + k.slice(1)} Teknikleri ve Analizi` },
+                { cat: 'Strateji', class: 'badge-strategy', fn: (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} ile Problem Çözme ve Modelleme` },
+                { cat: 'Metodoloji', class: 'badge-theory', fn: (k) => `Modern Eğitimde ${k.charAt(0).toUpperCase() + k.slice(1)} Metodolojileri` },
+                { cat: 'Kapsamlı', class: 'badge-comprehensive', fn: (k) => `${k.charAt(0).toUpperCase() + k.slice(1)} Rehberi: Temelden Uzmanlığa` }
             ];
-            const title = templates[index % templates.length](keyword);
+            
+            const template = templates[index % templates.length];
+            const title = template.fn(keyword);
+            
+            // Find a source video that contains this keyword
+            const sourceVideo = history.find(h => 
+                (h.user_title || h.title || '').toLowerCase().includes(keyword) ||
+                (h.key_concepts || []).some(c => c.term.toLowerCase() === keyword)
+            );
+            const sourceTitle = sourceVideo ? (sourceVideo.user_title || sourceVideo.title) : null;
+
             return {
                 id: `rec_${Math.random().toString(36).substr(2, 9)}`,
                 title,
                 keyword,
-                reason: `${keyword} konusundaki ilginize dayanarak önerildi.`,
-                url: `https://www.youtube.com/results?search_query=${encodeURIComponent(keyword)}`
+                category: template.cat,
+                badgeClass: template.class,
+                sourceTitle: sourceTitle ? sourceTitle.substring(0, 30) + (sourceTitle.length > 30 ? '...' : '') : null,
+                reason: `Önceki eğitimlerinizdeki <strong>${keyword}</strong> konularına olan ilginiz için önerildi.`,
+                url: `https://www.youtube.com/results?search_query=${encodeURIComponent(keyword + ' eğitimi dersi')}`
             };
         }
 
@@ -640,9 +834,19 @@
 
             const sortedKeywords = getWeightedKeywords(history);
             const suggestions = [];
-            for (let i = 0; i < 6; i++) {
+            const seenTitles = new Set();
+            
+            // Randomize starting template index
+            let templateOffset = Math.floor(Math.random() * 6);
+
+            for (let i = 0; i < 12 && suggestions.length < 6; i++) {
                 const keyword = sortedKeywords[i % sortedKeywords.length] || 'Eğitim';
-                suggestions.push(generateSuggestion(keyword, i));
+                const sug = generateSuggestion(keyword, (i + templateOffset), history);
+                
+                if (!seenTitles.has(sug.title)) {
+                    suggestions.push(sug);
+                    seenTitles.add(sug.title);
+                }
             }
 
             recList.innerHTML = suggestions.map(r => renderRecommendationCard(r)).join('');
@@ -664,21 +868,38 @@
 
         function renderRecommendationCard(r) {
             return `
-                <article id="${r.id}" data-keyword="${r.keyword}" class="p-8 rounded-[32px] border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/20 hover:bg-white dark:hover:bg-slate-900 transition-all group relative flex flex-col h-full animate-fade-in">
-                    <div class="flex-1">
-                        <h4 class="font-black text-slate-900 dark:text-white text-lg mb-2 group-hover:text-indigo-600 transition-colors">${r.title}</h4>
-                        <p class="text-[15px] text-slate-500 font-bold leading-relaxed mb-6">${r.reason}</p>
+                <article id="${r.id}" data-keyword="${r.keyword}" class="p-8 rounded-[40px] border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/40 hover:bg-white dark:hover:bg-slate-900 transition-all group relative flex flex-col h-full animate-fade-in shadow-sm hover:shadow-2xl overflow-hidden">
+                    <!-- Category Badge -->
+                    <div class="absolute top-0 right-0">
+                        <div class="px-4 py-2 rounded-bl-2xl text-[9px] font-black uppercase tracking-tighter ${r.badgeClass} shadow-sm">
+                            ${r.category}
+                        </div>
+                    </div>
+
+                    <div class="flex-1 mt-2">
+                        <div class="inline-flex items-center gap-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest mb-4">
+                            <span class="material-symbols-outlined text-[14px]">bolt</span> AI Smart Pick
+                        </div>
+                        <h4 class="font-black text-slate-900 dark:text-white text-lg mb-3 group-hover:text-indigo-600 transition-colors leading-tight">${r.title}</h4>
+                        <p class="text-[13px] text-slate-500 font-medium leading-relaxed mb-4">${r.reason}</p>
+                        
+                        ${r.sourceTitle ? `
+                        <div class="flex items-center gap-2 mb-6 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+                            <span class="material-symbols-outlined text-[16px] text-indigo-400">link</span>
+                            <span class="text-[10px] font-bold text-slate-400 truncate">${r.sourceTitle}</span>
+                        </div>
+                        ` : ''}
                     </div>
                     
-                    <div class="flex items-center justify-between mt-auto pt-6 border-t border-slate-100 dark:border-slate-800/50">
-                        <a href="${r.url}" target="_blank" class="inline-flex items-center gap-2 text-xs font-black text-indigo-600 hover:underline uppercase tracking-widest">
-                            İzle <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                    <div class="flex items-center justify-between mt-auto pt-6 border-t border-slate-50 dark:border-slate-800/50">
+                        <a href="${r.url}" target="_blank" class="inline-flex items-center gap-2 text-[11px] font-black text-indigo-600 hover:text-indigo-700 transition-all uppercase tracking-widest bg-indigo-50 dark:bg-indigo-900/20 px-4 py-2 rounded-xl">
+                            Keşfet <span class="material-symbols-outlined text-[16px]">trending_up</span>
                         </a>
-                        <div class="flex items-center gap-2">
-                            <button onclick="handleRecommendationFeedback('${r.id}', 'like')" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 transition-all">
+                        <div class="flex items-center gap-1">
+                            <button onclick="handleRecommendationFeedback('${r.id}', 'like')" class="feedback-btn w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all" title="İlgimi Çekiyor">
                                 <span class="material-symbols-outlined text-[18px]">thumb_up</span>
                             </button>
-                            <button onclick="handleRecommendationFeedback('${r.id}', 'dislike')" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all">
+                            <button onclick="handleRecommendationFeedback('${r.id}', 'dislike')" class="feedback-btn w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all" title="İlgimi Çekmiyor">
                                 <span class="material-symbols-outlined text-[18px]">thumb_down</span>
                             </button>
                         </div>
@@ -697,30 +918,42 @@
             const isPro = (localStorage.getItem('edua_subscription_plan') || 'free') === 'pro';
 
             if (type === 'like') {
-                weights[keyword] = (weights[keyword] || 0) + 5;
+                weights[keyword] = (weights[keyword] || 0) + 8;
                 localStorage.setItem('edua_topic_weights', JSON.stringify(weights));
-                renderRecommendations(history, isPro);
+                
+                const btn = card.querySelector('button[onclick*="like"]');
+                if (btn) {
+                    btn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-ping">check_circle</span>';
+                    btn.classList.add('text-emerald-600', 'bg-emerald-50');
+                }
+                
+                setTimeout(() => {
+                    renderRecommendations(history, isPro);
+                }, 800);
             } else {
-                weights[keyword] = (weights[keyword] || 0) - 10;
+                weights[keyword] = (weights[keyword] || 0) - 15;
                 localStorage.setItem('edua_topic_weights', JSON.stringify(weights));
 
                 card.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full space-y-4 py-4">
-                        <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                        <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Analiz Ediliyor...</p>
+                    <div class="flex flex-col items-center justify-center h-full space-y-4 py-4 animate-pulse">
+                        <div class="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center">
+                            <span class="material-symbols-outlined text-slate-400 animate-spin">refresh</span>
+                        </div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Yeni Öneri Hazırlanıyor...</p>
                     </div>
                 `;
 
                 setTimeout(() => {
                     const sortedKeywords = getWeightedKeywords(history);
-                    const newKeyword = sortedKeywords[Math.floor(Math.random() * Math.min(sortedKeywords.length, 10))] || 'Eğitim';
+                    const remainingKeywords = sortedKeywords.filter(k => k !== keyword);
+                    const newKeyword = remainingKeywords[Math.floor(Math.random() * Math.min(remainingKeywords.length, 5))] || 'Eğitim';
                     const newSuggestion = generateSuggestion(newKeyword, Math.floor(Math.random() * 6));
 
                     const newCardHtml = renderRecommendationCard(newSuggestion);
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = newCardHtml;
                     card.replaceWith(tempDiv.firstElementChild);
-                }, 1500);
+                }, 1200);
             }
         }
 
@@ -1292,7 +1525,7 @@
                 history.splice(index, 1);
                 localStorage.setItem(getUserKey('history'), JSON.stringify(history));
                 modal.remove();
-                
+
                 // Add Notification
                 const notifications = JSON.parse(localStorage.getItem(getUserKey('notifications')) || '[]');
                 notifications.unshift({
@@ -1301,7 +1534,7 @@
                     time: new Date().toISOString()
                 });
                 localStorage.setItem(getUserKey('notifications'), JSON.stringify(notifications));
-                
+
                 updateNotifyBadge();
                 loadData();
             };

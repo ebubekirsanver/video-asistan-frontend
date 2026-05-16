@@ -1429,4 +1429,3 @@ if (EXTRA_PORT && EXTRA_PORT !== PORT) {
     log(`api also listening on http://127.0.0.1:${EXTRA_PORT}`);
   });
 }
-}
