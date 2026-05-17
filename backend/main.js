@@ -1412,8 +1412,8 @@ app.get('/health', (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(PORT, () => {
-  log(`api listening on http://127.0.0.1:${PORT}`, {
+app.listen(PORT, '0.0.0.0', () => {
+  log(`api listening on http://0.0.0.0:${PORT}`, {
     model: OPENROUTER_MODEL,
     singlePass: SINGLE_PASS,
     logPayload: LOG_PAYLOAD,
@@ -1425,7 +1425,7 @@ app.listen(PORT, () => {
 });
 
 if (EXTRA_PORT && EXTRA_PORT !== PORT) {
-  app.listen(EXTRA_PORT, () => {
-    log(`api also listening on http://127.0.0.1:${EXTRA_PORT}`);
+  app.listen(EXTRA_PORT, '0.0.0.0', () => {
+    log(`api also listening on http://0.0.0.0:${EXTRA_PORT}`);
   });
 }
