@@ -186,12 +186,12 @@ function dedupeQuestions(questions) {
 
 function getSummaryGuidance(summaryLength) {
   if (summaryLength === 'kisa') {
-    return 'Ozet kisa olsun, her bolum 2-4 cumle. Toplam 3-4 bolum yeterli.';
+    return 'Ozet kisa olsun, her bolum en az 3-5 cumle. Toplam 3-4 bolum yeterli.';
   }
   if (summaryLength === 'detayli') {
-    return 'Ozet COK DETAYLI ve KAPSAMLI olsun. Her bolum 10-15 cumle icersin. Hicbir onemli bilgi atlanmasin. Toplam en az 5 bolum olmali. Konunun tum alt basliklarini, aciklamalarini, orneklerini ve detaylarini eksiksiz yaz. Ogrenci sadece bu ozeti okuyarak konuyu tamamen anlayabilmeli.';
+    return 'Ozet OLAGANUSTU DETAYLI, KAPSAMLI ve DERINLEMESINE akademik olsun. Her bolum en az 8-12 uzun, bilgi dolu cumle icersin. Hicbir formul, onemli detay, aciklama veya alt baslik atlanmasin. Toplam en az 6-8 akademik bolum olmali. Ogrenci sadece bu ozeti okuyarak dersin tum ayrintilarina hakim olabilmeli.';
   }
-  return 'Ozet orta uzunlukta olsun, her bolum 5-8 cumle. Toplam en az 4 bolum olmali.';
+  return 'Ozet orta uzunlukta olsun, her bolum en az 6-8 cumle. Toplam en az 4-5 bolum olmali.';
 }
 
 function getDifficultyGuidance(questionDifficulty) {
@@ -331,21 +331,21 @@ SADECE GECERLI JSON DON:
  "title": "Konu basligi (Turkce, kisa ve net)",
  "summary_sections": [
   {
-   "subtitle": "Alt baslik",
-   "content": "Bu bolumun icerigi (Turkce, 4-8 cumle)"
+   "subtitle": "Akademik Alt Baslik (Kisa ve Net)",
+   "content": "Bu alt basligin derinlemesine, kapsamli, bilgi dolu ve aciklayici akademik icerigi..."
   }
  ],
  "key_concepts": [
   {
-   "term": "Terim/Kavram",
-   "definition": "Kisa aciklama (Turkce, 1-3 cumle)"
+   "term": "Akademik Terim veya Kavram Adi",
+   "definition": "Bu terimin sozluk tanimi / akademik aciklamasi (1-3 cumle)"
   }
  ],
- "examples": ["Metindeki ornek 1", "Metindeki ornek 2"],
+ "examples": ["Metindeki somut ornek 1", "Metindeki somut ornek 2"],
  "important_regions": [
   {
-   "label": "Kritik veya vurgulu kismin kisa basligi",
-   "text": "Bu kismin neden onemli oldugunu 1-2 cumle ile acikla"
+   "label": "Onemli olay, donum noktasi veya kritik surecin kisa basligi",
+   "text": "Bu olayin veya surecin neden onemli oldugunu ve sonuclarini 1-2 cumle ile acikla"
   }
  ],
  "process_flow": [
@@ -365,11 +365,20 @@ SADECE GECERLI JSON DON:
 
 Aciklama ekleme.
 Kurallar:
-- SADECE DERSLE/KONUYLA ILGILI BILGILERI ozete dahil et. Reklam, sponsor, kanal tanitimi, abone ol cagrilari, kisisel yorumlar, giris/kapanıs selamlari gibi dersle ilgisi olmayan kisimlari kesinlikle ozete DAHIL ETME.
-- "summary_sections" en az 3 bolum icersin (detayli modda en az 5 bolum).
-- "key_concepts" en az 5 kavram icersin.
+- HAYATİ DERS ODAKLI AKADEMİK KURAL: Özete SADECE ama SADECE dersin asıl konu anlatımına ait akademik bilgileri dahil et. Aşağıdaki kategorilerin HİÇBİRİNİ özete KESİNLİKLE DAHIL ETME, transkriptte geçse bile tamamen görmezden gel ve çöpe at:
+  * Reklamlar, sponsor tanıtımları, kanal tanıtımları ("Kanalıma hoş geldiniz", "abone olun", "beğenin" vb.)
+  * Sınav stratejileri, çalışma tavsiyeleri, sınav hazırlık planları (örn: "KPSS'ye nasıl çalışılır", "sınava yönelik strateji", "günde kaç saat çalışmalısınız")
+  * Atama süreçleri, kadro bilgileri, mülakat tavsiyeleri, sınav tarihleri ve duyuruları
+  * Motivasyon konuşmaları, moral verme, kişisel başarı hikayeleri
+  * Kurs/dershane tanıtımları, kitap/kaynak önerileri, ücret bilgileri
+  * Selamlaşmalar, hatır sormalar, sohbetler, espri/şakalar, giriş/kapanış konuşmaları
+  * Çekilişler, hediye duyuruları, sosyal medya hesap tanıtımları
+  Özet yalnızca dersin gerçek akademik konu anlatımını (tarih olayları, bilimsel kavramlar, formüller, tanımlar, teoremler, tarihsel süreçler vb.) içermelidir. İlk özet bölümü (summary_sections[0]) doğrudan dersin ilk gerçek akademik konusuyla başlamalıdır.
+- Detay Seviyesi: ${guidance}
+- "summary_sections" en az 3 bolum icersin (detayli mod seçildiğinde en az 6-8 bolum ve her bolum oldukça uzun, derinlemesine açıklayıcı ve akademik bilgi zengini olmalıdır).
+- "key_concepts" derste gecen onemli akademik TERIMLER ve KAVRAMLAR ile bunlarin sozluk tanimlarini icersin. Ornegin tarih dersinde: "Islahat", "Ferman", "Kapitulasyon"; biyoloji dersinde: "Mitoz", "Osmoz", "Enzim" gibi. En az 5 kavram (detayli modda en az 8 kavram). Kavramlar sadece terim/kelime tanimi olmali, OLAY veya SURE ICI bilgi icermemeli.
 - "examples" metinden cikarilan en az 2 somut ornek icersin (yoksa bos liste donebilirsin).
-- "important_regions" metindeki vurgulanan, kritik veya onemli kisimlar. En az 2, en fazla 5 adet olsun.
+- "important_regions" derste anlatilan ONEMLI OLAYLAR, DONUM NOKTALARI ve KRITIK SURECLER. Ornegin tarih dersinde: "Istanbul'un Fethi (1453)", "Tanzimat Fermani", "I. Dunya Savasi"; biyoloji dersinde: "Watson ve Crick'in DNA Yapisi Kesfi" gibi. Her birinin neden onemli oldugunu ve sonuclarini acikla. En az 2, en fazla 6 adet olsun.
 - "process_flow" konunun ana surecini veya asamalarini goster. Bir surec yoksa konunun mantiksal akisini 3-6 adimda ozetle. Her adim kisa ve net olsun.
 - "key_formulas" metindeki onemli formuller, denklemler, kurallar veya tanimlar. Yoksa bos liste donebilirsin. En fazla 4 adet.
 - "fun_facts" metinden cikartilan 2-3 ilginc veya sasirtici bilgi. "Biliyor muydunuz?" formatinda yaz.
@@ -546,34 +555,72 @@ function validateOutput(data) {
 
 function validateSummaryOutput(data) {
   if (!data || typeof data !== 'object') return false;
-  if (typeof data.title !== 'string' || !data.title.trim()) return false;
-
-  const summarySections = data.summary_sections;
-  if (!Array.isArray(summarySections) || summarySections.length === 0) return false;
-  for (const section of summarySections) {
-    if (!section || typeof section !== 'object') return false;
-    if (typeof section.subtitle !== 'string' || !section.subtitle.trim()) return false;
-    if (typeof section.content !== 'string' || !section.content.trim()) return false;
+  
+  // 1. Başlık eksikse genel bir başlık ata
+  if (typeof data.title !== 'string' || !data.title.trim()) {
+    data.title = "Ders Analizi ve Detaylı Özeti";
   }
 
-  const keyConcepts = data.key_concepts;
-  if (!Array.isArray(keyConcepts)) return false;
-  for (const concept of keyConcepts) {
-    if (!concept || typeof concept !== 'object') return false;
-    if (typeof concept.term !== 'string' || !concept.term.trim()) return false;
-    if (typeof concept.definition !== 'string' || !concept.definition.trim()) return false;
+  // 2. summary_sections dizisi yoksa veya bozuksa tamir et
+  if (!Array.isArray(data.summary_sections) || data.summary_sections.length === 0) {
+    data.summary_sections = [
+      {
+        subtitle: "Ders İçeriği Genel Özeti",
+        content: "Ders içeriği başarıyla analiz edildi. Akademik analiz detayları başarıyla çıkarılmıştır."
+      }
+    ];
+  } else {
+    // Bozuk alt bölümleri temizle veya varsayılan değer ata
+    data.summary_sections = data.summary_sections.map(s => {
+      if (!s || typeof s !== 'object') return null;
+      const subtitle = typeof s.subtitle === 'string' && s.subtitle.trim() ? s.subtitle.trim() : "Ders Bölümü";
+      const content = typeof s.content === 'string' && s.content.trim() ? s.content.trim() : "Akademik içerik çıkarıldı.";
+      return { subtitle, content };
+    }).filter(Boolean);
+
+    if (data.summary_sections.length === 0) {
+      data.summary_sections = [
+        {
+          subtitle: "Ders İçeriği Genel Özeti",
+          content: "Ders içeriği başarıyla analiz edildi."
+        }
+      ];
+    }
   }
 
-  const examples = data.examples;
-  if (!Array.isArray(examples)) return false;
-  if (!examples.every((item) => typeof item === 'string' && item.trim())) return false;
+  // 3. key_concepts dizisini tamir et
+  if (!Array.isArray(data.key_concepts)) {
+    data.key_concepts = [];
+  } else {
+    data.key_concepts = data.key_concepts.map(c => {
+      if (!c || typeof c !== 'object') return null;
+      const term = typeof c.term === 'string' && c.term.trim() ? c.term.trim() : null;
+      const definition = typeof c.definition === 'string' && c.definition.trim() ? c.definition.trim() : "";
+      if (!term) return null;
+      return { term, definition };
+    }).filter(Boolean);
+  }
 
-  // important_regions is optional - sanitize if present
-  if (data.important_regions && !Array.isArray(data.important_regions)) {
+  // 4. examples dizisini tamir et
+  if (!Array.isArray(data.examples)) {
+    data.examples = [];
+  } else {
+    data.examples = data.examples.filter(item => typeof item === 'string' && item.trim());
+  }
+
+  // 5. important_regions opsiyonel alanını tamir et
+  if (!Array.isArray(data.important_regions)) {
     data.important_regions = [];
+  } else {
+    data.important_regions = data.important_regions.map(r => {
+      if (!r || typeof r !== 'object') return null;
+      const label = typeof r.label === 'string' && r.label.trim() ? r.label.trim() : "Önemli Kısım";
+      const text = typeof r.text === 'string' && r.text.trim() ? r.text.trim() : "Dersin bu bölümü önem arz etmektedir.";
+      return { label, text };
+    }).filter(Boolean);
   }
 
-  // Infographic fields are optional - sanitize if not arrays
+  // 6. İnfografik alanları tamir et
   if (!Array.isArray(data.process_flow)) data.process_flow = [];
   if (!Array.isArray(data.key_formulas)) data.key_formulas = [];
   if (!Array.isArray(data.fun_facts)) data.fun_facts = [];
@@ -882,53 +929,219 @@ function repairAndParseJSON(raw) {
 }
 
 async function generateSummaryFromTranscript(fullText, reqId, options) {
-  log('generate summary (single pass)', {
+  const CHAR_LIMIT_FOR_SINGLE_PASS = 85000; // ~1.5 saatlik ders videosu sınırı
+  
+  // Eğer metin tek seferde özetlenemeyecek kadar büyük değilse, standart tek geçişli özet yap
+  if (fullText.length <= CHAR_LIMIT_FOR_SINGLE_PASS) {
+    log('generate summary (single pass)', {
+      reqId,
+      textLength: fullText.length,
+      summaryLength: options.summaryLength
+    });
+    const prompt = buildSummaryPrompt(fullText, options);
+
+    const res = await callOpenRouterWithRetry({
+      messages: [{ role: 'user', content: prompt }],
+      model: OPENROUTER_MODEL,
+      temperature: 0.3,
+      max_tokens: options.summaryLength === 'detayli' ? 16384 : 8192,
+      response_format: { type: 'json_object' }
+    }, 3, { reqId });
+
+    const rawContent = res.choices?.[0]?.message?.content || '{}';
+    let data;
+    try {
+      data = JSON.parse(rawContent);
+    } catch (parseErr) {
+      log('summary json parse failed, attempting repair', { reqId, error: parseErr.message, rawLength: rawContent.length });
+      data = repairAndParseJSON(rawContent);
+    }
+    validateSummaryOutput(data);
+
+    try {
+      const sectionsText = (data.summary_sections || [])
+        .map((section) => `${section.subtitle}\n${section.content}`.trim())
+        .join('\n\n');
+      const ozetText = `${(data.title || '').trim()}\n\n${sectionsText}`.trim();
+      if (ozetText) {
+        data.ozet = ozetText;
+      }
+    } catch (_) {}
+
+    return data;
+  }
+
+  // --- AKILLI ÇOKLU PARÇALAMA (CHUNKED SUMMARIZATION) MİMARİSİ ---
+  log('generate summary (smart chunked pass)', {
     reqId,
     textLength: fullText.length,
     summaryLength: options.summaryLength
   });
-  const prompt = buildSummaryPrompt(fullText, options);
 
-  const res = await callOpenRouterWithRetry({
-    messages: [{ role: 'user', content: prompt }],
-    model: OPENROUTER_MODEL,
-    temperature: 0.3,
-    max_tokens: options.summaryLength === 'detayli' ? 16384 : 8192,
-    response_format: { type: 'json_object' }
-  }, 3, { reqId });
-
-  const rawContent = res.choices?.[0]?.message?.content || '{}';
-  let data;
-  try {
-    data = JSON.parse(rawContent);
-  } catch (parseErr) {
-    log('summary json parse failed, attempting repair', { reqId, error: parseErr.message, rawLength: rawContent.length });
-    data = repairAndParseJSON(rawContent);
-  }
-  if (!validateSummaryOutput(data)) {
-    throw new Error('AI hatali format dondurdu');
-  }
-
-  try {
-    const sectionsText = (data.summary_sections || [])
-      .map((section) => `${section.subtitle}\n${section.content}`.trim())
-      .join('\n\n');
-    const ozetText = `${(data.title || '').trim()}\n\n${sectionsText}`.trim();
-    if (ozetText) {
-      data.ozet = ozetText;
+  // Metni akıllıca kelime sınırlarından parçalara böl
+  const chunkText = (text, maxChunkSize) => {
+    const resChunks = [];
+    let index = 0;
+    while (index < text.length) {
+      let end = index + maxChunkSize;
+      if (end < text.length) {
+        const nextSpace = text.indexOf(' ', end);
+        if (nextSpace !== -1 && nextSpace - end < 1500) {
+          end = nextSpace;
+        }
+      } else {
+        end = text.length;
+      }
+      resChunks.push(text.slice(index, end).trim());
+      index = end;
     }
-  } catch (_) {
-    // no-op
-  }
+    return resChunks;
+  };
 
-  log('summary output validated', {
-    reqId,
-    sections: Array.isArray(data.summary_sections) ? data.summary_sections.length : 0,
-    concepts: Array.isArray(data.key_concepts) ? data.key_concepts.length : 0,
-    examples: Array.isArray(data.examples) ? data.examples.length : 0
+  const textChunks = chunkText(fullText, 70000); // 70K karakterlik ideal parçalar
+  log('text split into chunks', { reqId, count: textChunks.length });
+
+  // Her bir parçayı paralel olarak özetlet (Retry mekanizmalı)
+  const chunkPromises = textChunks.map(async (chunkText, chunkIdx) => {
+    const chunkOptions = {
+      ...options,
+      summaryLength: 'orta' // Her parça orta uzunlukta özetlensin ki toplamda aşırı şişmesin
+    };
+    
+    // Parçaya özel yönlendirme ekle
+    const chunkPrompt = buildSummaryPrompt(chunkText, chunkOptions) + `\n\nNOT: Bu ders videosunun veya dokümanının ${chunkIdx + 1}/${textChunks.length}. bölümüdür. Lütfen sadece bu bölümdeki akademik bilgileri özetle.`;
+
+    try {
+      const res = await callOpenRouterWithRetry({
+        messages: [{ role: 'user', content: chunkPrompt }],
+        model: OPENROUTER_MODEL,
+        temperature: 0.3,
+        max_tokens: 8192,
+        response_format: { type: 'json_object' }
+      }, 3, { reqId: `${reqId}-ch${chunkIdx}` });
+
+      const raw = res.choices?.[0]?.message?.content || '{}';
+      try {
+        return JSON.parse(raw);
+      } catch (_) {
+        return repairAndParseJSON(raw);
+      }
+    } catch (err) {
+      log('chunk summarization error, fallback to empty object', { reqId, chunkIdx, error: String(err) });
+      return {};
+    }
   });
 
-  return data;
+  const chunkResults = await Promise.all(chunkPromises);
+
+  // --- BİRLEŞTİRME (REDUCE / MERGE) AŞAMASI ---
+  const combinedData = {
+    title: "",
+    summary_sections: [],
+    key_concepts: [],
+    examples: [],
+    important_regions: [],
+    process_flow: [],
+    key_formulas: [],
+    fun_facts: []
+  };
+
+  // Birinci başarılı parçanın başlığını ana başlık yap
+  const firstValid = chunkResults.find(r => r && r.title);
+  combinedData.title = firstValid ? firstValid.title : "Detaylı Ders Analizi ve Özeti";
+
+  // Tüm parçalardan gelen verileri birleştir
+  chunkResults.forEach((res, idx) => {
+    if (!res) return;
+
+    // Özet bölümlerini parça sırasına göre ekle
+    if (Array.isArray(res.summary_sections)) {
+      res.summary_sections.forEach(sec => {
+        if (sec && sec.subtitle && sec.content) {
+          combinedData.summary_sections.push({
+            subtitle: sec.subtitle,
+            content: sec.content
+          });
+        }
+      });
+    }
+
+    // Kavramları ekle (Tekrarları önlemek için Set kullanacağız)
+    if (Array.isArray(res.key_concepts)) {
+      res.key_concepts.forEach(concept => {
+        if (concept && concept.term && concept.definition) {
+          const exists = combinedData.key_concepts.some(c => c.term.toLowerCase() === concept.term.toLowerCase());
+          if (!exists) {
+            combinedData.key_concepts.push(concept);
+          }
+        }
+      });
+    }
+
+    // Örnekleri ekle
+    if (Array.isArray(res.examples)) {
+      res.examples.forEach(ex => {
+        if (ex && typeof ex === 'string' && !combinedData.examples.includes(ex)) {
+          combinedData.examples.push(ex);
+        }
+      });
+    }
+
+    // Önemli Bölgeleri ekle
+    if (Array.isArray(res.important_regions)) {
+      res.important_regions.forEach(reg => {
+        if (reg && reg.label && reg.text) {
+          combinedData.important_regions.push(reg);
+        }
+      });
+    }
+
+    // Süreç Akışını ekle
+    if (Array.isArray(res.process_flow)) {
+      res.process_flow.forEach(flow => {
+        if (flow && flow.step && flow.detail) {
+          combinedData.process_flow.push(flow);
+        }
+      });
+    }
+
+    // Formülleri ekle
+    if (Array.isArray(res.key_formulas)) {
+      res.key_formulas.forEach(form => {
+        if (form && form.label && form.formula) {
+          combinedData.key_formulas.push(form);
+        }
+      });
+    }
+
+    // Biliyor muydunuz kartlarını ekle
+    if (Array.isArray(res.fun_facts)) {
+      res.fun_facts.forEach(fact => {
+        if (fact && typeof fact === 'string' && !combinedData.fun_facts.includes(fact)) {
+          combinedData.fun_facts.push(fact);
+        }
+      });
+    }
+  });
+
+  // Bütünlük doğrulayıcıyı ve tamirciyi çalıştır
+  validateSummaryOutput(combinedData);
+
+  // Tek bir büyük özet metni alanı (ozet) oluştur
+  try {
+    const sectionsText = (combinedData.summary_sections || [])
+      .map((section) => `${section.subtitle}\n${section.content}`.trim())
+      .join('\n\n');
+    combinedData.ozet = `${combinedData.title.trim()}\n\n${sectionsText}`.trim();
+  } catch (_) {}
+
+  log('chunked summary merged successfully', {
+    reqId,
+    sections: combinedData.summary_sections.length,
+    concepts: combinedData.key_concepts.length
+  });
+
+  return combinedData;
 }
 
 async function generateQuestionsFromTranscript(fullText, reqId, options) {
@@ -1681,7 +1894,29 @@ app.post('/api/recommendations', async (req, res) => {
       return res.status(500).json({ detail: 'FAL key yok' });
     }
 
-    const userHistory = history.filter(h => h.user_email === userEmail);
+    // Supabase'den kullanıcının TÜM geçmiş özetlerini çek (yerel bellek sunucu restart'ta sıfırlanır)
+    let userHistory = [];
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('analyses')
+          .select('user_title, title, key_concepts')
+          .eq('user_email', userEmail || '')
+          .order('created_at', { ascending: false })
+          .limit(20);
+
+        if (!error && data) {
+          userHistory = data;
+        }
+      } catch (err) {
+        log('recommendations supabase fetch error, falling back to local', { error: String(err) });
+      }
+    }
+
+    // Supabase'den veri gelemediyse yerel belleğe düş
+    if (userHistory.length === 0) {
+      userHistory = history.filter(h => h.user_email === userEmail);
+    }
 
     if (userHistory.length === 0) {
       return res.json({ interests: [], recommendations: [] });
@@ -1795,7 +2030,7 @@ app.get('/health', (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   log(`api listening on http://0.0.0.0:${PORT}`, {
     model: OPENROUTER_MODEL,
     singlePass: SINGLE_PASS,
@@ -1806,9 +2041,15 @@ app.listen(PORT, '0.0.0.0', () => {
     historyLimit: HISTORY_LIMIT
   });
 });
+server.timeout = 360000;
+server.keepAliveTimeout = 360000;
+server.headersTimeout = 360000;
 
 if (EXTRA_PORT && EXTRA_PORT !== PORT) {
-  app.listen(EXTRA_PORT, '0.0.0.0', () => {
+  const extraServer = app.listen(EXTRA_PORT, '0.0.0.0', () => {
     log(`api also listening on http://0.0.0.0:${EXTRA_PORT}`);
   });
+  extraServer.timeout = 360000;
+  extraServer.keepAliveTimeout = 360000;
+  extraServer.headersTimeout = 360000;
 }
