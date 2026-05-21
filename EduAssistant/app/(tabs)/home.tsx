@@ -19,12 +19,18 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as DocumentPicker from 'expo-document-picker';
 import { GradientHeader } from '../../components/GradientHeader';
 import { GradientButton } from '../../components/GradientButton';
 import { ChatBubble } from '../../components/ChatBubble';
 import { ChatSkeleton } from '../../components/Skeleton';
 import { useThemeColors } from '../../hooks/useThemeColors';
-import { analyzeVideo as apiAnalyzeVideo, chatWithVideo, generateQuestions as apiGenerateQuestions } from '../../services/api';
+import { 
+  analyzeVideo as apiAnalyzeVideo, 
+  analyzeFile as apiAnalyzeFile, 
+  chatWithVideo, 
+  generateQuestions as apiGenerateQuestions 
+} from '../../services/api';
 import {
   Spacing,
   FontSizes,
@@ -241,6 +247,8 @@ export default function HomeScreen() {
   const [summaryLength, setSummaryLength] = useState('kisa');
   const [questionCount, setQuestionCount] = useState<number>(5);
   const [questionDifficulty, setQuestionDifficulty] = useState('orta');
+  const [analysisSource, setAnalysisSource] = useState<'youtube' | 'file'>('youtube');
+  const [selectedFile, setSelectedFile] = useState<{ uri: string; name: string; mimeType: string } | null>(null);
 
   // State
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
@@ -269,36 +277,78 @@ export default function HomeScreen() {
     }, 100);
   }, []);
 
+  const pickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['application/pdf', 'text/plain'],
+        copyToCacheDirectory: true,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        setSelectedFile({
+          uri: asset.uri,
+          name: asset.name,
+          mimeType: asset.mimeType || 'application/pdf',
+        });
+      }
+    } catch (err) {
+      Alert.alert('Hata', 'Dosya seçilirken bir hata oluştu.');
+    }
+  };
+
   const resetAnalysis = () => {
     setVideoInfo(null);
     setVideoUrl('');
     setUserTitle('');
+    setSelectedFile(null);
     setIsVideoLocked(false);
   };
 
-  const analyzeVideo = async () => {
-    const trimmedUrl = videoUrl.trim();
-    if (!trimmedUrl) {
-      Alert.alert('Uyarı', 'Lütfen bir YouTube URL girin.');
-      return;
-    }
+  const startAnalysis = async () => {
+    let response;
+    const isFile = analysisSource === 'file';
 
-    const videoId = extractVideoId(trimmedUrl);
-    if (!videoId) {
-      Alert.alert('Hata', 'Geçerli bir YouTube URL girin.');
-      return;
+    if (isFile) {
+      if (!selectedFile) {
+        Alert.alert('Uyarı', 'Lütfen analiz edilecek bir PDF veya TXT dosyası seçin.');
+        return;
+      }
+    } else {
+      const trimmedUrl = videoUrl.trim();
+      if (!trimmedUrl) {
+        Alert.alert('Uyarı', 'Lütfen bir YouTube URL girin.');
+        return;
+      }
+      const videoId = extractVideoId(trimmedUrl);
+      if (!videoId) {
+        Alert.alert('Hata', 'Geçerli bir YouTube URL girin.');
+        return;
+      }
     }
 
     setIsAnalyzing(true);
-    setVideoInfo({
-      url: trimmedUrl,
-      thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
-      title: null,
-      videoId,
-    });
     setIsVideoLocked(true);
 
-    // Fake Progress Bar Logic (goes up to 90% over 20 seconds)
+    if (isFile && selectedFile) {
+      setVideoInfo({
+        url: '',
+        thumbnail: 'file', // will render document icon instead of video preview
+        title: selectedFile.name,
+        videoId: 'file_' + Date.now(),
+      });
+    } else {
+      const trimmedUrl = videoUrl.trim();
+      const videoId = extractVideoId(trimmedUrl) || '';
+      setVideoInfo({
+        url: trimmedUrl,
+        thumbnail: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+        title: null,
+        videoId,
+      });
+    }
+
+    // Progress Bar Logic (goes up to 90% over 20 seconds)
     progressAnim.setValue(0);
     Animated.timing(progressAnim, {
       toValue: 90,
@@ -316,7 +366,16 @@ export default function HomeScreen() {
         questionDifficulty,
       };
 
-      const response = await apiAnalyzeVideo(trimmedUrl, options);
+      if (isFile && selectedFile) {
+        response = await apiAnalyzeFile(
+          selectedFile.uri,
+          selectedFile.name,
+          selectedFile.mimeType,
+          options
+        );
+      } else {
+        response = await apiAnalyzeVideo(videoUrl.trim(), options);
+      }
       
       // Snap progress to 100%
       Animated.timing(progressAnim, {
@@ -328,7 +387,7 @@ export default function HomeScreen() {
         if (response && response.analiz) {
           setVideoInfo(prev => prev ? {
             ...prev,
-            title: response.analiz.title || 'Video Analizi',
+            title: response.analiz.title || (isFile ? selectedFile?.name : 'Video Analizi'),
             analysisId: response.analysis_id,
             analiz: response.analiz,
           } : null);
@@ -336,7 +395,9 @@ export default function HomeScreen() {
           setMessages([
             {
               id: 'welcome',
-              text: 'Merhaba! Videonun analizini tamamladım. Kafana takılan veya anlamadığın bir yer varsa bana sorabilirsin.',
+              text: isFile 
+                ? 'Merhaba! Dosya analizini tamamladım. Dokümanla ilgili kafana takılan veya anlamadığın bir yer varsa bana sorabilirsin.' 
+                : 'Merhaba! Videonun analizini tamamladım. Kafana takılan veya anlamadığın bir yer varsa bana sorabilirsin.',
               isUser: false,
               timestamp: getTimestamp(),
             }
@@ -349,14 +410,14 @@ export default function HomeScreen() {
       setIsAnalyzing(false);
       setIsVideoLocked(false);
       setVideoInfo(null);
-      const errorMsg = (error as Error).message || 'Video analiz edilemedi.';
+      const errorMsg = (error as Error).message || 'Analiz başarısız oldu.';
       Alert.alert('Hata', errorMsg);
     }
   };
 
   const sendMessage = async (textOverride?: string) => {
     const messageText = (textOverride || userMessage).trim();
-    if (!messageText || !videoInfo?.url) return;
+    if (!messageText || !videoInfo) return;
 
     Keyboard.dismiss();
     setUserMessage('');
@@ -380,11 +441,13 @@ export default function HomeScreen() {
     scrollToBottomChat();
 
     try {
-      const strictPrompt = `ÖNEMLİ KURAL: Lütfen sadece videonun içeriğine (transkripte) dayanarak cevap ver. Sorulan soru videonun konusuyla tamamen alakasızsa, "Bu soru video içeriğiyle ilgili değil, lütfen dersle/videoyla alakalı sorular sorun." de ve cevap verme. Soru: ${messageText}`;
+      const isFile = videoInfo.thumbnail === 'file';
+      const sourceName = isFile ? 'dokümanın' : 'videonun';
+      const strictPrompt = `ÖNEMLİ KURAL: Lütfen sadece ${sourceName} içeriğine dayanarak cevap ver. Sorulan soru ${sourceName} konusuyla tamamen alakasızsa, "Bu soru ${sourceName} içeriğiyle ilgili değil, lütfen dersle alakalı sorular sorun." de ve cevap verme. Soru: ${messageText}`;
 
       const response = await chatWithVideo(
         videoInfo.analysisId || '',
-        videoInfo.url,
+        videoInfo.url || '',
         strictPrompt
       );
 
@@ -482,28 +545,83 @@ export default function HomeScreen() {
               </LinearGradient>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.cardTitle, { color: colors.text }]}>Yeni Eğitim Analizi</Text>
-                <Text style={[styles.cardSubtitle, { color: colors.textSecondary }]}>Video linkini girin ve parametreleri seçin</Text>
+                <Text style={[styles.cardSubtitle, { color: colors.textSecondary }]}>
+                  {analysisSource === 'file' ? 'Dosya yükleyin ve parametreleri seçin' : 'Video linkini girin ve parametreleri seçin'}
+                </Text>
               </View>
             </View>
 
-            <View style={[styles.inputWrapper, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder }]}>
-              <Ionicons name="link" size={20} color={colors.textTertiary} style={styles.inputIcon} />
-              <TextInput
-                style={[styles.input, { color: colors.inputText }]}
-                placeholder="YouTube URL..."
-                placeholderTextColor={colors.inputPlaceholder}
-                value={videoUrl}
-                onChangeText={setVideoUrl}
-                autoCapitalize="none"
-                autoCorrect={false}
+            <View style={{ marginTop: Spacing.sm, marginBottom: Spacing.sm }}>
+              <SegmentedControl 
+                label="Analiz Kaynağı" 
+                colors={colors} 
+                options={[
+                  { label: 'YouTube Videosu', value: 'youtube' }, 
+                  { label: 'Ders Dokümanı / Dosya', value: 'file' }
+                ]} 
+                selectedValue={analysisSource} 
+                onSelect={(val: any) => setAnalysisSource(val)} 
               />
             </View>
+
+            {analysisSource === 'file' ? (
+              <TouchableOpacity 
+                style={[
+                  { 
+                    backgroundColor: colors.inputBackground, 
+                    borderColor: selectedFile ? colors.primary : colors.inputBorder,
+                    borderWidth: 1,
+                    borderStyle: 'dashed',
+                    borderRadius: BorderRadius.lg,
+                    padding: Spacing.xl,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: Spacing.sm,
+                    marginBottom: Spacing.sm
+                  }
+                ]}
+                onPress={pickDocument}
+                activeOpacity={0.7}
+              >
+                <Ionicons 
+                  name={selectedFile ? "document-text" : "cloud-upload-outline"} 
+                  size={36} 
+                  color={selectedFile ? colors.primary : colors.textTertiary} 
+                />
+                {selectedFile ? (
+                  <View style={{ alignItems: 'center', marginTop: Spacing.xs }}>
+                    <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: FontSizes.sm, textAlign: 'center' }}>{selectedFile.name}</Text>
+                    <Text style={{ color: colors.textTertiary, fontSize: FontSizes.xs, marginTop: 2 }}>
+                      {selectedFile.mimeType === 'application/pdf' ? 'PDF Belgesi' : 'Metin Dosyası'}
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={{ alignItems: 'center', marginTop: Spacing.xs }}>
+                    <Text style={{ color: colors.textSecondary, fontWeight: '600', fontSize: FontSizes.sm }}>Doküman Yükle</Text>
+                    <Text style={{ color: colors.textTertiary, fontSize: FontSizes.xs, marginTop: 2 }}>PDF veya TXT dosyası seçin (Maks 10MB)</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            ) : (
+              <View style={[styles.inputWrapper, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder }]}>
+                <Ionicons name="link" size={20} color={colors.textTertiary} style={styles.inputIcon} />
+                <TextInput
+                  style={[styles.input, { color: colors.inputText }]}
+                  placeholder="YouTube URL..."
+                  placeholderTextColor={colors.inputPlaceholder}
+                  value={videoUrl}
+                  onChangeText={setVideoUrl}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
+            )}
 
             <View style={[styles.inputWrapper, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder, marginTop: Spacing.md }]}>
               <Ionicons name="text" size={20} color={colors.textTertiary} style={styles.inputIcon} />
               <TextInput
                 style={[styles.input, { color: colors.inputText }]}
-                placeholder="Özet Başlığı (Opsiyonel)"
+                placeholder={analysisSource === 'file' ? "Doküman Başlığı (Opsiyonel)" : "Özet Başlığı (Opsiyonel)"}
                 placeholderTextColor={colors.inputPlaceholder}
                 value={userTitle}
                 onChangeText={setUserTitle}
@@ -513,13 +631,15 @@ export default function HomeScreen() {
             <View style={{ marginTop: Spacing.lg, gap: Spacing.md }}>
               <SegmentedControl label="Ders Türü" colors={colors} options={[{ label: 'Sözel', value: 'sozel' }, { label: 'Sayısal', value: 'sayisal' }]} selectedValue={subjectType} onSelect={setSubjectType} />
               <SegmentedControl label="Özet Uzunluğu" colors={colors} options={[{ label: 'Kısa', value: 'kisa' }, { label: 'Orta', value: 'orta' }, { label: 'Detaylı', value: 'detayli' }]} selectedValue={summaryLength} onSelect={setSummaryLength} />
-              <SegmentedControl label="Soru Sayısı" colors={colors} options={[{ label: '5', value: 5 }, { label: '10', value: 10 }, { label: '15', value: 15 }]} selectedValue={questionCount} onSelect={setQuestionCount} />
-              <SegmentedControl label="Soru Zorluğu" colors={colors} options={[{ label: 'Kolay', value: 'kolay' }, { label: 'Orta', value: 'orta' }, { label: 'Zor', value: 'zor' }]} selectedValue={questionDifficulty} onSelect={setQuestionDifficulty} />
+              <SegmentedControl label="Soru Sayısı" colors={colors} options={[{ label: 'Yok', value: 0 }, { label: '5', value: 5 }, { label: '10', value: 10 }, { label: '15', value: 15 }]} selectedValue={questionCount} onSelect={setQuestionCount} />
+              {questionCount > 0 && (
+                <SegmentedControl label="Soru Zorluğu" colors={colors} options={[{ label: 'Kolay', value: 'kolay' }, { label: 'Orta', value: 'orta' }, { label: 'Zor', value: 'zor' }]} selectedValue={questionDifficulty} onSelect={setQuestionDifficulty} />
+              )}
             </View>
 
             <GradientButton
               title="ANALİZİ BAŞLAT"
-              onPress={analyzeVideo}
+              onPress={startAnalysis}
               loading={false}
               size="lg"
               style={{ marginTop: Spacing.xl }}
@@ -533,8 +653,10 @@ export default function HomeScreen() {
           <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border, alignItems: 'center', paddingVertical: 40 }]}>
             <Ionicons name="scan-circle-outline" size={64} color={colors.primary} style={{ marginBottom: Spacing.md }} />
             <Text style={{ fontSize: FontSizes.lg, fontWeight: 'bold', color: colors.text, marginBottom: 8 }}>Yapay Zeka Analiz Ediyor</Text>
-            <Text style={{ fontSize: FontSizes.sm, color: colors.textSecondary, marginBottom: Spacing.xl, textAlign: 'center' }}>
-              Video transkripti inceleniyor ve içerik üretiliyor. Lütfen bekleyin...
+            <Text style={{ fontSize: FontSizes.sm, color: colors.textSecondary, marginBottom: Spacing.xl, textAlign: 'center', paddingHorizontal: Spacing.md }}>
+              {analysisSource === 'file' 
+                ? 'Doküman içeriği yapay zeka tarafından taranıyor, ana kavramlar ve özet hazırlanıyor. Lütfen bekleyin...' 
+                : 'Video transkripti inceleniyor ve eğitim içeriği üretiliyor. Lütfen bekleyin...'}
             </Text>
             
             <View style={styles.progressBarBg}>
@@ -548,10 +670,18 @@ export default function HomeScreen() {
           <View style={{ gap: Spacing.lg }}>
             <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               <View style={styles.videoRow}>
-                {videoInfo.thumbnail && <Image source={{ uri: videoInfo.thumbnail }} style={styles.thumbnail} resizeMode="cover" />}
+                {videoInfo.thumbnail === 'file' ? (
+                  <View style={[styles.thumbnail, { backgroundColor: colors.primary + '18', justifyContent: 'center', alignItems: 'center', borderRadius: BorderRadius.md }]}>
+                    <Ionicons name="document-text" size={32} color={colors.primary} />
+                  </View>
+                ) : (
+                  videoInfo.thumbnail && <Image source={{ uri: videoInfo.thumbnail }} style={styles.thumbnail} resizeMode="cover" />
+                )}
                 <View style={styles.videoMeta}>
                   <Text style={[styles.videoTitleText, { color: colors.text }]} numberOfLines={2}>{videoInfo.title}</Text>
-                  <Text style={{ color: colors.textTertiary, fontSize: FontSizes.xs }} numberOfLines={1}>{videoInfo.url}</Text>
+                  <Text style={{ color: colors.textTertiary, fontSize: FontSizes.xs }} numberOfLines={1}>
+                    {videoInfo.thumbnail === 'file' ? 'Yüklenen Ders Dokümanı' : videoInfo.url}
+                  </Text>
                 </View>
                 <TouchableOpacity onPress={resetSession} style={[styles.resetButton, { backgroundColor: colors.surfaceElevated }]}>
                   <Ionicons name="close" size={18} color={colors.textTertiary} />
@@ -758,8 +888,8 @@ const styles = StyleSheet.create({
   segmentContainer: { marginBottom: Spacing.sm },
   segmentLabel: { fontSize: FontSizes.xs, fontWeight: FontWeights.bold, textTransform: 'uppercase', marginBottom: Spacing.xs, marginLeft: Spacing.xs },
   segmentWrapper: { flexDirection: 'row', borderRadius: BorderRadius.xl, padding: 4 },
-  segmentItem: { flex: 1, paddingVertical: 10, borderRadius: BorderRadius.lg, alignItems: 'center' },
-  segmentText: { fontSize: FontSizes.sm, fontWeight: FontWeights.bold },
+  segmentItem: { flex: 1, paddingVertical: 10, paddingHorizontal: 6, borderRadius: BorderRadius.lg, alignItems: 'center', justifyContent: 'center' },
+  segmentText: { fontSize: FontSizes.sm - 1, fontWeight: FontWeights.bold, textAlign: 'center' },
 
   progressBarBg: { width: '100%', height: 12, backgroundColor: '#e2e8f0', borderRadius: 6, overflow: 'hidden' },
   progressBarFill: { height: '100%', backgroundColor: '#6366f1', borderRadius: 6 },

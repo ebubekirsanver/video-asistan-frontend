@@ -5,6 +5,12 @@ const { spawn, spawnSync } = require('child_process');
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const multer = require('multer');
+const pdfParse = require('pdf-parse');
+
+const upload = multer({ 
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
 dotenv.config();
 
@@ -96,6 +102,9 @@ function splitText(text, size = 3000) {
 }
 
 function clampQuestionCount(value) {
+  if (value === 0) {
+    return 0;
+  }
   if (!Number.isFinite(value)) {
     return DEFAULT_QUESTION_COUNT;
   }
@@ -1023,11 +1032,13 @@ app.post('/api/analyze', async (req, res) => {
     }
 
     let questions = [];
-    try {
-      questions = await generateQuestionsFromTranscript(transcript, reqId, options);
-    } catch (error) {
-      log('analyze questions error', { reqId, message: String(error?.message || error) });
-      questions = [];
+    if (questionCount > 0) {
+      try {
+        questions = await generateQuestionsFromTranscript(transcript, reqId, options);
+      } catch (error) {
+        log('analyze questions error', { reqId, message: String(error?.message || error) });
+        questions = [];
+      }
     }
 
     transcriptCache.set(videoId, transcript);
@@ -1069,6 +1080,114 @@ app.post('/api/analyze', async (req, res) => {
     }
 
     log('analyze error', {
+      reqId,
+      message: String(error?.message || error),
+      ms: Date.now() - startedAt
+    });
+    return res.status(500).json({ detail: String(error?.message || error) });
+  }
+});
+
+app.post('/api/analyze-file', upload.single('file'), async (req, res) => {
+  const reqId = createRequestId();
+  const startedAt = Date.now();
+  try {
+    if (!FAL_KEY) {
+      log('analyze-file missing FAL key', { reqId });
+      return res.status(500).json({ detail: 'FAL key yok' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ detail: 'Lütfen bir dosya yükleyin' });
+    }
+
+    const originalName = req.file.originalname || 'Ders Dokümanı';
+    const userTitle = String(req.body?.user_title || '').trim() || originalName;
+    const summaryLength = req.body?.summary_length || '';
+    const questionDifficulty = req.body?.question_difficulty || 'orta';
+    const questionCount = clampQuestionCount(Number.parseInt(req.body?.question_count || '', 10));
+    const subjectType = req.body?.subject_type || 'sozel';
+    const fileId = "file_" + Date.now();
+
+    log('analyze-file start', {
+      reqId,
+      originalName,
+      userTitle,
+      summaryLength,
+      questionCount,
+      subjectType
+    });
+
+    let documentText = '';
+    const fileExtension = path.extname(originalName).toLowerCase();
+
+    if (fileExtension === '.pdf') {
+      const parsePDF = typeof pdfParse === 'function' ? pdfParse : (pdfParse.default || pdfParse);
+      const pdfData = await parsePDF(req.file.buffer);
+      documentText = pdfData.text || '';
+    } else {
+      // Default to reading as plain text
+      documentText = req.file.buffer.toString('utf8');
+    }
+
+    documentText = documentText.trim();
+    if (!documentText) {
+      return res.status(422).json({ detail: 'Dosya içeriği boş veya metin okunamadı' });
+    }
+
+    transcriptCache.set(fileId, documentText);
+    log('analyze-file extracted text ok', { reqId, length: documentText.length });
+
+    const options = {
+      summaryLength,
+      questionCount,
+      questionDifficulty,
+      subjectType
+    };
+
+    // Generate summary using the same LLM logic
+    const summaryData = await generateSummaryFromTranscript(documentText, reqId, options);
+
+    // Generate questions if requested
+    let questions = [];
+    if (questionCount > 0) {
+      try {
+        questions = await generateQuestionsFromTranscript(documentText, reqId, options);
+      } catch (error) {
+        log('analyze-file questions error', { reqId, message: String(error?.message || error) });
+        throw new Error(`Soru üretimi başarısız oldu: ${error?.message || error}`);
+      }
+    }
+
+    const analysisId = createRequestId();
+    const record = {
+      analysis_id: analysisId,
+      video_id: fileId,
+      video_url: '', // Local files don't have a YouTube URL
+      created_at: new Date().toISOString(),
+      user_title: userTitle,
+      title: summaryData.title || userTitle || 'Ders Özeti',
+      summary_sections: summaryData.summary_sections || [],
+      key_concepts: summaryData.key_concepts || [],
+      examples: summaryData.examples || [],
+      important_regions: summaryData.important_regions || [],
+      process_flow: summaryData.process_flow || [],
+      key_formulas: summaryData.key_formulas || [],
+      fun_facts: summaryData.fun_facts || [],
+      ozet: summaryData.ozet || '',
+      sorular: questions,
+      question_count: questionCount,
+      last_question_count: questions.length,
+      last_question_difficulty: questionDifficulty
+    };
+
+    addHistoryEntry(record);
+
+    log('analyze-file success', { reqId, fileId, analysisId, ms: Date.now() - startedAt });
+
+    return res.json({ status: 'success', source: 'file', analysis_id: analysisId, analiz: record });
+  } catch (error) {
+    log('analyze-file error', {
       reqId,
       message: String(error?.message || error),
       ms: Date.now() - startedAt
@@ -1194,8 +1313,10 @@ app.post('/api/chat', async (req, res) => {
       }
     }
 
+    const isLocalFile = String(record.video_id || '').startsWith('file_');
+
     if (!transcript) {
-      return res.status(422).json({ detail: 'Altyazi yok' });
+      return res.status(422).json({ detail: isLocalFile ? 'Doküman metni bulunamadı' : 'Altyazi yok' });
     }
 
     // If transcript is short enough, send it all; otherwise select best chunks
@@ -1210,10 +1331,11 @@ app.post('/api/chat', async (req, res) => {
 
     // Build summary + key concepts context from the analysis record
     let summaryContext = '';
+    const summaryLabel = isLocalFile ? 'DOKUMAN OZETI' : 'VIDEO OZETI';
     if (Array.isArray(record.summary_sections) && record.summary_sections.length > 0) {
-      summaryContext = '\n\n--- VIDEO OZETI ---\n' + record.summary_sections.map(s => `**${s.subtitle}**: ${s.content}`).join('\n\n');
+      summaryContext = `\n\n--- ${summaryLabel} ---\n` + record.summary_sections.map(s => `**${s.subtitle}**: ${s.content}`).join('\n\n');
     } else if (record.ozet) {
-      summaryContext = `\n\n--- VIDEO OZETI ---\n${record.ozet}`;
+      summaryContext = `\n\n--- ${summaryLabel} ---\n${record.ozet}`;
     }
 
     let conceptsContext = '';
@@ -1228,14 +1350,15 @@ app.post('/api/chat', async (req, res) => {
     }
     const chatHistory = chatHistories.get(chatKey);
 
-    const systemPrompt = `Sen her konuda bilgi sahibi, yardımsever ve uzman bir egitim asistanisin. Sana referans olması için bir video transkripti ve ozeti verilecek.
+    const sourceLabel = isLocalFile ? 'ders dokümanı metni' : 'video transkripti';
+    const systemPrompt = `Sen her konuda bilgi sahibi, yardımsever ve uzman bir egitim asistanisin. Sana referans olması için bir ${sourceLabel} ve ozeti verilecek.
 
 TEMEL GÖREVİN:
-Kullanıcının sorduğu HER soruya, video ile ilgili olsun veya olmasın, mutlaka en doğru ve detaylı cevabı vermektir.
+Kullanıcının sorduğu HER soruya, ders içeriği ile ilgili olsun veya olmasın, mutlaka en doğru ve detaylı cevabı vermektir.
 
 KURALLAR:
-1. Soru videodaki bir konuyla ilgiliyse, öncelikle transkriptteki bilgileri kullanarak cevap ver.
-2. Soru VİDEO HARİCİ bir konuyla ilgiliyse (tamamen bağımsız olsa bile), uzman eğitim bilginle eksiksiz cevap ver. Asla "videoda yok" veya "cevap veremem" deme.
+1. Soru ders içeriğiyle ilgiliyse, öncelikle dokümandaki veya videodaki bilgileri kullanarak cevap ver.
+2. Soru DERS HARİCİ bir konuyla ilgiliyse (tamamen bağımsız olsa bile), uzman eğitim bilginle eksiksiz cevap ver. Asla "dokümanda yok" veya "cevap veremem" deme.
 3. Kullanıcıya her zaman eğitici, nazik ve destekleyici bir dille yaklaş.
 4. Cevaplarını Türkçe, açık ve madde işaretleri (*) kullanarak formatla.
 5. Önceki sohbet geçmişini dikkate alarak akıcı bir diyalog sürdür.`;

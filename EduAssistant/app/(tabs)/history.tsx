@@ -281,8 +281,9 @@ export default function HistoryScreen() {
   };
 
   const renderItem = ({ item }: { item: HistoryItem }) => {
+    const isLocalFile = String(item.video_id || '').startsWith('file_');
     const vid = item.video_id || extractVid(item.video_url || '');
-    const thumb = vid ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : null;
+    const thumb = (!isLocalFile && vid) ? `https://img.youtube.com/vi/${vid}/mqdefault.jpg` : null;
     return (
       <TouchableOpacity 
         activeOpacity={0.7} 
@@ -290,7 +291,15 @@ export default function HistoryScreen() {
         onPress={() => setSelectedItem(item)}
       >
         <View style={styles.cardRow}>
-          {thumb ? <Image source={{ uri: thumb }} style={styles.thumb} /> : <View style={[styles.thumbPh, { backgroundColor: colors.surfaceElevated }]}><Ionicons name="play-circle" size={28} color={colors.textTertiary} /></View>}
+          {isLocalFile ? (
+            <View style={[styles.thumb, { backgroundColor: colors.primary + '15', justifyContent: 'center', alignItems: 'center', borderRadius: 8 }]}>
+              <Ionicons name="document-text" size={24} color={colors.primary} />
+            </View>
+          ) : thumb ? (
+            <Image source={{ uri: thumb }} style={styles.thumb} />
+          ) : (
+            <View style={[styles.thumbPh, { backgroundColor: colors.surfaceElevated }]}><Ionicons name="play-circle" size={28} color={colors.textTertiary} /></View>
+          )}
           <View style={{ flex: 1 }}>
             <Text style={[styles.cardTitleText, { color: colors.text }]} numberOfLines={2}>{item.title || 'Video Analizi'}</Text>
             {item.summary && <Text style={[styles.cardSub, { color: colors.textSecondary }]} numberOfLines={2}>{item.summary}</Text>}

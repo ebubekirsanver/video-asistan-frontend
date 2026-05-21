@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getToken } from './auth';
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
 const BASE_URL =
   Constants.expoConfig?.extra?.apiUrl || 'http://192.168.0.118:8010';
@@ -109,6 +110,40 @@ export const analyzeVideo = async (
     question_count: options?.questionCount,
     question_difficulty: options?.questionDifficulty,
     subject_type: options?.subjectType,
+  });
+  return response.data;
+};
+
+export const analyzeFile = async (
+  fileUri: string,
+  fileName: string,
+  mimeType: string,
+  options?: {
+    userTitle?: string;
+    summaryLength?: string;
+    questionCount?: number;
+    questionDifficulty?: string;
+    subjectType?: string;
+  }
+) => {
+  const formData = new FormData();
+  
+  formData.append('file', {
+    uri: Platform.OS === 'ios' ? fileUri.replace('file://', '') : fileUri,
+    name: fileName || 'document.pdf',
+    type: mimeType || 'application/pdf',
+  } as any);
+
+  if (options?.userTitle) formData.append('user_title', options.userTitle);
+  if (options?.summaryLength) formData.append('summary_length', options.summaryLength);
+  if (options?.questionCount !== undefined && options?.questionCount !== null) formData.append('question_count', String(options.questionCount));
+  if (options?.questionDifficulty) formData.append('question_difficulty', options.questionDifficulty);
+  if (options?.subjectType) formData.append('subject_type', options.subjectType);
+
+  const response = await api.post('/api/analyze-file', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
   });
   return response.data;
 };
