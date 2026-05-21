@@ -7,12 +7,25 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const multer = require('multer');
 const pdfParse = require('pdf-parse');
+const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
 
 const upload = multer({ 
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
 dotenv.config();
+
+const SUPABASE_URL = process.env.SUPABASE_URL || '';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY || '';
+
+let supabase = null;
+if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  console.log('[edua] Supabase client initialized successfully');
+} else {
+  console.log('[edua] Supabase credentials not found in env. Falling back to local memory storage.');
+}
 
 const FAL_KEY = process.env.FAL_KEY || '';
 const OPENROUTER_BASE_URL = process.env.OPENROUTER_BASE_URL || 'https://fal.run/openrouter/router/openai/v1';
@@ -109,6 +122,29 @@ function clampQuestionCount(value) {
     return DEFAULT_QUESTION_COUNT;
   }
   return Math.min(MAX_QUESTION_COUNT, Math.max(MIN_QUESTION_COUNT, value));
+}
+
+function getEmailFromRequest(req) {
+  const authHeader = req.headers?.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  const token = authHeader.substring(7); // Remove 'Bearer '
+  if (!token.startsWith('local_')) {
+    return null;
+  }
+  const parts = token.split('_');
+  if (parts.length < 4) {
+    return null;
+  }
+  const base64Part = parts[3];
+  // Base64 padding (Eksik dolgu karakterleri '=' için düzeltme)
+  const padded = base64Part + '='.repeat((4 - (base64Part.length % 4)) % 4);
+  try {
+    return Buffer.from(padded, 'base64').toString('utf-8').trim().toLowerCase();
+  } catch (e) {
+    return null;
+  }
 }
 
 function normalizeQuestionText(text) {
@@ -910,7 +946,14 @@ async function generateQuestionsFromTranscript(fullText, reqId, options) {
     response_format: { type: 'json_object' }
   }, 3, { reqId });
 
-  const data = JSON.parse(res.choices?.[0]?.message?.content || '{}');
+  let data;
+  const rawContent = res.choices?.[0]?.message?.content || '{}';
+  try {
+    data = JSON.parse(rawContent);
+  } catch (parseErr) {
+    log('questions json parse failed, attempting repair', { reqId, error: parseErr.message, rawLength: rawContent.length });
+    data = repairAndParseJSON(rawContent);
+  }
   const initialQuestions = dedupeQuestions(data.sorular || []);
   const finalQuestions = await enforceQuestionCount(initialQuestions, fullText, options, reqId);
 
@@ -932,7 +975,8 @@ function setCached(videoId, data) {
   cache.set(videoId, { data, createdAt: Date.now() });
 }
 
-function addHistoryEntry(entry) {
+async function addHistoryEntry(entry, userEmail) {
+  entry.user_email = userEmail || null;
   history.unshift(entry);
   if (entry?.analysis_id) {
     analysisIndex.set(entry.analysis_id, entry);
@@ -942,6 +986,42 @@ function addHistoryEntry(entry) {
     const removed = history.pop();
     if (removed?.analysis_id) {
       analysisIndex.delete(removed.analysis_id);
+    }
+  }
+
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('analyses')
+        .insert([{
+          analysis_id: entry.analysis_id,
+          video_id: entry.video_id,
+          video_url: entry.video_url || '',
+          created_at: entry.created_at || new Date().toISOString(),
+          user_title: entry.user_title || '',
+          title: entry.title || '',
+          summary_sections: entry.summary_sections || [],
+          key_concepts: entry.key_concepts || [],
+          examples: entry.examples || [],
+          important_regions: entry.important_regions || [],
+          process_flow: entry.process_flow || [],
+          key_formulas: entry.key_formulas || [],
+          fun_facts: entry.fun_facts || [],
+          ozet: entry.ozet || '',
+          sorular: entry.sorular || [],
+          question_count: entry.question_count || 0,
+          last_question_count: entry.last_question_count || 0,
+          last_question_difficulty: entry.last_question_difficulty || 'orta',
+          user_email: entry.user_email
+        }]);
+
+      if (error) {
+        log('Supabase insert error', { error: error.message });
+      } else {
+        log('Supabase insert success', { analysisId: entry.analysis_id });
+      }
+    } catch (err) {
+      log('Supabase sync catch error', { error: String(err) });
     }
   }
 }
@@ -987,6 +1067,8 @@ app.post('/api/analyze', async (req, res) => {
 
     const analysisId = createRequestId();
 
+    const userEmail = getEmailFromRequest(req);
+
     log('analyze start', {
       reqId,
       videoId,
@@ -995,8 +1077,73 @@ app.post('/api/analyze', async (req, res) => {
       summaryLength,
       questionCount,
       subjectType,
-      hasUserTitle: Boolean(userTitle)
+      hasUserTitle: Boolean(userTitle),
+      userEmail
     });
+
+    if (supabase) {
+      try {
+        // 1. Önce bu kullanıcının kendi geçmişinde bu analiz var mı diye bak
+        const { data: userEntries, error: userError } = await supabase
+          .from('analyses')
+          .select('*')
+          .eq('video_id', videoId)
+          .eq('question_count', questionCount)
+          .eq('user_email', userEmail || '')
+          .limit(1);
+
+        if (!userError && userEntries && userEntries.length > 0) {
+          const cachedRecord = userEntries[0];
+          log('Supabase user-specific cache hit', { reqId, videoId, analysisId: cachedRecord.analysis_id, userEmail });
+          
+          if (!analysisIndex.has(cachedRecord.analysis_id)) {
+            history.unshift(cachedRecord);
+            analysisIndex.set(cachedRecord.analysis_id, cachedRecord);
+          }
+
+          return res.json({
+            status: 'success',
+            source: 'supabase_cache',
+            analysis_id: cachedRecord.analysis_id,
+            analiz: cachedRecord
+          });
+        }
+
+        // 2. Eğer kullanıcının kendi geçmişinde yoksa, ORTAK HAVUZDA (başka birinde) var mı diye bak (Gemini maliyetini önlemek için)
+        const { data: globalEntries, error: globalError } = await supabase
+          .from('analyses')
+          .select('*')
+          .eq('video_id', videoId)
+          .eq('question_count', questionCount)
+          .limit(1);
+
+        if (!globalError && globalEntries && globalEntries.length > 0) {
+          const globalRecord = globalEntries[0];
+          log('Supabase global cache hit (cloning for user)', { reqId, videoId, sourceAnalysisId: globalRecord.analysis_id, userEmail });
+          
+          // Ortak kaydı bu kullanıcı için kopyala
+          const clonedRecord = {
+            ...globalRecord,
+            analysis_id: analysisId, // Yeni benzersiz analiz kimliği
+            user_title: userTitle || globalRecord.user_title,
+            created_at: new Date().toISOString(),
+            user_email: userEmail
+          };
+
+          // Supabase ve yerel geçmişe bu kullanıcı adına kaydet
+          await addHistoryEntry(clonedRecord, userEmail);
+
+          return res.json({
+            status: 'success',
+            source: 'supabase_cache_cloned',
+            analysis_id: clonedRecord.analysis_id,
+            analiz: clonedRecord
+          });
+        }
+      } catch (err) {
+        log('Supabase cache lookup error', { error: String(err) });
+      }
+    }
 
     let transcript = transcriptCache.get(videoId);
     const cached = getCached(videoId);
@@ -1064,7 +1211,7 @@ app.post('/api/analyze', async (req, res) => {
       last_question_difficulty: questionDifficulty
     };
 
-    addHistoryEntry(record);
+    await addHistoryEntry(record, userEmail);
 
     log('analyze success', { reqId, videoId, analysisId, ms: Date.now() - startedAt });
 
@@ -1107,7 +1254,6 @@ app.post('/api/analyze-file', upload.single('file'), async (req, res) => {
     const questionDifficulty = req.body?.question_difficulty || 'orta';
     const questionCount = clampQuestionCount(Number.parseInt(req.body?.question_count || '', 10));
     const subjectType = req.body?.subject_type || 'sozel';
-    const fileId = "file_" + Date.now();
 
     log('analyze-file start', {
       reqId,
@@ -1135,8 +1281,77 @@ app.post('/api/analyze-file', upload.single('file'), async (req, res) => {
       return res.status(422).json({ detail: 'Dosya içeriği boş veya metin okunamadı' });
     }
 
+    const fileHash = crypto.createHash('sha256').update(documentText).digest('hex');
+    const fileId = "file_" + fileHash.slice(0, 16);
+
     transcriptCache.set(fileId, documentText);
-    log('analyze-file extracted text ok', { reqId, length: documentText.length });
+    log('analyze-file extracted text ok', { reqId, fileId, length: documentText.length });
+
+    const userEmail = getEmailFromRequest(req);
+
+    if (supabase) {
+      try {
+        // 1. Önce bu kullanıcının kendi geçmişinde bu dosya analizi var mı diye bak
+        const { data: userEntries, error: userError } = await supabase
+          .from('analyses')
+          .select('*')
+          .eq('video_id', fileId)
+          .eq('question_count', questionCount)
+          .eq('user_email', userEmail || '')
+          .limit(1);
+
+        if (!userError && userEntries && userEntries.length > 0) {
+          const cachedRecord = userEntries[0];
+          log('Supabase user-specific file cache hit', { reqId, fileId, analysisId: cachedRecord.analysis_id, userEmail });
+          
+          if (!analysisIndex.has(cachedRecord.analysis_id)) {
+            history.unshift(cachedRecord);
+            analysisIndex.set(cachedRecord.analysis_id, cachedRecord);
+          }
+
+          return res.json({
+            status: 'success',
+            source: 'supabase_cache',
+            analysis_id: cachedRecord.analysis_id,
+            analiz: cachedRecord
+          });
+        }
+
+        // 2. Eğer kullanıcının kendi geçmişinde yoksa, ORTAK HAVUZDA var mı diye bak (maliyet tasarrufu)
+        const { data: globalEntries, error: globalError } = await supabase
+          .from('analyses')
+          .select('*')
+          .eq('video_id', fileId)
+          .eq('question_count', questionCount)
+          .limit(1);
+
+        if (!globalError && globalEntries && globalEntries.length > 0) {
+          const globalRecord = globalEntries[0];
+          log('Supabase global file cache hit (cloning for user)', { reqId, fileId, sourceAnalysisId: globalRecord.analysis_id, userEmail });
+          
+          // Ortak kaydı bu kullanıcı için kopyala
+          const clonedRecord = {
+            ...globalRecord,
+            analysis_id: "file_an_" + createRequestId(), // Yeni benzersiz analiz kimliği
+            user_title: userTitle || globalRecord.user_title,
+            created_at: new Date().toISOString(),
+            user_email: userEmail
+          };
+
+          // Supabase ve yerel geçmişe kaydet
+          await addHistoryEntry(clonedRecord, userEmail);
+
+          return res.json({
+            status: 'success',
+            source: 'supabase_cache_cloned',
+            analysis_id: clonedRecord.analysis_id,
+            analiz: clonedRecord
+          });
+        }
+      } catch (err) {
+        log('Supabase file cache lookup error', { error: String(err) });
+      }
+    }
 
     const options = {
       summaryLength,
@@ -1181,7 +1396,7 @@ app.post('/api/analyze-file', upload.single('file'), async (req, res) => {
       last_question_difficulty: questionDifficulty
     };
 
-    addHistoryEntry(record);
+    await addHistoryEntry(record, userEmail);
 
     log('analyze-file success', { reqId, fileId, analysisId, ms: Date.now() - startedAt });
 
@@ -1425,24 +1640,55 @@ Uzman egitim bilginle bu soruyu detayli bir sekilde cevapla.`;
   }
 });
 
-app.get('/api/history', (req, res) => {
-  log('history fetch', { count: history.length });
-  res.json(history);
+app.get('/api/history', async (req, res) => {
+  const userEmail = getEmailFromRequest(req);
+  
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('analyses')
+        .select('*')
+        .eq('user_email', userEmail || '')
+        .order('created_at', { ascending: false })
+        .limit(HISTORY_LIMIT);
+
+      if (!error && data) {
+        log('history fetch from Supabase user-specific', { count: data.length, userEmail });
+        for (const item of data) {
+          if (!analysisIndex.has(item.analysis_id)) {
+            analysisIndex.set(item.analysis_id, item);
+          }
+        }
+        return res.json(data);
+      }
+      log('Supabase history fetch error, falling back to local memory', { error: error?.message });
+    } catch (err) {
+      log('Supabase history fetch catch error', { error: String(err) });
+    }
+  }
+  
+  const userHistory = history.filter(h => h.user_email === userEmail);
+  log('history fetch from local memory user-specific', { count: userHistory.length, userEmail });
+  res.json(userHistory);
 });
 
 app.post('/api/recommendations', async (req, res) => {
   const reqId = createRequestId();
+  const userEmail = getEmailFromRequest(req);
+  
   try {
     if (!FAL_KEY) {
       return res.status(500).json({ detail: 'FAL key yok' });
     }
 
-    if (history.length === 0) {
+    const userHistory = history.filter(h => h.user_email === userEmail);
+
+    if (userHistory.length === 0) {
       return res.json({ interests: [], recommendations: [] });
     }
 
     // Build a summary of user's past topics
-    const topicSummary = history.slice(0, 10).map(h => {
+    const topicSummary = userHistory.slice(0, 10).map(h => {
       const title = h.user_title || h.title || '';
       const concepts = Array.isArray(h.key_concepts) ? h.key_concepts.map(c => c.term).join(', ') : '';
       return `- ${title}${concepts ? ' (' + concepts + ')' : ''}`;

@@ -54,10 +54,47 @@ function fmtDate(d?: string): string {
 }
 
 // Reusable Quiz Card (Pre-filled for History)
-const QuizCard = ({ q, index, colors }: { q: Question; index: number; colors: any }) => {
+const QuizCard = ({ q, index, colors, videoUrl }: { q: Question; index: number; colors: any; videoUrl?: string }) => {
   // In history view, we want the answers to be pre-revealed
   const [selectedOpt, setSelectedOpt] = useState<string | null>(q.dogru_cevap);
   const options = q.secenekler ? Object.entries(q.secenekler) : [];
+
+  const handleTimePress = async () => {
+    if (!q.zaman_referansi || !videoUrl) return;
+    
+    let totalSeconds = 0;
+    const parts = q.zaman_referansi.split(':').map(Number);
+    if (parts.some(isNaN)) return;
+    
+    if (parts.length === 2) {
+      totalSeconds = parts[0] * 60 + parts[1];
+    } else if (parts.length === 3) {
+      totalSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
+    } else {
+      return;
+    }
+    
+    const videoIdMatch = videoUrl.match(/(?:v=|\/|embed\/|youtu\.be\/)([0-9A-Za-z_-]{11})/);
+    if (!videoIdMatch) return;
+    const videoId = videoIdMatch[1];
+    
+    const appUrl = Platform.OS === 'ios' 
+      ? `youtube://www.youtube.com/watch?v=${videoId}&t=${totalSeconds}`
+      : `vnd.youtube:${videoId}?t=${totalSeconds}`;
+      
+    const webUrl = `https://youtu.be/${videoId}?t=${totalSeconds}`;
+
+    try {
+      const supported = await Linking.canOpenURL(appUrl);
+      if (supported) {
+        await Linking.openURL(appUrl);
+      } else {
+        await Linking.openURL(webUrl);
+      }
+    } catch (err) {
+      Linking.openURL(webUrl);
+    }
+  };
 
   return (
     <View style={[styles.quizCard, { backgroundColor: colors.background, borderColor: colors.border }]}>
@@ -68,10 +105,10 @@ const QuizCard = ({ q, index, colors }: { q: Question; index: number; colors: an
       </View>
       
       {q.zaman_referansi && (
-        <View style={styles.timeTag}>
-          <Ionicons name="time-outline" size={12} color="#6366f1" />
-          <Text style={{ fontSize: 10, color: '#6366f1', fontWeight: 'bold' }}>{q.zaman_referansi}</Text>
-        </View>
+        <TouchableOpacity onPress={handleTimePress} activeOpacity={0.6} style={styles.timeTag}>
+          <Ionicons name="play-circle" size={14} color="#6366f1" />
+          <Text style={{ fontSize: 11, color: '#6366f1', fontWeight: 'bold' }}>{q.zaman_referansi}</Text>
+        </TouchableOpacity>
       )}
 
       <View style={{ marginTop: Spacing.sm, gap: Spacing.xs }}>
@@ -228,6 +265,18 @@ export default function HistoryScreen() {
                 `).join('') 
                 : `<div class="section"><p class="content-text">${selectedItem.ozet || selectedItem.summary || ''}</p></div>`
               }
+
+              ${selectedItem.fun_facts && selectedItem.fun_facts.length > 0 ? `
+                <div class="section" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin-top: 20px; page-break-inside: avoid;">
+                  <div class="subtitle" style="color: #10b981; margin-bottom: 12px;">🌟 Biliyor muydunuz?</div>
+                  ${selectedItem.fun_facts.map(fact => `
+                    <div style="font-size: 14px; color: #1e293b; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px;">
+                      <span style="color: #10b981;">★</span>
+                      <span>${fact}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
               
               ${(selectedItem.key_concepts || selectedItem.important_regions) ? `
                 <div class="infographic-grid">
@@ -435,6 +484,22 @@ export default function HistoryScreen() {
                   )}
                 </View>
 
+                {/* Fun Facts (Biliyor Muydunuz?) Card */}
+                {selectedItem.fun_facts && selectedItem.fun_facts.length > 0 && (
+                  <View style={[styles.detailCard, { backgroundColor: isDark ? 'rgba(16, 185, 129, 0.05)' : '#f0fdf4', borderColor: isDark ? 'rgba(16, 185, 129, 0.2)' : '#bbf7d0', borderWidth: 1, marginTop: Spacing.sm }]}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md, gap: Spacing.sm }}>
+                      <Ionicons name="sparkles" size={24} color="#10b981" />
+                      <Text style={[styles.sectionTitle, { color: '#10b981' }]}>Biliyor muydunuz?</Text>
+                    </View>
+                    {selectedItem.fun_facts.map((fact, i) => (
+                      <View key={i} style={{ flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.sm, alignItems: 'flex-start' }}>
+                        <Ionicons name="star" size={14} color="#10b981" style={{ marginTop: 2 }} />
+                        <Text style={{ color: colors.text, fontSize: FontSizes.sm, flex: 1, lineHeight: 22 }}>{fact}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+
                 {/* Key Concepts & Important Regions (Infographics) */}
                 {(selectedItem.key_concepts || selectedItem.important_regions) && (
                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm }}>
@@ -474,7 +539,7 @@ export default function HistoryScreen() {
                       Videodan üretilen soruları yanıtlayarak öğrendiklerinizi test edin.
                     </Text>
                     {selectedItem.sorular.map((q, index) => (
-                      <QuizCard key={index} q={q} index={index} colors={colors} />
+                      <QuizCard key={index} q={q} index={index} colors={colors} videoUrl={selectedItem.video_url} />
                     ))}
                   </View>
                 )}

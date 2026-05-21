@@ -145,19 +145,45 @@ const QuizCard = ({ q, index, colors, videoUrl }: { q: Question; index: number; 
   // Parse secenekler which might be missing or malformed
   const options = q.secenekler ? Object.entries(q.secenekler) : [];
 
-  const handleTimePress = () => {
+  const handleTimePress = async () => {
     if (!q.zaman_referansi || !videoUrl) return;
-    // Parse MM:SS format
-    const timeParts = q.zaman_referansi.match(/(\d+):(\d+)/);
-    if (!timeParts) return;
-    const minutes = parseInt(timeParts[1], 10);
-    const seconds = parseInt(timeParts[2], 10);
-    const totalSeconds = minutes * 60 + seconds;
-    // Extract video ID and open YouTube at specific time
+    
+    // Parse MM:SS or HH:MM:SS formats
+    let totalSeconds = 0;
+    const parts = q.zaman_referansi.split(':').map(Number);
+    if (parts.some(isNaN)) return;
+    
+    if (parts.length === 2) {
+      // MM:SS
+      totalSeconds = parts[0] * 60 + parts[1];
+    } else if (parts.length === 3) {
+      // HH:MM:SS
+      totalSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
+    } else {
+      return;
+    }
+    
+    // Extract video ID
     const videoIdMatch = videoUrl.match(/(?:v=|\/|embed\/|youtu\.be\/)([0-9A-Za-z_-]{11})/);
-    if (videoIdMatch) {
-      const ytUrl = `https://www.youtube.com/watch?v=${videoIdMatch[1]}&t=${totalSeconds}s`;
-      Linking.openURL(ytUrl);
+    if (!videoIdMatch) return;
+    const videoId = videoIdMatch[1];
+    
+    // Mobile-friendly deep link options
+    const appUrl = Platform.OS === 'ios' 
+      ? `youtube://www.youtube.com/watch?v=${videoId}&t=${totalSeconds}`
+      : `vnd.youtube:${videoId}?t=${totalSeconds}`;
+      
+    const webUrl = `https://youtu.be/${videoId}?t=${totalSeconds}`;
+
+    try {
+      const supported = await Linking.canOpenURL(appUrl);
+      if (supported) {
+        await Linking.openURL(appUrl);
+      } else {
+        await Linking.openURL(webUrl);
+      }
+    } catch (err) {
+      Linking.openURL(webUrl);
     }
   };
 
@@ -617,16 +643,7 @@ export default function HomeScreen() {
               </View>
             )}
 
-            <View style={[styles.inputWrapper, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder, marginTop: Spacing.md }]}>
-              <Ionicons name="text" size={20} color={colors.textTertiary} style={styles.inputIcon} />
-              <TextInput
-                style={[styles.input, { color: colors.inputText }]}
-                placeholder={analysisSource === 'file' ? "Doküman Başlığı (Opsiyonel)" : "Özet Başlığı (Opsiyonel)"}
-                placeholderTextColor={colors.inputPlaceholder}
-                value={userTitle}
-                onChangeText={setUserTitle}
-              />
-            </View>
+
 
             <View style={{ marginTop: Spacing.lg, gap: Spacing.md }}>
               <SegmentedControl label="Ders Türü" colors={colors} options={[{ label: 'Sözel', value: 'sozel' }, { label: 'Sayısal', value: 'sayisal' }]} selectedValue={subjectType} onSelect={setSubjectType} />
@@ -707,6 +724,22 @@ export default function HomeScreen() {
                 <Text style={{ color: colors.text, fontSize: FontSizes.sm, lineHeight: 22 }}>{videoInfo.analiz.ozet}</Text>
               )}
             </View>
+
+            {/* Fun Facts (Biliyor Muydunuz?) Card */}
+            {videoInfo.analiz.fun_facts && videoInfo.analiz.fun_facts.length > 0 && (
+              <View style={[styles.card, { backgroundColor: isDark ? 'rgba(16, 185, 129, 0.05)' : '#f0fdf4', borderColor: isDark ? 'rgba(16, 185, 129, 0.2)' : '#bbf7d0', borderWidth: 1 }]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: Spacing.md, gap: Spacing.sm }}>
+                  <Ionicons name="sparkles" size={24} color="#10b981" />
+                  <Text style={[styles.sectionTitle, { color: '#10b981' }]}>Biliyor muydunuz?</Text>
+                </View>
+                {videoInfo.analiz.fun_facts.map((fact, i) => (
+                  <View key={i} style={{ flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.sm, alignItems: 'flex-start' }}>
+                    <Ionicons name="star" size={14} color="#10b981" style={{ marginTop: 2 }} />
+                    <Text style={{ color: colors.text, fontSize: FontSizes.sm, flex: 1, lineHeight: 22 }}>{fact}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
 
             {/* Key Concepts & Important Regions (Infographics) */}
             {(videoInfo.analiz.key_concepts || videoInfo.analiz.important_regions) && (

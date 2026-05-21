@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Switch, Modal, TextInput, Platform } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Linking from 'expo-linking';
+import { useFocusEffect } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useThemeColors } from '../../hooks/useThemeColors';
 import { getHistory } from '../../services/api';
@@ -44,16 +45,18 @@ export default function ProfileScreen() {
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await getHistory();
-        const items = Array.isArray(data) ? data : data?.history || [];
-        const sinavCount = items.filter((h: any) => h.sorular && h.sorular.length > 0).length;
-        setStats({ analiz: items.length, sinav: sinavCount });
-      } catch { /* ignore */ }
-    })();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        try {
+          const data = await getHistory();
+          const items = Array.isArray(data) ? data : data?.history || [];
+          const sinavCount = items.filter((h: any) => h.sorular && h.sorular.length > 0).length;
+          setStats({ analiz: items.length, sinav: sinavCount });
+        } catch { /* ignore */ }
+      })();
+    }, [])
+  );
 
   const handleLogout = () => {
     Alert.alert('Çıkış Yap', 'Oturumunuzu kapatmak istediğinize emin misiniz?', [
