@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import * as Linking from 'expo-linking';
 import {
   View,
   Text,
@@ -15,7 +16,7 @@ import {
   Animated,
   Easing,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { GradientHeader } from '../../components/GradientHeader';
@@ -23,7 +24,7 @@ import { GradientButton } from '../../components/GradientButton';
 import { ChatBubble } from '../../components/ChatBubble';
 import { ChatSkeleton } from '../../components/Skeleton';
 import { useThemeColors } from '../../hooks/useThemeColors';
-import { analyzeVideo as apiAnalyzeVideo, chatWithVideo } from '../../services/api';
+import { analyzeVideo as apiAnalyzeVideo, chatWithVideo, generateQuestions as apiGenerateQuestions } from '../../services/api';
 import {
   Spacing,
   FontSizes,
@@ -132,11 +133,27 @@ const SegmentedControl = ({
 };
 
 // Quiz Card Component
-const QuizCard = ({ q, index, colors }: { q: Question; index: number; colors: any }) => {
+const QuizCard = ({ q, index, colors, videoUrl }: { q: Question; index: number; colors: any; videoUrl?: string }) => {
   const [selectedOpt, setSelectedOpt] = useState<string | null>(null);
 
   // Parse secenekler which might be missing or malformed
   const options = q.secenekler ? Object.entries(q.secenekler) : [];
+
+  const handleTimePress = () => {
+    if (!q.zaman_referansi || !videoUrl) return;
+    // Parse MM:SS format
+    const timeParts = q.zaman_referansi.match(/(\d+):(\d+)/);
+    if (!timeParts) return;
+    const minutes = parseInt(timeParts[1], 10);
+    const seconds = parseInt(timeParts[2], 10);
+    const totalSeconds = minutes * 60 + seconds;
+    // Extract video ID and open YouTube at specific time
+    const videoIdMatch = videoUrl.match(/(?:v=|\/|embed\/|youtu\.be\/)([0-9A-Za-z_-]{11})/);
+    if (videoIdMatch) {
+      const ytUrl = `https://www.youtube.com/watch?v=${videoIdMatch[1]}&t=${totalSeconds}s`;
+      Linking.openURL(ytUrl);
+    }
+  };
 
   return (
     <View style={[styles.quizCard, { backgroundColor: colors.background, borderColor: colors.border }]}>
@@ -147,10 +164,11 @@ const QuizCard = ({ q, index, colors }: { q: Question; index: number; colors: an
       </View>
       
       {q.zaman_referansi && (
-        <View style={styles.timeTag}>
-          <Ionicons name="time-outline" size={12} color="#6366f1" />
-          <Text style={{ fontSize: 10, color: '#6366f1', fontWeight: 'bold' }}>{q.zaman_referansi}</Text>
-        </View>
+        <TouchableOpacity onPress={handleTimePress} activeOpacity={0.6} style={styles.timeTag}>
+          <Ionicons name="play-circle" size={14} color="#6366f1" />
+          <Text style={{ fontSize: 11, color: '#6366f1', fontWeight: 'bold' }}>{q.zaman_referansi}</Text>
+          <Ionicons name="open-outline" size={10} color="#6366f1" style={{ marginLeft: 2 }} />
+        </TouchableOpacity>
       )}
 
       <View style={{ marginTop: Spacing.sm, gap: Spacing.xs }}>
@@ -199,6 +217,12 @@ const QuizCard = ({ q, index, colors }: { q: Question; index: number; colors: an
             </Text>
           </View>
           {q.aciklama && <Text style={{ color: colors.text, fontSize: FontSizes.sm, lineHeight: 20 }}>{q.aciklama}</Text>}
+          {selectedOpt !== q.dogru_cevap && q.zaman_referansi && videoUrl && (
+            <TouchableOpacity onPress={handleTimePress} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8, backgroundColor: 'rgba(99, 102, 241, 0.1)', alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}>
+              <Ionicons name="play-circle" size={16} color="#6366f1" />
+              <Text style={{ fontSize: FontSizes.xs, color: '#6366f1', fontWeight: 'bold' }}>Konuyu Tekrar Dinle ({q.zaman_referansi})</Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
     </View>
@@ -207,6 +231,7 @@ const QuizCard = ({ q, index, colors }: { q: Question; index: number; colors: an
 
 export default function HomeScreen() {
   const { colors, isDark } = useThemeColors();
+  const insets = useSafeAreaInsets();
   const chatScrollViewRef = useRef<ScrollView>(null);
 
   // Analysis Inputs
@@ -243,6 +268,13 @@ export default function HomeScreen() {
       chatScrollViewRef.current?.scrollToEnd({ animated: true });
     }, 100);
   }, []);
+
+  const resetAnalysis = () => {
+    setVideoInfo(null);
+    setVideoUrl('');
+    setUserTitle('');
+    setIsVideoLocked(false);
+  };
 
   const analyzeVideo = async () => {
     const trimmedUrl = videoUrl.trim();
@@ -394,6 +426,37 @@ export default function HomeScreen() {
     setIsVideoLocked(false);
     setIsAnalyzing(false);
     setIsStreaming(false);
+    setIsGeneratingQuestions(false);
+  };
+
+  const handleGenerateQuestions = async () => {
+    if (!videoInfo || !videoInfo.analysisId) {
+      Alert.alert('Hata', 'Analiz ID bulunamadı.');
+      return;
+    }
+    setIsGeneratingQuestions(true);
+    try {
+      const res = await apiGenerateQuestions(videoInfo.analysisId, videoInfo.url, {
+        questionCount,
+        questionDifficulty,
+      });
+      if (res && res.sorular) {
+        setVideoInfo(prev => prev ? {
+          ...prev,
+          analiz: prev.analiz ? {
+            ...prev.analiz,
+            sorular: res.sorular
+          } : undefined
+        } : null);
+        Alert.alert('Başarılı', 'Sorular başarıyla üretildi!');
+      } else {
+        throw new Error('Sorular alınamadı.');
+      }
+    } catch (err: any) {
+      Alert.alert('Hata', err.message || 'Soru üretilirken bir hata oluştu.');
+    } finally {
+      setIsGeneratingQuestions(false);
+    }
   };
 
   const progressWidth = progressAnim.interpolate({
@@ -554,10 +617,19 @@ export default function HomeScreen() {
                   Videodan üretilen soruları yanıtlayarak öğrendiklerinizi test edin.
                 </Text>
                 {videoInfo.analiz.sorular.map((q, index) => (
-                  <QuizCard key={index} q={q} index={index} colors={colors} />
+                  <QuizCard key={index} q={q} index={index} colors={colors} videoUrl={videoInfo.url} />
                 ))}
               </View>
             )}
+
+            {/* New Analysis Button */}
+            <GradientButton 
+              title="YENİ ANALİZ OLUŞTUR" 
+              onPress={resetAnalysis} 
+              size="lg"
+              style={{ marginTop: Spacing.md, width: '100%' }}
+              icon={<Ionicons name="add-circle" size={20} color="white" />}
+            />
 
             <View style={{ height: Spacing.xxxl }} />
           </View>
@@ -586,7 +658,14 @@ export default function HomeScreen() {
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
           >
             
-            <View style={[styles.modalHeader, { borderBottomColor: colors.border, backgroundColor: colors.surface }]}>
+            <View style={[
+              styles.modalHeader, 
+              { 
+                borderBottomColor: colors.border, 
+                backgroundColor: colors.surface,
+                paddingTop: Platform.OS === 'ios' ? (insets.top || Spacing.md) : Spacing.md
+              }
+            ]}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
                 <Ionicons name="chatbubbles" size={24} color={colors.primary} />
                 <Text style={[styles.modalTitle, { color: colors.text }]}>Asistan</Text>

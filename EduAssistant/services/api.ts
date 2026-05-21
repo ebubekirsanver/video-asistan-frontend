@@ -180,4 +180,39 @@ export const deleteNote = async (noteId: string): Promise<void> => {
   await AsyncStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(filtered));
 };
 
+// --- Recommendations ---
+
+export const getRecommendations = async () => {
+  const response = await api.post('/api/recommendations', {});
+  return response.data;
+};
+
+// --- Feedback ---
+
+export const sendFeedback = async (title: string, action: 'like' | 'dislike' | 'remove') => {
+  const response = await api.post('/api/feedback', { title, action });
+  return response.data;
+};
+
+// --- Generate Questions ---
+
+export const generateQuestions = async (
+  analysisId: string,
+  youtubeUrl: string,
+  options?: {
+    questionCount?: number;
+    questionDifficulty?: string;
+  }
+) => {
+  const response = await api.post('/api/questions', {
+    analysis_id: analysisId,
+    youtube_url: youtubeUrl,
+    question_count: options?.questionCount,
+    question_difficulty: options?.questionDifficulty,
+  });
+  return response.data;
+};
+
 export { BASE_URL };
+
+

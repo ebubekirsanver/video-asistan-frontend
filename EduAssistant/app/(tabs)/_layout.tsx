@@ -65,10 +65,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="notes"
         options={{
-          title: 'Notlar',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="document-text-outline" size={size} color={color} />
-          ),
+          href: null,
         }}
       />
       <Tabs.Screen

@@ -141,12 +141,12 @@ function dedupeQuestions(questions) {
 
 function getSummaryGuidance(summaryLength) {
   if (summaryLength === 'kisa') {
-    return 'Ozet kisa olsun, her bolum 2-4 cumle.';
+    return 'Ozet kisa olsun, her bolum 2-4 cumle. Toplam 3-4 bolum yeterli.';
   }
   if (summaryLength === 'detayli') {
-    return 'Ozet detayli olsun, her bolum 6-9 cumle.';
+    return 'Ozet COK DETAYLI ve KAPSAMLI olsun. Her bolum 10-15 cumle icersin. Hicbir onemli bilgi atlanmasin. Toplam en az 5 bolum olmali. Konunun tum alt basliklarini, aciklamalarini, orneklerini ve detaylarini eksiksiz yaz. Ogrenci sadece bu ozeti okuyarak konuyu tamamen anlayabilmeli.';
   }
-  return 'Ozet orta uzunlukta olsun, her bolum 4-6 cumle.';
+  return 'Ozet orta uzunlukta olsun, her bolum 5-8 cumle. Toplam en az 4 bolum olmali.';
 }
 
 function getDifficultyGuidance(questionDifficulty) {
@@ -320,7 +320,8 @@ SADECE GECERLI JSON DON:
 
 Aciklama ekleme.
 Kurallar:
-- "summary_sections" en az 3 bolum icersin.
+- SADECE DERSLE/KONUYLA ILGILI BILGILERI ozete dahil et. Reklam, sponsor, kanal tanitimi, abone ol cagrilari, kisisel yorumlar, giris/kapanıs selamlari gibi dersle ilgisi olmayan kisimlari kesinlikle ozete DAHIL ETME.
+- "summary_sections" en az 3 bolum icersin (detayli modda en az 5 bolum).
 - "key_concepts" en az 5 kavram icersin.
 - "examples" metinden cikarilan en az 2 somut ornek icersin (yoksa bos liste donebilirsin).
 - "important_regions" metindeki vurgulanan, kritik veya onemli kisimlar. En az 2, en fazla 5 adet olsun.
@@ -847,7 +848,7 @@ async function generateSummaryFromTranscript(fullText, reqId, options) {
     messages: [{ role: 'user', content: prompt }],
     model: OPENROUTER_MODEL,
     temperature: 0.3,
-    max_tokens: 8192,
+    max_tokens: options.summaryLength === 'detayli' ? 16384 : 8192,
     response_format: { type: 'json_object' }
   }, 3, { reqId });
 
@@ -935,6 +936,19 @@ function addHistoryEntry(entry) {
     }
   }
 }
+
+function findAnalysisRecord(analysisId, videoId) {
+  if (analysisId) {
+    const record = analysisIndex.get(analysisId);
+    if (record) return record;
+  }
+  if (videoId) {
+    const record = history.find(h => h.video_id === videoId);
+    if (record) return record;
+  }
+  return null;
+}
+
 
 const app = express();
 app.use(cors({ origin: '*' }));

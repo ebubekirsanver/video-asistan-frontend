@@ -3,14 +3,15 @@ import {
   View, Text, FlatList, TouchableOpacity, RefreshControl,
   StyleSheet, ActivityIndicator, Image, Modal, ScrollView, Platform, Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { useThemeColors } from '../../hooks/useThemeColors';
-import { getHistory } from '../../services/api';
+import { getHistory, getRecommendations, sendFeedback } from '../../services/api';
+import { Linking } from 'react-native';
 import { GradientButton } from '../../components/GradientButton';
 import { Spacing, FontSizes, FontWeights, BorderRadius, Shadows, Gradients } from '../../constants/theme';
 
@@ -125,19 +126,54 @@ const QuizCard = ({ q, index, colors }: { q: Question; index: number; colors: an
   );
 };
 
+interface Recommendation {
+  title: string;
+  reason: string;
+  search_url: string;
+  feedback?: 'like' | 'dislike' | null;
+}
+
 export default function HistoryScreen() {
   const { colors, isDark } = useThemeColors();
+  const insets = useSafeAreaInsets();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [recsLoading, setRecsLoading] = useState(false);
+  const [interests, setInterests] = useState<string[]>([]);
+
 
   const fetchData = async (refresh = false) => {
     refresh ? setRefreshing(true) : setLoading(true);
     try {
       const data = await getHistory();
-      setHistory(Array.isArray(data) ? data : data?.history || []);
+      const items = Array.isArray(data) ? data : data?.history || [];
+      setHistory(items);
+      if (items.length > 0) fetchRecommendations();
     } catch { /* ignore */ } finally { setLoading(false); setRefreshing(false); }
+  };
+
+  const fetchRecommendations = async () => {
+    setRecsLoading(true);
+    try {
+      const data = await getRecommendations();
+      setInterests(data.interests || []);
+      setRecommendations((data.recommendations || []).map((r: any) => ({ ...r, feedback: null })));
+    } catch { /* ignore */ } finally { setRecsLoading(false); }
+  };
+
+  const handleFeedback = async (index: number, action: 'like' | 'dislike') => {
+    const rec = recommendations[index];
+    if (!rec) return;
+    const newFeedback = rec.feedback === action ? null : action;
+    const updated = [...recommendations];
+    updated[index] = { ...rec, feedback: newFeedback };
+    setRecommendations(updated);
+    try {
+      await sendFeedback(rec.title, newFeedback || 'remove');
+    } catch { /* ignore */ }
   };
 
   useFocusEffect(useCallback(() => { fetchData(); }, []));
@@ -278,6 +314,55 @@ export default function HistoryScreen() {
           data={history} 
           keyExtractor={(item, i) => item.id?.toString() || i.toString()} 
           renderItem={renderItem}
+          ListHeaderComponent={history.length > 0 ? (
+            <View style={[styles.recsCard, { backgroundColor: colors.surface, borderColor: colors.border, ...(!isDark ? Shadows.sm : {}) }]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, marginBottom: Spacing.md }}>
+                <LinearGradient colors={Gradients.primary as unknown as [string, string, ...string[]]} style={{ width: 36, height: 36, borderRadius: 12, justifyContent: 'center', alignItems: 'center' }}>
+                  <Ionicons name="sparkles" size={18} color="white" />
+                </LinearGradient>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.sectionTitle, { color: colors.text, fontSize: FontSizes.md }]}>Size Özel Tavsiyeler</Text>
+                  <Text style={{ color: colors.textTertiary, fontSize: FontSizes.xs }}>Geçmişinize göre öneriler</Text>
+                </View>
+                <TouchableOpacity onPress={fetchRecommendations} style={{ padding: Spacing.xs }}>
+                  <Ionicons name="refresh" size={20} color={colors.primary} />
+                </TouchableOpacity>
+              </View>
+              {interests.length > 0 && (
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: Spacing.md }}>
+                  {interests.map((interest, i) => (
+                    <View key={i} style={{ backgroundColor: colors.primary + '15', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 }}>
+                      <Text style={{ fontSize: FontSizes.xs, color: colors.primary, fontWeight: '600' }}>{interest}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+              {recsLoading ? (
+                <ActivityIndicator size="small" color={colors.primary} style={{ paddingVertical: Spacing.lg }} />
+              ) : recommendations.length > 0 ? (
+                <View style={{ gap: Spacing.sm }}>
+                  {recommendations.map((rec, i) => (
+                    <View key={i} style={[styles.recItem, { backgroundColor: colors.inputBackground, borderColor: colors.inputBorder }]}>
+                      <TouchableOpacity style={{ flex: 1 }} onPress={() => Linking.openURL(rec.search_url)} activeOpacity={0.7}>
+                        <Text style={{ color: colors.text, fontSize: FontSizes.sm, fontWeight: '600', marginBottom: 2 }} numberOfLines={2}>{rec.title}</Text>
+                        <Text style={{ color: colors.textSecondary, fontSize: FontSizes.xs }} numberOfLines={2}>{rec.reason}</Text>
+                      </TouchableOpacity>
+                      <View style={{ flexDirection: 'row', gap: 4, marginLeft: 8 }}>
+                        <TouchableOpacity onPress={() => handleFeedback(i, 'like')} style={[styles.feedbackBtn, rec.feedback === 'like' && { backgroundColor: '#10b98120' }]}>
+                          <Ionicons name={rec.feedback === 'like' ? 'thumbs-up' : 'thumbs-up-outline'} size={16} color={rec.feedback === 'like' ? '#10b981' : colors.textTertiary} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleFeedback(i, 'dislike')} style={[styles.feedbackBtn, rec.feedback === 'dislike' && { backgroundColor: '#ef444420' }]}>
+                          <Ionicons name={rec.feedback === 'dislike' ? 'thumbs-down' : 'thumbs-down-outline'} size={16} color={rec.feedback === 'dislike' ? '#ef4444' : colors.textTertiary} />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              ) : (
+                <Text style={{ color: colors.textTertiary, fontSize: FontSizes.sm, textAlign: 'center', paddingVertical: Spacing.md }}>Tavsiye oluşturulamadı</Text>
+              )}
+            </View>
+          ) : null}
           ListEmptyComponent={<View style={styles.empty}><Ionicons name="time-outline" size={48} color={colors.textTertiary} /><Text style={[styles.emptyTitle, { color: colors.text }]}>Henüz geçmiş yok</Text><Text style={[styles.emptySub, { color: colors.textSecondary }]}>Video analiz ettiğinizde burada görünecek</Text></View>}
           contentContainerStyle={styles.list} 
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor={colors.primary} colors={[colors.primary]} />} 
@@ -291,7 +376,14 @@ export default function HistoryScreen() {
           {selectedItem && (
             <>
               {/* Modal Header */}
-              <View style={[styles.modalHeader, { borderBottomColor: colors.border, backgroundColor: colors.surface }]}>
+              <View style={[
+                styles.modalHeader, 
+                { 
+                  borderBottomColor: colors.border, 
+                  backgroundColor: colors.surface,
+                  paddingTop: Platform.OS === 'ios' ? (insets.top || Spacing.md) : Spacing.md
+                }
+              ]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
                   <Ionicons name="document-text" size={24} color={colors.primary} />
                   <Text style={[styles.modalTitle, { color: colors.text }]}>Analiz Detayı</Text>
@@ -432,4 +524,8 @@ const styles = StyleSheet.create({
   quizOptionLetter: { fontSize: FontSizes.xs, fontWeight: 'bold' },
   quizOptionText: { flex: 1, fontSize: FontSizes.sm },
   quizExplanation: { marginTop: Spacing.md, padding: Spacing.md, borderRadius: BorderRadius.md, borderWidth: 1 },
+
+  recsCard: { borderRadius: BorderRadius.xl, borderWidth: 1, padding: Spacing.lg, marginBottom: Spacing.lg },
+  recItem: { flexDirection: 'row', alignItems: 'center', padding: Spacing.md, borderRadius: BorderRadius.lg, borderWidth: 1, marginBottom: Spacing.sm },
+  feedbackBtn: { width: 32, height: 32, borderRadius: 8, justifyContent: 'center', alignItems: 'center' },
 });
