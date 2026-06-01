@@ -35,7 +35,7 @@
       "expo-font"
     ],
     "extra": {
-      "apiUrl": "http://192.168.1.104:8010"
+      "apiUrl": "https://video-asistan-frontend.onrender.com"
     }
   }
 }
