@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 const BASE_URL =
-  Constants.expoConfig?.extra?.apiUrl || 'http://192.168.0.118:8010';
+  Constants.expoConfig?.extra?.apiUrl || 'http://192.168.1.104:8010';
 
 const api = axios.create({
   baseURL: BASE_URL,
