@@ -2,6 +2,7 @@
 __pycache__/
 backend/node_modules/
 backend/.env
+backend/cookies.txt
 backend/venv/
 backend/__pycache__/
 backend/*.log

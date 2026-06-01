@@ -1,0 +1,12 @@
+node_modules
+venv
+.venv
+.env
+cookies.txt
+*.log
+.git
+.gitignore
+README.md
+SUPABASE_SETUP.md
+main.py
+requirements.txt

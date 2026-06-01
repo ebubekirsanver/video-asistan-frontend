@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: eduassistant-api
+    runtime: docker
+    region: frankfurt
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: "8010"
+      - key: APIFY_API_TOKEN
+        sync: false
+      - key: FAL_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        value: "google/gemini-2.5-flash"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: LOG_PAYLOAD
+        value: "false"
